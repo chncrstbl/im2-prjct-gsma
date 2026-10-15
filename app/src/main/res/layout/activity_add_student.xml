@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    tools:ignore="SystemUI,VisualLintOverlap,MissingDefaultResource,VisualLintBounds">
+
+    <!-- Top Navigation Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFC107"
+        android:paddingHorizontal="16dp"
+        tools:ignore="VisualLintBounds">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/back"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#000000"
+            tools:ignore="ImageContrastCheck,VisualLintBounds" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/student_name"
+            android:textColor="#000000"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:ignore="VisualLintBounds" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Add Photo Section -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:background="@drawable/bg_input_field_disabled">
+
+                    <ImageView
+                        android:id="@+id/imgProfilePhoto"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/add_photo"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="#333333" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/add_photo"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:ignore="VisualLintBounds" />
+            </LinearLayout>
+
+            <!-- SECTION: Student Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/student_name"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="VisualLintBounds" />
+
+            <EditText
+                android:id="@+id/etStudentFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:autofillHints="personGivenName"
+                android:background="@drawable/bg_input_field"
+                android:hint="@string/first_name"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="16dp"
+                android:textColor="#000000"
+                android:textColorHint="#000000"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds" />
+
+            <EditText
+                android:id="@+id/etStudentMiddleName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:autofillHints="personMiddleName"
+                android:background="@drawable/bg_input_field"
+                android:hint="@string/middle_name"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="16dp"
+                android:textColor="#000000"
+                android:textColorHint="#000000"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds" />
+
+            <EditText
+                android:id="@+id/etStudentLastName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:autofillHints="personFamilyName"
+                android:background="@drawable/bg_input_field"
+                android:hint="@string/last_name"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="16dp"
+                android:textColor="#000000"
+                android:textColorHint="#000000"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds" />
+
+            <Spinner
+                android:id="@+id/spnStudentExtensions"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_input_field_spinner"
+                android:paddingHorizontal="16dp"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <!-- Student Gender Spinner -->
+            <Spinner
+                android:id="@+id/spnStudentGender"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_input_field_spinner"
+                android:paddingHorizontal="16dp"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <!-- Date of Birth Selector -->
+            <RelativeLayout
+                android:id="@+id/btnDateOfBirth"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_input_field_spinner"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:id="@+id/imgCalendarIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/date_of_birth"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    app:tint="#000000" />
+
+                <TextView
+                    android:id="@+id/tvDateOfBirth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="12dp"
+                    android:layout_toEndOf="@id/imgCalendarIcon"
+                    android:text="@string/date_of_birth"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck,VisualLintBounds" />
+            </RelativeLayout>
+
+            <!-- Auto-calculated Age Box -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_input_field_disabled"
+                android:paddingHorizontal="16dp">
+
+                <TextView
+                    android:id="@+id/tvAgeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/tvCalculatedAge"
+                    android:text="@string/age_auto_calculated"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    tools:ignore="VisualLintBounds" />
+
+                <TextView
+                    android:id="@+id/tvCalculatedAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:ignore="VisualLintBounds"
+                    tools:text="5" />
+            </RelativeLayout>
+
+            <!-- Grade Level & Section Side-by-Side Spinners -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spnGradeLevel"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_input_field_spinner"
+                    android:paddingHorizontal="12dp"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <Spinner
+                    android:id="@+id/spnSection"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_input_field_spinner"
+                    android:paddingHorizontal="12dp"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </LinearLayout>
+
+            <!-- SECTION: Parents Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/parents_name"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="VisualLintBounds" />
+
+            <EditText
+                android:id="@+id/etParentFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:autofillHints="personGivenName"
+                android:background="@drawable/bg_input_field"
+                android:hint="@string/first_name"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="16dp"
+                android:textColor="#000000"
+                android:textColorHint="#000000"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds" />
+
+            <EditText
+                android:id="@+id/etParentMiddleName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:autofillHints="personMiddleName"
+                android:background="@drawable/bg_input_field"
+                android:hint="@string/middle_name"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="16dp"
+                android:textColor="#000000"
+                android:textColorHint="#000000"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds" />
+
+            <EditText
+                android:id="@+id/etParentLastName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:autofillHints="personFamilyName"
+                android:background="@drawable/bg_input_field"
+                android:hint="@string/last_name"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="16dp"
+                android:textColor="#000000"
+                android:textColorHint="#000000"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds" />
+
+            <Spinner
+                android:id="@+id/spnParentExtensions"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_input_field_spinner"
+                android:paddingHorizontal="16dp"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <!-- Parent Address Field -->
+            <EditText
+                android:id="@+id/etParentAddress"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:autofillHints="postalAddress"
+                android:background="@drawable/bg_input_field"
+                android:hint="@string/parent_address_hint"
+                android:inputType="textPostalAddress"
+                android:paddingHorizontal="16dp"
+                android:textColor="#000000"
+                android:textColorHint="#000000"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds" />
+
+            <!-- Parent Contact Field with Separated Country Code (+63) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_input_field"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/parent_guardian_contact_number"
+                    android:src="@android:drawable/stat_sys_phone_call"
+                    app:tint="#000000" />
+
+                <!-- PASTE THE COUNTRY CODE TEXTVIEW HERE -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/country_code_ph"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="#CCCCCC" />
+
+                <!-- PASTE THE EDITTEXT HERE -->
+                <EditText
+                    android:id="@+id/etParentContact"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="phoneNumber"
+                    android:background="@null"
+                    android:hint="@string/phone_hint"
+                    android:inputType="phone"
+                    android:textColor="#000000"
+                    android:textColorHint="#888888"
+                    android:textSize="15sp"
+                    tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds" />
+            </LinearLayout>
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="#FFC107"
+                android:text="@string/save"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:cornerRadius="27dp"
+                tools:ignore="VisualLintButtonSize,VisualLintBounds" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
