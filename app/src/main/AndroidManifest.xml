@@ -13,9 +13,8 @@
         android:theme="@style/Theme.PrianGradingSystem">
 
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
+            android:name=".home.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -23,17 +22,27 @@
         </activity>
 
         <activity
-            android:name=".StudentsActivity"
+            android:name=".home.MainActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".AddStudentActivity"
+            android:name=".students.StudentsActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".FilterActivity"
+            android:name=".students.AddStudentActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".records.FilterActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".grades.GradeEntryActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 

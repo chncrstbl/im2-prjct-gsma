@@ -1,4 +1,4 @@
-package com.example.priangradingsystem;
+package com.example.priangradingsystem.adapter;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,9 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-
-
+import com.example.priangradingsystem.R;
+import com.example.priangradingsystem.model.StudentItem;
 import java.util.List;
 
 public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

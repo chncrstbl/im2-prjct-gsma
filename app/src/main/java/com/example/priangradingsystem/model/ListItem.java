@@ -1,4 +1,4 @@
-package com.example.priangradingsystem;
+package com.example.priangradingsystem.model;
 
 import java.io.Serializable;
 

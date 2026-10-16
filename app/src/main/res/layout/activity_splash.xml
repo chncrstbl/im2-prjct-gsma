@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFDF0"
-    tools:context=".SplashActivity">
+    tools:context=".home.SplashActivity">
 
     <!-- Top-left cloud -->
     <ImageView
@@ -80,7 +80,7 @@
         android:layout_width="195dp"
         android:layout_height="55dp"
         android:layout_marginTop="82dp"
-        android:contentDescription="Little Learners"
+        android:contentDescription="@string/app_name"
         android:scaleType="fitCenter"
         android:src="@drawable/littlelearners"
         app:layout_constraintEnd_toEndOf="parent"
@@ -131,7 +131,7 @@
         android:layout_width="225dp"
         android:layout_height="190dp"
         android:layout_marginBottom="3dp"
-        android:contentDescription="Little Learners students"
+        android:contentDescription="@string/desc_little_learners_students"
         android:scaleType="fitCenter"
         android:src="@drawable/children"
         app:layout_constraintBottom_toBottomOf="parent"

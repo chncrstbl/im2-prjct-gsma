@@ -1,4 +1,4 @@
-package com.example.priangradingsystem;
+package com.example.priangradingsystem.students;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,6 +14,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.priangradingsystem.R;
+import com.example.priangradingsystem.adapter.StudentAdapter;
+import com.example.priangradingsystem.model.StudentItem;
+import com.example.priangradingsystem.records.FilterActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
@@ -21,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@SuppressWarnings("all")
 public class StudentsActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "StudentPrefs";
@@ -113,33 +118,25 @@ public class StudentsActivity extends AppCompatActivity {
     }
 
     private void addNewStudentWithSection(String name, String gradeSection, String age, String photoUri) {
-        if (gradeSection == null || gradeSection.trim().isEmpty()) {
-            gradeSection = "General - Unassigned";
-        }
+        String targetSection = (gradeSection == null || gradeSection.trim().isEmpty())
+                ? "General - Unassigned"
+                : gradeSection;
 
-        boolean headerExists = false;
-        for (StudentItem item : masterStudentList) {
-            if (item.getItemViewType() == StudentItem.TYPE_HEADER && item.getHeaderTitle().equalsIgnoreCase(gradeSection)) {
-                headerExists = true;
-                break;
-            }
-        }
-
-        if (!headerExists) {
+        if (!hasHeader(targetSection)) {
             int iconResId = android.R.drawable.ic_menu_agenda;
-            String lower = gradeSection.toLowerCase();
+            String lower = targetSection.toLowerCase();
             if (lower.contains("nursery")) {
                 iconResId = android.R.drawable.ic_menu_edit;
             } else if (lower.contains("pre-k")) {
                 iconResId = android.R.drawable.ic_menu_compass;
             }
-            masterStudentList.add(new StudentItem(StudentItem.TYPE_HEADER, gradeSection, iconResId));
+            masterStudentList.add(new StudentItem(StudentItem.TYPE_HEADER, targetSection, iconResId));
         }
 
-        String levelOnly = gradeSection.split("-")[0].trim();
+        String levelOnly = targetSection.split("-")[0].trim();
 
         StudentItem newStudent = new StudentItem(StudentItem.TYPE_STUDENT, name, "Age " + age, levelOnly, "Good");
-        newStudent.setSection(gradeSection);
+        newStudent.setSection(targetSection);
         if (photoUri != null) {
             newStudent.setPhotoUri(photoUri);
         }
@@ -149,16 +146,29 @@ public class StudentsActivity extends AppCompatActivity {
         applyCombinedFilters();
     }
 
+    private boolean hasHeader(String sectionTitle) {
+        for (StudentItem item : masterStudentList) {
+            if (item.getItemViewType() == StudentItem.TYPE_HEADER && item.getHeaderTitle().equalsIgnoreCase(sectionTitle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private void applyCombinedFilters() {
         displayedStudentList.clear();
 
         List<String> sortedHeaders = new ArrayList<>();
         for (StudentItem item : masterStudentList) {
-            if (item.getItemViewType() == StudentItem.TYPE_HEADER) {
-                if (!sortedHeaders.contains(item.getHeaderTitle())) {
-                    sortedHeaders.add(item.getHeaderTitle());
-                }
+            switch (item.getItemViewType()) {
+                case StudentItem.TYPE_HEADER:
+                    if (!sortedHeaders.contains(item.getHeaderTitle())) {
+                        sortedHeaders.add(item.getHeaderTitle());
+                    }
+                    break;
+                default:
+                    break;
             }
         }
         sortedHeaders.sort(String::compareToIgnoreCase);

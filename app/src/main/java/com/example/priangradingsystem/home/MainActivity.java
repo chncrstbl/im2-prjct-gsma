@@ -1,10 +1,12 @@
-package com.example.priangradingsystem;
+package com.example.priangradingsystem.home;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.priangradingsystem.R;
+import com.example.priangradingsystem.students.StudentsActivity;
 
 public class MainActivity extends AppCompatActivity {
 

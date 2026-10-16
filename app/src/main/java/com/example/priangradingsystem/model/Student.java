@@ -1,9 +1,10 @@
-package com.example.priangradingsystem;
+package com.example.priangradingsystem.model;
 
 import android.net.Uri;
+import java.io.Serializable;
 
 @SuppressWarnings("unused")
-public class Student {
+public class Student implements Serializable {
     private final String name;
     private final String gradeClass;
     private final String age;

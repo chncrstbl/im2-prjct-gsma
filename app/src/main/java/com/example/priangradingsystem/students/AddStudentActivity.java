@@ -1,4 +1,4 @@
-package com.example.priangradingsystem;
+package com.example.priangradingsystem.students;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.priangradingsystem.R;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -85,12 +86,9 @@ public class AddStudentActivity extends AppCompatActivity {
                         tvDateOfBirth.setText(formattedDob);
                     }
 
-                    int age = currentYear - year;
-                    if (currentMonth < month || (currentMonth == month && currentDay < day)) {
-                        age--;
-                    }
+                    int calculatedAge = currentYear - year - ((currentMonth < month || (currentMonth == month && currentDay < day)) ? 1 : 0);
                     if (tvCalculatedAge != null) {
-                        tvCalculatedAge.setText(String.valueOf(Math.max(0, age)));
+                        tvCalculatedAge.setText("" + Math.max(0, calculatedAge));
                     }
                 }, currentYear - 5, currentMonth, currentDay);
 
@@ -119,13 +117,11 @@ public class AddStudentActivity extends AppCompatActivity {
                 String parentAddress = etParentAddress != null ? etParentAddress.getText().toString().trim() : "";
                 String parentContactDigits = etParentContact != null ? etParentContact.getText().toString().trim() : "";
 
-                // Validation 1: Student Name
                 if (studentFirstName.isEmpty() || studentLastName.isEmpty()) {
                     Toast.makeText(this, "Please enter the student's first and last name.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // Validation 2: Parent/Guardian Details (Cannot save if missing)
                 if (parentFirstName.isEmpty() || parentLastName.isEmpty() || parentAddress.isEmpty() || parentContactDigits.isEmpty()) {
                     Toast.makeText(this, "Parent/Guardian name, address, and contact number are required to save.", Toast.LENGTH_LONG).show();
                     return;

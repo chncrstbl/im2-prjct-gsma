@@ -82,4 +82,6 @@
         <item>Section B</item>
         <item>Section C</item>
     </string-array>
+
+    <string name="desc_little_learners_students">Little Learners students</string>
 </resources>
