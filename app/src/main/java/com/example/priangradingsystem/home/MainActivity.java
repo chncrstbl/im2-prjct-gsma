@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.R;
+import com.example.priangradingsystem.grades.GradeEntryActivity;
 import com.example.priangradingsystem.students.StudentsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,10 +25,25 @@ public class MainActivity extends AppCompatActivity {
         if (navStudents != null) {
             navStudents.setOnClickListener(v -> openStudentsActivity());
         }
+
+        Button btnGradesCard = findViewById(R.id.btnGradesCard);
+        if (btnGradesCard != null) {
+            btnGradesCard.setOnClickListener(v -> openGradesActivity());
+        }
+
+        TextView navGrades = findViewById(R.id.navGrades);
+        if (navGrades != null) {
+            navGrades.setOnClickListener(v -> openGradesActivity());
+        }
     }
 
     private void openStudentsActivity() {
         Intent intent = new Intent(MainActivity.this, StudentsActivity.class);
+        startActivity(intent);
+    }
+
+    private void openGradesActivity() {
+        Intent intent = new Intent(MainActivity.this, GradeEntryActivity.class);
         startActivity(intent);
     }
 }
