@@ -82,4 +82,30 @@
         <item>Section B</item>
         <item>Section C</item>
     </string-array>
+
+    <string name="desc_little_learners_students">Little Learners students</string>
+
+    <string name="grades_summary">Grades Summary</string>
+    <string name="sample_student_name">Vea Arevalo</string>
+    <string name="sample_student_grade">Nursery</string>
+    <string name="total_score">Total Score</string>
+    <string name="score_90">90%</string>
+    <string name="score_85">85%</string>
+    <string name="score_95">95%</string>
+    <string name="score_100">100%</string>
+    <string name="status_passed">Passed</string>
+    <string name="subject_breakdown">Subject Breakdown</string>
+    <string name="subject_color_recognition">Color Recognition</string>
+    <string name="subject_numbers">Numbers</string>
+    <string name="subject_shapes">Shapes</string>
+    <string name="subject_behavior">Behavior</string>
+    <string name="view_full_records">View Full Records</string>
+
+    <string name="records_title">Records</string>
+    <string name="overall_performance">Overall Performance</string>
+    <string name="excellent_count">3</string>
+    <string name="good_count">1</string>
+    <string name="needs_improvement_count">0</string>
+    <string name="download_pdf">Download PDF</string>
+    <string name="share">Share</string>
 </resources>

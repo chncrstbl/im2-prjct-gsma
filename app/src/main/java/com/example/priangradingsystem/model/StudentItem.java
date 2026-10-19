@@ -1,4 +1,4 @@
-package com.example.priangradingsystem;
+package com.example.priangradingsystem.model;
 
 public class StudentItem {
 

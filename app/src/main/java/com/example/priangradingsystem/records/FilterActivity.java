@@ -1,4 +1,4 @@
-package com.example.priangradingsystem;
+package com.example.priangradingsystem.records;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.priangradingsystem.R;
 
 public class FilterActivity extends AppCompatActivity {
 
@@ -137,14 +138,12 @@ public class FilterActivity extends AppCompatActivity {
 
         if (btnApply != null) {
             btnApply.setOnClickListener(v -> {
-                String selectedLevel = "All";
-                if (cbNursery != null && cbNursery.isChecked()) selectedLevel = "Nursery";
-                else if (cbPreK != null && cbPreK.isChecked()) selectedLevel = "Pre-K";
+                String selectedLevel = (cbNursery != null && cbNursery.isChecked()) ? "Nursery" :
+                        (cbPreK != null && cbPreK.isChecked()) ? "Pre-K" : "All";
 
-                String selectedPerf = "All";
-                if (cbExcellent != null && cbExcellent.isChecked()) selectedPerf = "Excellent";
-                else if (cbGood != null && cbGood.isChecked()) selectedPerf = "Good";
-                else if (cbNeedsImprovement != null && cbNeedsImprovement.isChecked()) selectedPerf = "Needs Improvement";
+                String selectedPerf = (cbExcellent != null && cbExcellent.isChecked()) ? "Excellent" :
+                        (cbGood != null && cbGood.isChecked()) ? "Good" :
+                        (cbNeedsImprovement != null && cbNeedsImprovement.isChecked()) ? "Needs Improvement" : "All";
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("LEVEL_FILTER", selectedLevel);
