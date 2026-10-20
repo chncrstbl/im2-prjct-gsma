@@ -7,6 +7,11 @@
     <string name="welcome_subtitle">What would you like to do today?</string>
     <string name="get_started">Get Started</string>
 
+    <string name="good_morning">Good Morning,</string>
+    <string name="teacher_exclamation">Teacher!</string>
+    <string name="analytics">Analytics</string>
+    <string name="quote_small_steps">From small steps,\na great success is\nbuilt!</string>
+
     <string name="login_subtitle">Teacher Portal Sign In</string>
     <string name="welcome_back">Welcome Back!</string>
     <string name="please_sign_in">Please sign in to access grades and students</string>

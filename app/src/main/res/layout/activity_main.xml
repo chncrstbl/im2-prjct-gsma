@@ -1,207 +1,310 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F5"
+    android:background="#FFFFFF"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context=".home.MainActivity">
 
-    <!-- Header Section -->
-    <LinearLayout
+    <!-- Top Yellow Header Bar -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="56dp"
         android:background="#FFCC00"
-        android:fitsSystemWindows="true"
-        android:padding="20dp">
+        android:paddingHorizontal="16dp">
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/header_title"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/back"
+            android:src="@drawable/back_button" />
 
-        <TextView
-            android:id="@+id/tvHeaderSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/header_subtitle"
-            android:textColor="#333333"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp" />
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/ivHeaderTitle"
+            android:layout_width="160dp"
+            android:layout_height="28dp"
+            android:layout_centerInParent="true"
+            android:layout_toEndOf="@id/btnBack"
+            android:layout_toStartOf="@id/ivProfile"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/little_learners" />
 
-    <!-- Main Content Area -->
+        <ImageView
+            android:id="@+id/ivProfile"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/student_avatar"
+            android:src="@drawable/profile_teacher" />
+    </RelativeLayout>
+
+    <!-- Scrollable Main Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="16dp">
+        android:fillViewport="true"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvWelcomeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_title"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvWelcomeSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_subtitle"
-                android:textColor="#595959"
-                android:textSize="14sp"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Card: Students -->
-            <androidx.cardview.widget.CardView
+            <!-- Greeting Header Section -->
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="3dp">
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/ivDecorSun"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/decor_sun" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/ivDecorSun"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/card_students_title"
-                        android:textColor="#000000"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/good_morning"
+                        android:src="@drawable/good_morning" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="110dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/card_students_desc"
-                        android:textColor="#595959"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp" />
-
-                    <Button
-                        android:id="@+id/btnStudentsCard"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/btn_students"
-                        android:layout_marginTop="12dp" />
+                        android:layout_marginTop="2dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/teacher_exclamation"
+                        android:src="@drawable/teacher" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </RelativeLayout>
 
-            <!-- Card: Grades -->
-            <androidx.cardview.widget.CardView
+            <!-- 2x2 Feature Cards Grid -->
+            <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="3dp">
+                android:alignmentMode="alignBounds"
+                android:columnCount="2"
+                android:columnOrderPreserved="false"
+                android:rowCount="2">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                <!-- Card 1: Students (Top-Left) -->
+                <RelativeLayout
+                    android:id="@+id/btnStudentsCard"
+                    android:layout_width="0dp"
+                    android:layout_height="165dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/students_background"
+                    android:padding="12dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/ivStudentsSymbol"
+                        android:layout_width="110dp"
+                        android:layout_height="90dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/students_symbol" />
+
+                    <ImageView
+                        android:layout_width="85dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/card_grades_title"
-                        android:textColor="#000000"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:layout_below="@id/ivStudentsSymbol"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/card_students_title"
+                        android:src="@drawable/students" />
+                </RelativeLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                <!-- Card 2: Enter Grades (Top-Right) -->
+                <RelativeLayout
+                    android:id="@+id/btnGradesCard"
+                    android:layout_width="0dp"
+                    android:layout_height="165dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/enter_grades_background"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:id="@+id/ivGradesSymbol"
+                        android:layout_width="110dp"
+                        android:layout_height="90dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/enter_grades_symbol" />
+
+                    <ImageView
+                        android:layout_width="105dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/card_grades_desc"
-                        android:textColor="#595959"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp" />
+                        android:layout_below="@id/ivGradesSymbol"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/btn_grades"
+                        android:src="@drawable/enter_grades" />
+                </RelativeLayout>
 
-                    <Button
-                        android:id="@+id/btnGradesCard"
-                        android:layout_width="wrap_content"
+                <!-- Card 3: Reports (Bottom-Left) -->
+                <RelativeLayout
+                    android:id="@+id/btnReportsCard"
+                    android:layout_width="0dp"
+                    android:layout_height="165dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/reports_background"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:id="@+id/ivReportsSymbol"
+                        android:layout_width="110dp"
+                        android:layout_height="90dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/reports_symbol" />
+
+                    <ImageView
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/btn_grades"
-                        android:layout_marginTop="12dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                        android:layout_below="@id/ivReportsSymbol"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/card_reports_title"
+                        android:src="@drawable/reports" />
+                </RelativeLayout>
 
-            <!-- Card: Reports -->
-            <androidx.cardview.widget.CardView
+                <!-- Card 4: Analytics (Bottom-Right) -->
+                <RelativeLayout
+                    android:id="@+id/btnAnalyticsCard"
+                    android:layout_width="0dp"
+                    android:layout_height="165dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/analytics_background"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:id="@+id/ivAnalyticsSymbol"
+                        android:layout_width="110dp"
+                        android:layout_height="90dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/analytics_symbol" />
+
+                    <ImageView
+                        android:layout_width="85dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/ivAnalyticsSymbol"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/analytics"
+                        android:src="@drawable/analytics" />
+                </RelativeLayout>
+
+            </GridLayout>
+
+            <!-- Inspirational Banner Quote Card -->
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="3dp">
+                android:layout_marginHorizontal="6dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/tagline_background"
+                android:padding="16dp">
 
-                <LinearLayout
+                <!-- Left Pencil Graphic -->
+                <ImageView
+                    android:id="@+id/ivQuotePencil"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/tagline_pencil" />
+
+                <!-- Heart Icon Top Right -->
+                <ImageView
+                    android:id="@+id/ivQuoteHeart"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/tagline_heart" />
+
+                <!-- Quote Text Graphic -->
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_centerInParent="true"
+                    android:layout_toEndOf="@id/ivQuotePencil"
+                    android:layout_toStartOf="@id/ivQuoteHeart"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/quote_small_steps"
+                    android:paddingHorizontal="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/tagline" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/card_reports_title"
-                        android:textColor="#000000"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/card_reports_desc"
-                        android:textColor="#595959"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp" />
-
-                    <Button
-                        android:id="@+id/btnReportsCard"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/btn_reports"
-                        android:layout_marginTop="12dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>
 
     <!-- Bottom Navigation Bar -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal"
         android:background="#FFFFFF"
-        android:elevation="8dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/navHome"
@@ -209,10 +312,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#000000"
-            android:textSize="12sp"
             android:text="@string/nav_home"
-            app:drawableTopCompat="@drawable/ic_home" />
+            android:textColor="#FFCC00"
+            android:textSize="11sp"
+            app:drawableTopCompat="@drawable/ic_home_main" />
 
         <TextView
             android:id="@+id/navStudents"
@@ -220,10 +323,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#000000"
-            android:textSize="12sp"
             android:text="@string/nav_students"
-            app:drawableTopCompat="@drawable/ic_person" />
+            android:textColor="#000000"
+            android:textSize="11sp"
+            app:drawableTopCompat="@drawable/ic_students_main" />
 
         <TextView
             android:id="@+id/navGrades"
@@ -231,10 +334,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#000000"
-            android:textSize="12sp"
             android:text="@string/nav_grades"
-            app:drawableTopCompat="@drawable/ic_grade" />
+            android:textColor="#000000"
+            android:textSize="11sp"
+            app:drawableTopCompat="@drawable/ic_grades_main" />
+
+        <TextView
+            android:id="@+id/navAnalytics"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/analytics"
+            android:textColor="#000000"
+            android:textSize="11sp"
+            app:drawableTopCompat="@drawable/ic_analytics_main" />
     </LinearLayout>
 
 </LinearLayout>

@@ -2,11 +2,12 @@ package com.example.priangradingsystem.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.grades.GradeEntryActivity;
+import com.example.priangradingsystem.records.RecordsActivity;
 import com.example.priangradingsystem.students.StudentsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnStudentsCard = findViewById(R.id.btnStudentsCard);
+        View btnStudentsCard = findViewById(R.id.btnStudentsCard);
         if (btnStudentsCard != null) {
             btnStudentsCard.setOnClickListener(v -> openStudentsActivity());
         }
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
             navStudents.setOnClickListener(v -> openStudentsActivity());
         }
 
-        Button btnGradesCard = findViewById(R.id.btnGradesCard);
+        View btnGradesCard = findViewById(R.id.btnGradesCard);
         if (btnGradesCard != null) {
             btnGradesCard.setOnClickListener(v -> openGradesActivity());
         }
@@ -34,6 +35,21 @@ public class MainActivity extends AppCompatActivity {
         TextView navGrades = findViewById(R.id.navGrades);
         if (navGrades != null) {
             navGrades.setOnClickListener(v -> openGradesActivity());
+        }
+
+        View btnReportsCard = findViewById(R.id.btnReportsCard);
+        if (btnReportsCard != null) {
+            btnReportsCard.setOnClickListener(v -> openRecordsActivity());
+        }
+
+        TextView navAnalytics = findViewById(R.id.navAnalytics);
+        if (navAnalytics != null) {
+            navAnalytics.setOnClickListener(v -> openRecordsActivity());
+        }
+
+        View btnAnalyticsCard = findViewById(R.id.btnAnalyticsCard);
+        if (btnAnalyticsCard != null) {
+            btnAnalyticsCard.setOnClickListener(v -> openRecordsActivity());
         }
     }
 
@@ -44,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void openGradesActivity() {
         Intent intent = new Intent(MainActivity.this, GradeEntryActivity.class);
+        startActivity(intent);
+    }
+
+    private void openRecordsActivity() {
+        Intent intent = new Intent(MainActivity.this, RecordsActivity.class);
         startActivity(intent);
     }
 }
