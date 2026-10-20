@@ -27,6 +27,11 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".auth.LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
             android:name=".students.StudentsActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

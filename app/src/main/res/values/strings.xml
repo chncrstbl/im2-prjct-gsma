@@ -7,6 +7,18 @@
     <string name="welcome_subtitle">What would you like to do today?</string>
     <string name="get_started">Get Started</string>
 
+    <string name="login_subtitle">Teacher Portal Sign In</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="please_sign_in">Please sign in to access grades and students</string>
+    <string name="username_or_email">Username or Email</string>
+    <string name="username">Username</string>
+    <string name="enter_username_hint">Enter your username or email</string>
+    <string name="password">Password</string>
+    <string name="enter_password_hint">Enter your password</string>
+    <string name="log_in">Login</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="signup_prompt">Don\'t have an account? [Sign UP]</string>
+
     <string name="card_students_title">Students</string>
     <string name="card_students_desc">View and manage student information</string>
     <string name="btn_students">View Students</string>

@@ -28,7 +28,15 @@ android {
 
     sourceSets {
         getByName("main") {
-            res.srcDirs("src/main/res", "src/main/res-splash", "src/main/res-main", "src/main/res-student", "src/main/res-records", "src/main/res-common")
+            res.srcDirs(
+                "src/main/res",
+                "src/main/res-splash",
+                "src/main/res-main",
+                "src/main/res-student",
+                "src/main/res-records",
+                "src/main/res-common",
+                "src/main/res-login"
+            )
         }
     }
 }
