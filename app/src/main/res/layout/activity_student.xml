@@ -7,7 +7,6 @@
     android:background="#FFFFFF"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
     tools:ignore="SystemUI,VisualLintOverlap,MissingDefaultResource,VisualLintBounds,WindowInsets">
 
     <RelativeLayout
