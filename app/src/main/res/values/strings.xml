@@ -5,6 +5,7 @@
     <string name="header_subtitle">Learning made fun and easy!</string>
     <string name="welcome_title">Welcome!</string>
     <string name="welcome_subtitle">What would you like to do today?</string>
+    <string name="get_started">Get Started</string>
 
     <string name="card_students_title">Students</string>
     <string name="card_students_desc">View and manage student information</string>

@@ -6,57 +6,45 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFDF0"
+    android:background="#FFFDC8"
+    android:fitsSystemWindows="true"
     tools:context=".home.SplashActivity">
 
-    <!-- Top-left cloud -->
+    <!-- Top-left background cloud -->
     <ImageView
         android:id="@+id/cloudTopLeft"
-        android:layout_width="75dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="-20dp"
-        android:layout_marginTop="35dp"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginStart="-30dp"
+        android:layout_marginTop="10dp"
         android:contentDescription="@null"
-        android:scaleType="fitCenter"
         android:src="@drawable/cloud_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Top-right cloud -->
+    <!-- Top-right background cloud -->
     <ImageView
         android:id="@+id/cloudTopRight"
-        android:layout_width="90dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="-15dp"
-        android:layout_marginTop="55dp"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginEnd="-30dp"
+        android:layout_marginTop="20dp"
         android:contentDescription="@null"
-        android:scaleType="fitCenter"
         android:src="@drawable/cloud_3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Small sun -->
-    <ImageView
-        android:id="@+id/sun"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="25dp"
-        android:contentDescription="@null"
-        android:scaleType="fitCenter"
-        android:src="@drawable/sun"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Left middle cloud -->
     <ImageView
         android:id="@+id/cloudMiddleLeft"
-        android:layout_width="80dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="-15dp"
-        android:layout_marginTop="145dp"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginStart="-25dp"
+        android:layout_marginTop="170dp"
         android:contentDescription="@null"
-        android:scaleType="fitCenter"
         android:src="@drawable/fullcloud_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -64,60 +52,99 @@
     <!-- Right middle cloud -->
     <ImageView
         android:id="@+id/cloudMiddleRight"
-        android:layout_width="80dp"
-        android:layout_height="55dp"
-        android:layout_marginEnd="-10dp"
-        android:layout_marginTop="155dp"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginEnd="-25dp"
+        android:layout_marginTop="200dp"
         android:contentDescription="@null"
-        android:scaleType="fitCenter"
         android:src="@drawable/fullcloud_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Little Learners logo -->
+    <!-- Centered Smiling Sun -->
+    <ImageView
+        android:id="@+id/sun"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="24dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@null"
+        android:src="@drawable/sun"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Title: Little Learners -->
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="195dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="82dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginTop="155dp"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
-        android:scaleType="fitCenter"
         android:src="@drawable/littlelearners"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Grading System -->
+    <!-- Subtitle: Grading System -->
     <ImageView
         android:id="@+id/gradingSystem"
-        android:layout_width="125dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="2dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginTop="4dp"
+        android:adjustViewBounds="true"
         android:contentDescription="@null"
-        android:scaleType="fitCenter"
         android:src="@drawable/grading_system"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo" />
 
-    <!-- Track . Grade . Grow -->
+    <!-- Tagline: Track . Grade . Grow -->
     <ImageView
         android:id="@+id/tagline"
-        android:layout_width="125dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginTop="28dp"
+        android:adjustViewBounds="true"
         android:contentDescription="@null"
-        android:scaleType="fitCenter"
         android:src="@drawable/track_grade_grow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gradingSystem" />
 
-    <!-- Background field -->
+    <!-- Get Started Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGetStarted"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#E2FD00"
+        android:paddingHorizontal="28dp"
+        android:text="@string/get_started"
+        android:textAllCaps="false"
+        android:textColor="#000000"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:cornerRadius="22dp"
+        app:elevation="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tagline" />
+
+    <!-- Bottom Field Background -->
     <ImageView
         android:id="@+id/fieldBackground"
         android:layout_width="0dp"
-        android:layout_height="125dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="fitXY"
         android:src="@drawable/field_bg"
@@ -125,14 +152,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Children -->
+    <!-- Children Illustration -->
     <ImageView
         android:id="@+id/children"
-        android:layout_width="225dp"
-        android:layout_height="190dp"
-        android:layout_marginBottom="3dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/desc_little_learners_students"
-        android:scaleType="fitCenter"
         android:src="@drawable/children"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
