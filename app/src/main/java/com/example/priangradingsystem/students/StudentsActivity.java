@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.adapter.StudentAdapter;
 import com.example.priangradingsystem.model.StudentItem;
@@ -66,6 +67,7 @@ public class StudentsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_student);
 
         ImageView btnBack = findViewById(R.id.btnBack);
@@ -115,6 +117,12 @@ public class StudentsActivity extends AppCompatActivity {
                 public void afterTextChanged(Editable s) {}
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FullScreenUtils.enableFullScreen(this);
     }
 
     private void addNewStudentWithSection(String name, String gradeSection, String age, String photoUri) {
