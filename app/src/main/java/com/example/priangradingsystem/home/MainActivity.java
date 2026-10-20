@@ -3,7 +3,6 @@ package com.example.priangradingsystem.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.grades.GradeEntryActivity;
@@ -22,29 +21,14 @@ public class MainActivity extends AppCompatActivity {
             btnStudentsCard.setOnClickListener(v -> openStudentsActivity());
         }
 
-        TextView navStudents = findViewById(R.id.navStudents);
-        if (navStudents != null) {
-            navStudents.setOnClickListener(v -> openStudentsActivity());
-        }
-
         View btnGradesCard = findViewById(R.id.btnGradesCard);
         if (btnGradesCard != null) {
             btnGradesCard.setOnClickListener(v -> openGradesActivity());
         }
 
-        TextView navGrades = findViewById(R.id.navGrades);
-        if (navGrades != null) {
-            navGrades.setOnClickListener(v -> openGradesActivity());
-        }
-
         View btnReportsCard = findViewById(R.id.btnReportsCard);
         if (btnReportsCard != null) {
             btnReportsCard.setOnClickListener(v -> openRecordsActivity());
-        }
-
-        TextView navAnalytics = findViewById(R.id.navAnalytics);
-        if (navAnalytics != null) {
-            navAnalytics.setOnClickListener(v -> openRecordsActivity());
         }
 
         View btnAnalyticsCard = findViewById(R.id.btnAnalyticsCard);

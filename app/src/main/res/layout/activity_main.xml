@@ -187,14 +187,14 @@
                         android:src="@drawable/reports_symbol" />
 
                     <ImageView
-                        android:layout_width="64dp"
+                        android:layout_width="95dp"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/ivReportsSymbol"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/card_reports_title"
-                        android:src="@drawable/reports" />
+                        android:src="@drawable/grade_records" />
                 </RelativeLayout>
 
                 <!-- Card 4: Analytics (Bottom-Right) -->
@@ -216,17 +216,17 @@
                         android:adjustViewBounds="true"
                         android:contentDescription="@null"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/analytics_symbol" />
+                        android:src="@drawable/grade_report_symbol" />
 
                     <ImageView
-                        android:layout_width="68dp"
+                        android:layout_width="95dp"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/ivAnalyticsSymbol"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/analytics"
-                        android:src="@drawable/analytics" />
+                        android:src="@drawable/grade_reports" />
                 </RelativeLayout>
 
             </GridLayout>
