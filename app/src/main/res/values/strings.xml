@@ -31,11 +31,12 @@
     <string name="student_avatar">Student profile picture</string>
     <string name="arrow">View student details</string>
 
-    <string name="student_name">Student Name</string>
+    <string name="student_name">Add Student</string>
     <string name="add_photo">Add Photo</string>
     <string name="first_name">First Name</string>
     <string name="middle_name">Middle Name</string>
     <string name="last_name">Last Name</string>
+    <string name="extension_hint">Extension (Optional e.g. Jr., III)</string>
     <string name="date_of_birth">Date of Birth</string>
     <string name="age">Age</string>
     <string name="age_auto_calculated">Age (Auto-calculated)</string>
@@ -62,15 +63,6 @@
     <string name="reset">Reset</string>
 
     <string name="error_enter_full_name">Please enter student\'s full name</string>
-
-    <string-array name="extension_options">
-        <item>None</item>
-        <item>Jr.</item>
-        <item>Sr.</item>
-        <item>II</item>
-        <item>III</item>
-        <item>IV</item>
-    </string-array>
 
     <string-array name="grade_level_options">
         <item>Nursery</item>
