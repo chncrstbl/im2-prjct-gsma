@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:adjustViewBounds="true"
@@ -28,8 +28,8 @@
 
         <ImageView
             android:id="@+id/ivHeaderTitle"
-            android:layout_width="160dp"
-            android:layout_height="28dp"
+            android:layout_width="130dp"
+            android:layout_height="22dp"
             android:layout_centerInParent="true"
             android:layout_toEndOf="@id/btnBack"
             android:layout_toStartOf="@id/ivProfile"
@@ -39,8 +39,8 @@
 
         <ImageView
             android:id="@+id/ivProfile"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:adjustViewBounds="true"
@@ -67,12 +67,12 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="12dp">
 
                 <ImageView
                     android:id="@+id/ivDecorSun"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:adjustViewBounds="true"
@@ -88,14 +88,14 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:layout_width="120dp"
+                        android:layout_width="95dp"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/good_morning"
                         android:src="@drawable/good_morning" />
 
                     <ImageView
-                        android:layout_width="110dp"
+                        android:layout_width="88dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:adjustViewBounds="true"
@@ -117,25 +117,25 @@
                 <RelativeLayout
                     android:id="@+id/btnStudentsCard"
                     android:layout_width="0dp"
-                    android:layout_height="165dp"
+                    android:layout_height="160dp"
                     android:layout_columnWeight="1"
                     android:layout_margin="6dp"
                     android:background="@drawable/students_background"
-                    android:padding="12dp">
+                    android:padding="10dp">
 
                     <ImageView
                         android:id="@+id/ivStudentsSymbol"
-                        android:layout_width="110dp"
-                        android:layout_height="90dp"
+                        android:layout_width="105dp"
+                        android:layout_height="85dp"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="6dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@null"
                         android:scaleType="fitCenter"
                         android:src="@drawable/students_symbol" />
 
                     <ImageView
-                        android:layout_width="85dp"
+                        android:layout_width="68dp"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/ivStudentsSymbol"
                         android:layout_centerHorizontal="true"
@@ -149,25 +149,25 @@
                 <RelativeLayout
                     android:id="@+id/btnGradesCard"
                     android:layout_width="0dp"
-                    android:layout_height="165dp"
+                    android:layout_height="160dp"
                     android:layout_columnWeight="1"
                     android:layout_margin="6dp"
                     android:background="@drawable/enter_grades_background"
-                    android:padding="12dp">
+                    android:padding="10dp">
 
                     <ImageView
                         android:id="@+id/ivGradesSymbol"
-                        android:layout_width="110dp"
-                        android:layout_height="90dp"
+                        android:layout_width="105dp"
+                        android:layout_height="85dp"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="6dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@null"
                         android:scaleType="fitCenter"
                         android:src="@drawable/enter_grades_symbol" />
 
                     <ImageView
-                        android:layout_width="105dp"
+                        android:layout_width="84dp"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/ivGradesSymbol"
                         android:layout_centerHorizontal="true"
@@ -181,25 +181,25 @@
                 <RelativeLayout
                     android:id="@+id/btnReportsCard"
                     android:layout_width="0dp"
-                    android:layout_height="165dp"
+                    android:layout_height="160dp"
                     android:layout_columnWeight="1"
                     android:layout_margin="6dp"
                     android:background="@drawable/reports_background"
-                    android:padding="12dp">
+                    android:padding="10dp">
 
                     <ImageView
                         android:id="@+id/ivReportsSymbol"
-                        android:layout_width="110dp"
-                        android:layout_height="90dp"
+                        android:layout_width="105dp"
+                        android:layout_height="85dp"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="6dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@null"
                         android:scaleType="fitCenter"
                         android:src="@drawable/reports_symbol" />
 
                     <ImageView
-                        android:layout_width="80dp"
+                        android:layout_width="64dp"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/ivReportsSymbol"
                         android:layout_centerHorizontal="true"
@@ -213,25 +213,25 @@
                 <RelativeLayout
                     android:id="@+id/btnAnalyticsCard"
                     android:layout_width="0dp"
-                    android:layout_height="165dp"
+                    android:layout_height="160dp"
                     android:layout_columnWeight="1"
                     android:layout_margin="6dp"
                     android:background="@drawable/analytics_background"
-                    android:padding="12dp">
+                    android:padding="10dp">
 
                     <ImageView
                         android:id="@+id/ivAnalyticsSymbol"
-                        android:layout_width="110dp"
-                        android:layout_height="90dp"
+                        android:layout_width="105dp"
+                        android:layout_height="85dp"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="6dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@null"
                         android:scaleType="fitCenter"
                         android:src="@drawable/analytics_symbol" />
 
                     <ImageView
-                        android:layout_width="85dp"
+                        android:layout_width="68dp"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/ivAnalyticsSymbol"
                         android:layout_centerHorizontal="true"
@@ -248,16 +248,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="6dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="14dp"
                 android:background="@drawable/tagline_background"
-                android:padding="16dp">
+                android:padding="14dp">
 
                 <!-- Left Pencil Graphic -->
                 <ImageView
                     android:id="@+id/ivQuotePencil"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="53dp"
+                    android:layout_height="102dp"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:adjustViewBounds="true"
@@ -265,26 +265,31 @@
                     android:src="@drawable/tagline_pencil" />
 
                 <!-- Heart Icon Top Right -->
+
+                <!-- Quote Text Graphic -->
+
                 <ImageView
                     android:id="@+id/ivQuoteHeart"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_width="46dp"
+                    android:layout_height="44dp"
                     android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="10dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@null"
                     android:src="@drawable/tagline_heart" />
 
-                <!-- Quote Text Graphic -->
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_toEndOf="@id/ivQuotePencil"
+                    android:layout_width="248dp"
+                    android:layout_height="82dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="21dp"
                     android:layout_toStartOf="@id/ivQuoteHeart"
+                    android:layout_toEndOf="@id/ivQuotePencil"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/quote_small_steps"
-                    android:paddingHorizontal="8dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/tagline" />
 
