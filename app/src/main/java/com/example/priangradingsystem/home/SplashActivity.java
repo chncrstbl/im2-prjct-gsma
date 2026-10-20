@@ -5,41 +5,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.auth.LoginActivity;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int SPLASH_DELAY_MS = 3000;
-    private Handler splashHandler;
-    private Runnable splashRunnable;
+    private static final int SPLASH_DELAY_MS = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_splash);
 
-        splashRunnable = this::proceedToLogin;
-        splashHandler = new Handler(Looper.getMainLooper());
-        splashHandler.postDelayed(splashRunnable, SPLASH_DELAY_MS);
-
-        Button btnGetStarted = findViewById(R.id.btnGetStarted);
-        if (btnGetStarted != null) {
-            btnGetStarted.setOnClickListener(v -> proceedToLogin());
-        }
-    }
-
-    private void proceedToLogin() {
-        if (splashHandler != null && splashRunnable != null) {
-            splashHandler.removeCallbacks(splashRunnable);
-        }
-        if (!isFinishing()) {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
-        }
+        }, SPLASH_DELAY_MS);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FullScreenUtils.enableFullScreen(this);
     }
 }

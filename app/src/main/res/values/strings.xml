@@ -121,4 +121,24 @@
     <string name="needs_improvement_count">0</string>
     <string name="download_pdf">Download PDF</string>
     <string name="share">Share</string>
+
+    <string-array name="subject_options">
+        <item>Color Recognition</item>
+        <item>Numbers</item>
+        <item>Shapes</item>
+        <item>Behavior</item>
+    </string-array>
+
+    <string name="enter_grades_title">Enter Grades</string>
+    <string name="select_subject_activity">Select Subject/Activity</string>
+    <string name="score">Score</string>
+    <string name="score_suffix">/100</string>
+    <string name="assessment_date">Assessment Date</string>
+    <string name="teachers_remarks">Teacher\'s Remarks</string>
+    <string name="remarks_hint">Add comments abount the student\'s performance....</string>
+    <string name="nav_analytics">\nGrade Summary</string>
+    <string name="sample_student_name2">Ive Brayne Cueva</string>
+    <string name="sample_student_grade2">Nursery - Section A</string>
+    <string name="sample_date">October 10, 2026</string>
+    <string name="score_hint">90</string>
 </resources>

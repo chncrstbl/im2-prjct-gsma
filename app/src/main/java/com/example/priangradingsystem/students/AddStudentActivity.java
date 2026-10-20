@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import java.util.Calendar;
 import java.util.Locale;
@@ -36,6 +37,7 @@ public class AddStudentActivity extends AppCompatActivity {
     @SuppressWarnings("SetTextI18n")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_add_student);
 
         ImageView btnBack = findViewById(R.id.btnBack);
@@ -166,21 +168,33 @@ public class AddStudentActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FullScreenUtils.enableFullScreen(this);
+    }
+
     private void setupSpinners(Spinner spnStudentExt, Spinner spnParentExt, Spinner spnGrade, Spinner spnSec, Spinner spnGender) {
         String[] extensions = getResources().getStringArray(R.array.extension_options);
         String[] grades = getResources().getStringArray(R.array.grade_level_options);
         String[] sections = getResources().getStringArray(R.array.section_options);
         String[] genders = {"Male", "Female"};
 
-        ArrayAdapter<String> extAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, extensions);
-        ArrayAdapter<String> gradeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, grades);
-        ArrayAdapter<String> sectionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, sections);
-        ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genders);
+        ArrayAdapter<String> extAdapter = createSpinnerAdapter(extensions);
+        ArrayAdapter<String> gradeAdapter = createSpinnerAdapter(grades);
+        ArrayAdapter<String> sectionAdapter = createSpinnerAdapter(sections);
+        ArrayAdapter<String> genderAdapter = createSpinnerAdapter(genders);
 
         if (spnStudentExt != null) spnStudentExt.setAdapter(extAdapter);
         if (spnParentExt != null) spnParentExt.setAdapter(extAdapter);
         if (spnGrade != null) spnGrade.setAdapter(gradeAdapter);
         if (spnSec != null) spnSec.setAdapter(sectionAdapter);
         if (spnGender != null) spnGender.setAdapter(genderAdapter);
+    }
+
+    private ArrayAdapter<String> createSpinnerAdapter(String[] items) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, items);
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+        return adapter;
     }
 }

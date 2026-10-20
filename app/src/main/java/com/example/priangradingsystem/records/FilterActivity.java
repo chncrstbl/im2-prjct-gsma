@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 
 public class FilterActivity extends AppCompatActivity {
@@ -16,6 +17,7 @@ public class FilterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_filter);
 
         ImageView btnBack = findViewById(R.id.btnBack);
@@ -152,6 +154,12 @@ public class FilterActivity extends AppCompatActivity {
                 finish();
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FullScreenUtils.enableFullScreen(this);
     }
 
     private void clearLevelCheckBoxes() {

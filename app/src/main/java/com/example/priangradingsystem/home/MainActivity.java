@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.grades.GradeEntryActivity;
 import com.example.priangradingsystem.students.StudentsActivity;
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_main);
 
         Button btnStudentsCard = findViewById(R.id.btnStudentsCard);
@@ -35,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
         if (navGrades != null) {
             navGrades.setOnClickListener(v -> openGradesActivity());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FullScreenUtils.enableFullScreen(this);
     }
 
     private void openStudentsActivity() {
