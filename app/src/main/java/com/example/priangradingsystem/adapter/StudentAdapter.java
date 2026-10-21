@@ -10,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.priangradingsystem.R;
-import com.example.priangradingsystem.grades.GradeEntryActivity;
 import com.example.priangradingsystem.model.StudentItem;
 import java.util.List;
 
@@ -18,9 +17,18 @@ import java.util.List;
 public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<StudentItem> studentList;
+    private OnStudentClickListener onStudentClickListener;
+
+    public interface OnStudentClickListener {
+        void onStudentClick(StudentItem item);
+    }
 
     public StudentAdapter(List<StudentItem> studentList) {
         this.studentList = studentList;
+    }
+
+    public void setOnStudentClickListener(OnStudentClickListener listener) {
+        this.onStudentClickListener = listener;
     }
 
     @Override
@@ -77,14 +85,9 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
             studentHolder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), GradeEntryActivity.class);
-                intent.putExtra("STUDENT_NAME", item.getName());
-                String level = item.getLevel() != null ? item.getLevel() : item.getSection();
-                intent.putExtra("STUDENT_LEVEL", level);
-                if (item.getPhotoUri() != null) {
-                    intent.putExtra("STUDENT_PHOTO_URI", item.getPhotoUri());
+                if (onStudentClickListener != null) {
+                    onStudentClickListener.onStudentClick(item);
                 }
-                v.getContext().startActivity(intent);
             });
         }
     }

@@ -67,6 +67,16 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
         RecyclerView rvStudents = findViewById(R.id.rvStudents);
 
         adapter = new StudentAdapter(displayedStudentList);
+        adapter.setOnStudentClickListener(item -> {
+            Intent intent = new Intent(SelectStudentGradeActivity.this, GradeEntryActivity.class);
+            intent.putExtra("STUDENT_NAME", item.getName());
+            String level = item.getLevel() != null ? item.getLevel() : item.getSection();
+            intent.putExtra("STUDENT_LEVEL", level);
+            if (item.getPhotoUri() != null) {
+                intent.putExtra("STUDENT_PHOTO_URI", item.getPhotoUri());
+            }
+            startActivity(intent);
+        });
         if (rvStudents != null) {
             rvStudents.setLayoutManager(new LinearLayoutManager(this));
             rvStudents.setAdapter(adapter);
