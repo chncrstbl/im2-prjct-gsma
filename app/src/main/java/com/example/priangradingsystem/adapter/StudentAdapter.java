@@ -73,6 +73,15 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             } catch (Exception e) {
                 studentHolder.imgStudentAvatar.setImageResource(android.R.drawable.ic_menu_gallery);
             }
+
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), com.example.priangradingsystem.StudentDetailsActivity.class);
+                intent.putExtra("STUDENT_NAME", item.getName());
+                intent.putExtra("STUDENT_CLASS", item.getSection());
+                intent.putExtra("STUDENT_AGE", item.getAge());
+                intent.putExtra("STUDENT_PHOTO_URI", item.getPhotoUri());
+                v.getContext().startActivity(intent);
+            });
         }
     }
 
