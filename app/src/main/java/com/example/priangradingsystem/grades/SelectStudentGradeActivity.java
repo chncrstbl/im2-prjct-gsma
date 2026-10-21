@@ -9,7 +9,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,10 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.adapter.StudentAdapter;
-import com.example.priangradingsystem.home.MainActivity;
 import com.example.priangradingsystem.model.StudentItem;
 import com.example.priangradingsystem.records.FilterActivity;
-import com.example.priangradingsystem.students.StudentsActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -110,8 +107,6 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
                 public void afterTextChanged(Editable s) {}
             });
         }
-
-        setupBottomNavigation();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -204,69 +199,50 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
             if (savedList != null && !savedList.isEmpty()) {
                 masterStudentList.clear();
                 for (StudentItem item : savedList) {
+                    if (item.getSection() != null) {
+                        item.setSection(item.getSection().replaceAll("(?i)\\s*-\\s*Section\\s*[A-Z0-9]+", "").replaceAll("(?i)\\s*Section\\s*[A-Z0-9]+", "").trim());
+                    }
+                    if (item.getHeaderTitle() != null) {
+                        item = new StudentItem(item.getItemViewType(),
+                                item.getHeaderTitle().replaceAll("(?i)\\s*-\\s*Section\\s*[A-Z0-9]+", "").replaceAll("(?i)\\s*Section\\s*[A-Z0-9]+", "").trim(),
+                                item.getHeaderIconResId());
+                    }
                     masterStudentList.add(item);
                 }
             }
         }
 
         if (masterStudentList.isEmpty()) {
-            masterStudentList.add(new StudentItem(StudentItem.TYPE_HEADER, "Nursery - Section A", android.R.drawable.ic_menu_edit));
+            masterStudentList.add(new StudentItem(StudentItem.TYPE_HEADER, "Nursery", android.R.drawable.ic_menu_edit));
 
             StudentItem s1 = new StudentItem(StudentItem.TYPE_STUDENT, "Person 1", "", "Nursery", "Good");
-            s1.setSection("Nursery - Section A");
+            s1.setSection("Nursery");
             masterStudentList.add(s1);
 
             StudentItem s2 = new StudentItem(StudentItem.TYPE_STUDENT, "Person 2", "", "Nursery", "Excellent");
-            s2.setSection("Nursery - Section A");
+            s2.setSection("Nursery");
             masterStudentList.add(s2);
 
             StudentItem s3 = new StudentItem(StudentItem.TYPE_STUDENT, "Person 3", "", "Nursery", "Good");
-            s3.setSection("Nursery - Section A");
+            s3.setSection("Nursery");
             masterStudentList.add(s3);
 
-            masterStudentList.add(new StudentItem(StudentItem.TYPE_HEADER, "Toddler - Section A", android.R.drawable.ic_menu_compass));
+            masterStudentList.add(new StudentItem(StudentItem.TYPE_HEADER, "Toddler", android.R.drawable.ic_menu_compass));
 
             StudentItem s4 = new StudentItem(StudentItem.TYPE_STUDENT, "Person 4", "", "Toddler", "Excellent");
-            s4.setSection("Toddler - Section A");
+            s4.setSection("Toddler");
             masterStudentList.add(s4);
 
             StudentItem s5 = new StudentItem(StudentItem.TYPE_STUDENT, "Person 5", "", "Toddler", "Good");
-            s5.setSection("Toddler - Section A");
+            s5.setSection("Toddler");
             masterStudentList.add(s5);
 
             StudentItem s6 = new StudentItem(StudentItem.TYPE_STUDENT, "Person 6", "", "Toddler", "Needs Improvement");
-            s6.setSection("Toddler - Section A");
+            s6.setSection("Toddler");
             masterStudentList.add(s6);
         }
 
         applyCombinedFilters();
-    }
-
-    private void setupBottomNavigation() {
-        TextView navHome = findViewById(R.id.navHome);
-        if (navHome != null) {
-            navHome.setOnClickListener(v -> {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            });
-        }
-
-        TextView navStudents = findViewById(R.id.navStudents);
-        if (navStudents != null) {
-            navStudents.setOnClickListener(v -> {
-                Intent intent = new Intent(this, StudentsActivity.class);
-                startActivity(intent);
-            });
-        }
-
-        TextView navAnalytics = findViewById(R.id.navAnalytics);
-        if (navAnalytics != null) {
-            navAnalytics.setOnClickListener(v -> {
-                Intent intent = new Intent(this, GradeSummaryActivity.class);
-                startActivity(intent);
-            });
-        }
     }
 
     @Override

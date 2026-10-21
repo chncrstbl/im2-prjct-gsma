@@ -18,27 +18,23 @@
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/back"
-            android:src="@android:drawable/ic_media_previous"
-            app:tint="#000000" />
+            android:src="@drawable/vectoray" />
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/ivHeaderTitle"
+            android:layout_width="100dp"
+            android:layout_height="20dp"
             android:layout_centerInParent="true"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/select_student_to_grade"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/select_student_to_grade"
+            android:src="@drawable/students"
+            app:tint="#FFFFFF" />
     </RelativeLayout>
 
     <!-- Search & Filter Bar -->
@@ -84,11 +80,10 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="10dp"
-            android:background="@drawable/bg_filter_btn"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/filter_options"
-            android:padding="10dp"
-            android:src="@drawable/ic_filter_sliders"
-            app:tint="#000000" />
+            android:padding="8dp"
+            android:src="@drawable/filter" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -97,60 +92,5 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         tools:listitem="@layout/item_student" />
-
-    <!-- Bottom Navigation Bar -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#FFFFFF"
-        android:elevation="8dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/navHome"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_home"
-            android:textColor="#000000"
-            android:textSize="12sp"
-            app:drawableTopCompat="@drawable/ic_home" />
-
-        <TextView
-            android:id="@+id/navStudents"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_students"
-            android:textColor="#000000"
-            android:textSize="12sp"
-            app:drawableTopCompat="@drawable/ic_person" />
-
-        <TextView
-            android:id="@+id/navGrades"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_grades"
-            android:textColor="#FFCC00"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:drawableTopCompat="@drawable/ic_grade" />
-
-        <TextView
-            android:id="@+id/navAnalytics"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_analytics"
-            android:textColor="#000000"
-            android:textSize="12sp"
-            app:drawableTopCompat="@drawable/ic_analytics" />
-    </LinearLayout>
 
 </LinearLayout>
