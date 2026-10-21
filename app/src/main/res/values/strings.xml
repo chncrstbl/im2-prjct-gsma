@@ -88,9 +88,7 @@
     </string-array>
 
     <string-array name="section_options">
-        <item>Section A</item>
-        <item>Section B</item>
-        <item>Section C</item>
+        <item>None</item>
     </string-array>
 
     <string name="desc_little_learners_students">Little Learners students</string>
@@ -206,7 +204,7 @@
     <string name="submit">Submit</string>
     <string name="nav_analytics">\nGrade Summary</string>
     <string name="sample_student_name2">Ive Brayne Cueva</string>
-    <string name="sample_student_grade2">Nursery - Section A</string>
+    <string name="sample_student_grade2">Nursery</string>
     <string name="sample_date">October 10, 2026</string>
     <string name="score_hint">90</string>
 </resources>

@@ -17,8 +17,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
-import com.example.priangradingsystem.home.MainActivity;
-import com.example.priangradingsystem.students.StudentsActivity;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.Calendar;
@@ -48,7 +46,7 @@ public class GradeEntryActivity extends AppCompatActivity {
     private ImageView imgStudentAvatar;
 
     private String selectedStudentName = "Ive Brayne Cueva";
-    private String selectedStudentLevel = "Nursery - Section A";
+    private String selectedStudentLevel = "Nursery";
     private String selectedStudentPhotoUri = null;
 
     @Override
@@ -63,7 +61,7 @@ public class GradeEntryActivity extends AppCompatActivity {
         }
         selectedStudentLevel = getIntent().getStringExtra("STUDENT_LEVEL");
         if (selectedStudentLevel == null || selectedStudentLevel.isEmpty()) {
-            selectedStudentLevel = "Nursery - Section A";
+            selectedStudentLevel = "Nursery";
         }
         selectedStudentPhotoUri = getIntent().getStringExtra("STUDENT_PHOTO_URI");
 
@@ -106,17 +104,10 @@ public class GradeEntryActivity extends AppCompatActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        TextView tvSave = findViewById(R.id.tvSave);
-        if (tvSave != null) {
-            tvSave.setOnClickListener(v -> saveGrade());
-        }
-
         MaterialButton btnSubmit = findViewById(R.id.btnSubmit);
         if (btnSubmit != null) {
             btnSubmit.setOnClickListener(v -> saveGrade());
         }
-
-        setupBottomNavigation();
     }
 
     private void updateStudentCard(String name, String level, String photoUri) {
@@ -125,7 +116,8 @@ public class GradeEntryActivity extends AppCompatActivity {
         }
 
         if (tvStudentGradeLevel != null && level != null) {
-            tvStudentGradeLevel.setText(level);
+            String cleanedLevel = level.replaceAll("(?i)\\s*-\\s*Section\\s*[A-Z0-9]+", "").replaceAll("(?i)\\s*Section\\s*[A-Z0-9]+", "").trim();
+            tvStudentGradeLevel.setText(cleanedLevel);
         }
 
         if (imgStudentAvatar != null) {
@@ -284,47 +276,10 @@ public class GradeEntryActivity extends AppCompatActivity {
         String quarter = spnQuarter != null && spnQuarter.getSelectedItem() != null ? spnQuarter.getSelectedItem().toString() : "1st Quarter";
         String subject = spnSubject != null && spnSubject.getSelectedItem() != null ? spnSubject.getSelectedItem().toString() : "Writing";
 
-        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Grade successfully saved for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
 
-        Intent intent = new Intent(GradeEntryActivity.this, GradeSummaryActivity.class);
-        if (selectedStudentName != null) intent.putExtra("STUDENT_NAME", selectedStudentName);
-        if (selectedStudentLevel != null) intent.putExtra("STUDENT_LEVEL", selectedStudentLevel);
-        if (selectedStudentPhotoUri != null) intent.putExtra("STUDENT_PHOTO_URI", selectedStudentPhotoUri);
-        intent.putExtra("SCORE", score);
-        intent.putExtra("QUARTER", quarter);
-        intent.putExtra("SUBJECT", subject);
-        intent.putExtra("ACTIVITY", activity);
-        startActivity(intent);
-        finish();
-    }
-
-    private void setupBottomNavigation() {
-        TextView navHome = findViewById(R.id.navHome);
-        if (navHome != null) {
-            navHome.setOnClickListener(v -> {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            });
-        }
-
-        TextView navStudents = findViewById(R.id.navStudents);
-        if (navStudents != null) {
-            navStudents.setOnClickListener(v -> {
-                Intent intent = new Intent(this, StudentsActivity.class);
-                startActivity(intent);
-            });
-        }
-
-        TextView navAnalytics = findViewById(R.id.navAnalytics);
-        if (navAnalytics != null) {
-            navAnalytics.setOnClickListener(v -> {
-                Intent intent = new Intent(this, GradeSummaryActivity.class);
-                if (selectedStudentName != null) intent.putExtra("STUDENT_NAME", selectedStudentName);
-                if (selectedStudentLevel != null) intent.putExtra("STUDENT_LEVEL", selectedStudentLevel);
-                if (selectedStudentPhotoUri != null) intent.putExtra("STUDENT_PHOTO_URI", selectedStudentPhotoUri);
-                startActivity(intent);
-            });
+        if (etScore != null) {
+            etScore.setText("");
         }
     }
 

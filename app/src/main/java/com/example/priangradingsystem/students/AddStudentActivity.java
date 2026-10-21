@@ -108,7 +108,6 @@ public class AddStudentActivity extends AppCompatActivity {
                 String age = tvCalculatedAge != null ? tvCalculatedAge.getText().toString().trim() : "";
 
                 String gradeLevel = spnGradeLevel != null && spnGradeLevel.getSelectedItem() != null ? spnGradeLevel.getSelectedItem().toString() : "";
-                String section = spnSection != null && spnSection.getSelectedItem() != null ? spnSection.getSelectedItem().toString() : "";
 
                 String parentFirstName = etParentFirstName != null ? etParentFirstName.getText().toString().trim() : "";
                 String parentMiddleName = etParentMiddleName != null ? etParentMiddleName.getText().toString().trim() : "";
@@ -132,7 +131,8 @@ public class AddStudentActivity extends AppCompatActivity {
                         + " " + studentLastName
                         + (studentExt.isEmpty() || studentExt.equalsIgnoreCase("None") ? "" : " " + studentExt);
 
-                String mergedGradeSection = gradeLevel + (section.isEmpty() ? "" : " - " + section);
+                String cleanGradeLevel = gradeLevel.replaceAll("(?i)\\s*-\\s*Section\\s*[A-Z0-9]+", "").replaceAll("(?i)\\s*Section\\s*[A-Z0-9]+", "").trim();
+                String mergedGradeSection = cleanGradeLevel.isEmpty() ? "Nursery" : cleanGradeLevel;
 
                 String mergedParentName = parentFirstName
                         + (parentMiddleName.isEmpty() ? "" : " " + parentMiddleName)

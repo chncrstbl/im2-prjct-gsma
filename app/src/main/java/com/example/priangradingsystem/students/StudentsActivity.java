@@ -261,7 +261,17 @@ public class StudentsActivity extends AppCompatActivity {
 
             if (savedList != null) {
                 masterStudentList.clear();
-                masterStudentList.addAll(savedList);
+                for (StudentItem item : savedList) {
+                    if (item.getSection() != null) {
+                        item.setSection(item.getSection().replaceAll("(?i)\\s*-\\s*Section\\s*[A-Z0-9]+", "").replaceAll("(?i)\\s*Section\\s*[A-Z0-9]+", "").trim());
+                    }
+                    if (item.getHeaderTitle() != null) {
+                        item = new StudentItem(item.getItemViewType(),
+                                item.getHeaderTitle().replaceAll("(?i)\\s*-\\s*Section\\s*[A-Z0-9]+", "").replaceAll("(?i)\\s*Section\\s*[A-Z0-9]+", "").trim(),
+                                item.getHeaderIconResId());
+                    }
+                    masterStudentList.add(item);
+                }
             }
         }
         applyCombinedFilters();
