@@ -16,6 +16,7 @@ import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.home.MainActivity;
 import com.example.priangradingsystem.students.StudentsActivity;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -23,13 +24,18 @@ import java.util.Locale;
 @SuppressWarnings("all")
 public class GradeEntryActivity extends AppCompatActivity {
 
-    private TextView tvAssessmentDate;
+    private Spinner spnQuarter;
     private Spinner spnSubject;
     private EditText etScore;
+    private TextView tvAssessmentDate;
 
-    private String studentName;
-    private String studentLevel;
-    private String studentPhotoUri;
+    private TextView tvStudentName;
+    private TextView tvStudentGradeLevel;
+    private ImageView imgStudentAvatar;
+
+    private String selectedStudentName = "Ive Brayne Cueva";
+    private String selectedStudentLevel = "Nursery - Section A";
+    private String selectedStudentPhotoUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,41 +43,27 @@ public class GradeEntryActivity extends AppCompatActivity {
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_grade_entry);
 
-        studentName = getIntent().getStringExtra("STUDENT_NAME");
-        studentLevel = getIntent().getStringExtra("STUDENT_LEVEL");
-        studentPhotoUri = getIntent().getStringExtra("STUDENT_PHOTO_URI");
-
-        TextView tvStudentName = findViewById(R.id.tvStudentName);
-        TextView tvStudentGradeLevel = findViewById(R.id.tvStudentGradeLevel);
-        ImageView imgStudentAvatar = findViewById(R.id.imgStudentAvatar);
-
-        if (studentName != null && !studentName.trim().isEmpty() && tvStudentName != null) {
-            tvStudentName.setText(studentName);
+        selectedStudentName = getIntent().getStringExtra("STUDENT_NAME");
+        if (selectedStudentName == null || selectedStudentName.isEmpty()) {
+            selectedStudentName = "Ive Brayne Cueva";
         }
-
-        if (studentLevel != null && !studentLevel.trim().isEmpty() && tvStudentGradeLevel != null) {
-            tvStudentGradeLevel.setText(studentLevel);
+        selectedStudentLevel = getIntent().getStringExtra("STUDENT_LEVEL");
+        if (selectedStudentLevel == null || selectedStudentLevel.isEmpty()) {
+            selectedStudentLevel = "Nursery - Section A";
         }
+        selectedStudentPhotoUri = getIntent().getStringExtra("STUDENT_PHOTO_URI");
 
-        if (studentPhotoUri != null && !studentPhotoUri.trim().isEmpty() && imgStudentAvatar != null) {
-            try {
-                Uri uri = Uri.parse(studentPhotoUri);
-                try {
-                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                } catch (Exception ignored) {}
-                imgStudentAvatar.setImageURI(uri);
-            } catch (Exception e) {
-                imgStudentAvatar.setImageResource(R.drawable.children);
-            }
-        }
+        tvStudentName = findViewById(R.id.tvStudentName);
+        tvStudentGradeLevel = findViewById(R.id.tvStudentGradeLevel);
+        imgStudentAvatar = findViewById(R.id.imgStudentAvatar);
+
+        updateStudentCard(selectedStudentName, selectedStudentLevel, selectedStudentPhotoUri);
+
+        spnQuarter = findViewById(R.id.spnQuarter);
+        setupQuarterSpinner();
 
         spnSubject = findViewById(R.id.spnSubject);
-        if (spnSubject != null) {
-            String[] subjects = getResources().getStringArray(R.array.subject_options);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, subjects);
-            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-            spnSubject.setAdapter(adapter);
-        }
+        setupSubjectSpinner();
 
         etScore = findViewById(R.id.etScore);
         tvAssessmentDate = findViewById(R.id.tvAssessmentDate);
@@ -91,7 +83,56 @@ public class GradeEntryActivity extends AppCompatActivity {
             tvSave.setOnClickListener(v -> saveGrade());
         }
 
+        MaterialButton btnSubmit = findViewById(R.id.btnSubmit);
+        if (btnSubmit != null) {
+            btnSubmit.setOnClickListener(v -> saveGrade());
+        }
+
         setupBottomNavigation();
+    }
+
+    private void updateStudentCard(String name, String level, String photoUri) {
+        if (tvStudentName != null && name != null) {
+            tvStudentName.setText(name);
+        }
+
+        if (tvStudentGradeLevel != null && level != null) {
+            tvStudentGradeLevel.setText(level);
+        }
+
+        if (imgStudentAvatar != null) {
+            if (photoUri != null && !photoUri.trim().isEmpty()) {
+                try {
+                    Uri uri = Uri.parse(photoUri);
+                    try {
+                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } catch (Exception ignored) {}
+                    imgStudentAvatar.setImageURI(uri);
+                } catch (Exception e) {
+                    imgStudentAvatar.setImageResource(R.drawable.children);
+                }
+            } else {
+                imgStudentAvatar.setImageResource(R.drawable.children);
+            }
+        }
+    }
+
+    private void setupQuarterSpinner() {
+        if (spnQuarter != null) {
+            String[] quarters = getResources().getStringArray(R.array.quarter_options);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, quarters);
+            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+            spnQuarter.setAdapter(adapter);
+        }
+    }
+
+    private void setupSubjectSpinner() {
+        if (spnSubject != null) {
+            String[] subjects = getResources().getStringArray(R.array.subject_options);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, subjects);
+            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+            spnSubject.setAdapter(adapter);
+        }
     }
 
     private void showDatePicker() {
@@ -107,6 +148,7 @@ public class GradeEntryActivity extends AppCompatActivity {
 
     private void saveGrade() {
         String score = etScore != null ? etScore.getText().toString().trim() : "";
+        String quarter = spnQuarter != null && spnQuarter.getSelectedItem() != null ? spnQuarter.getSelectedItem().toString() : "1st Quarter";
         String subject = spnSubject != null && spnSubject.getSelectedItem() != null ? spnSubject.getSelectedItem().toString() : "Color Recognition";
 
         if (score.isEmpty()) {
@@ -114,13 +156,14 @@ public class GradeEntryActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(this, "Grade saved for " + (studentName != null ? studentName : "Student") + " | " + subject + ": " + score + "/100", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + subject + ": " + score + "/100", Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(GradeEntryActivity.this, GradeSummaryActivity.class);
-        if (studentName != null) intent.putExtra("STUDENT_NAME", studentName);
-        if (studentLevel != null) intent.putExtra("STUDENT_LEVEL", studentLevel);
-        if (studentPhotoUri != null) intent.putExtra("STUDENT_PHOTO_URI", studentPhotoUri);
+        if (selectedStudentName != null) intent.putExtra("STUDENT_NAME", selectedStudentName);
+        if (selectedStudentLevel != null) intent.putExtra("STUDENT_LEVEL", selectedStudentLevel);
+        if (selectedStudentPhotoUri != null) intent.putExtra("STUDENT_PHOTO_URI", selectedStudentPhotoUri);
         intent.putExtra("SCORE", score);
+        intent.putExtra("QUARTER", quarter);
         intent.putExtra("SUBJECT", subject);
         startActivity(intent);
         finish();
@@ -148,9 +191,9 @@ public class GradeEntryActivity extends AppCompatActivity {
         if (navAnalytics != null) {
             navAnalytics.setOnClickListener(v -> {
                 Intent intent = new Intent(this, GradeSummaryActivity.class);
-                if (studentName != null) intent.putExtra("STUDENT_NAME", studentName);
-                if (studentLevel != null) intent.putExtra("STUDENT_LEVEL", studentLevel);
-                if (studentPhotoUri != null) intent.putExtra("STUDENT_PHOTO_URI", studentPhotoUri);
+                if (selectedStudentName != null) intent.putExtra("STUDENT_NAME", selectedStudentName);
+                if (selectedStudentLevel != null) intent.putExtra("STUDENT_LEVEL", selectedStudentLevel);
+                if (selectedStudentPhotoUri != null) intent.putExtra("STUDENT_PHOTO_URI", selectedStudentPhotoUri);
                 startActivity(intent);
             });
         }

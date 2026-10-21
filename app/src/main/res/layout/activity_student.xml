@@ -100,7 +100,7 @@
             android:background="@drawable/bg_filter_btn"
             android:contentDescription="@string/filter_options"
             android:padding="10dp"
-            android:src="@android:drawable/ic_menu_manage"
+            android:src="@drawable/ic_filter_sliders"
             app:tint="#000000"
             tools:ignore="ImageContrastCheck" />
     </LinearLayout>

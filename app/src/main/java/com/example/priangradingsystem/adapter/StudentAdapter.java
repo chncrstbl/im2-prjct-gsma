@@ -57,7 +57,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else {
             StudentViewHolder studentHolder = (StudentViewHolder) holder;
             studentHolder.tvStudentName.setText(item.getName());
-            studentHolder.tvStudentAge.setText(item.getAge());
+            studentHolder.tvStudentAge.setVisibility(View.GONE);
 
             try {
                 if (item.getPhotoUri() != null && !item.getPhotoUri().isEmpty()) {

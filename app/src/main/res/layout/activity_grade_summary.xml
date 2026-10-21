@@ -7,32 +7,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFFFFF"
+    android:fitsSystemWindows="true"
     tools:context=".grades.GradeEntryActivity">
 
     <!-- Top Yellow Header Bar -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="56dp"
         android:background="#FFCC00"
         android:paddingHorizontal="16dp">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/back"
-            android:src="@android:drawable/ic_menu_revert"
-            app:tint="#FFFFFF" />
+            android:src="@android:drawable/ic_media_previous"
+            app:tint="#000000" />
 
         <TextView
             android:id="@+id/tvHeaderTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:gravity="center"
             android:text="@string/grades_summary"
-            android:textColor="#FFFFFF"
+            android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -186,7 +189,7 @@
                 android:layout_marginBottom="12dp"
                 android:background="#000000" />
 
-            <!-- Row 1: Color Recognition -->
+            <!-- Row 1: Writing -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -197,7 +200,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/subject_color_recognition"
+                    android:text="@string/subject_writing"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -216,7 +219,7 @@
                 android:layout_height="1dp"
                 android:background="#000000" />
 
-            <!-- Row 2: Numbers -->
+            <!-- Row 2: Math -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -227,7 +230,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/subject_numbers"
+                    android:text="@string/subject_math"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -246,7 +249,7 @@
                 android:layout_height="1dp"
                 android:background="#000000" />
 
-            <!-- Row 3: Shapes -->
+            <!-- Row 3: Reading -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -257,7 +260,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/subject_shapes"
+                    android:text="@string/subject_reading"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -276,7 +279,7 @@
                 android:layout_height="1dp"
                 android:background="#000000" />
 
-            <!-- Row 4: Behavior -->
+            <!-- Row 4: Life Skills -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -287,7 +290,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/subject_behavior"
+                    android:text="@string/subject_life_skills"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -296,6 +299,36 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/score_100"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000" />
+
+            <!-- Row 5: PE & Arts -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/subject_pe_arts"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/score_92"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold" />

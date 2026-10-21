@@ -6,7 +6,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
-import com.example.priangradingsystem.grades.GradeEntryActivity;
+import com.example.priangradingsystem.grades.SelectStudentGradeActivity;
 import com.example.priangradingsystem.records.RecordsActivity;
 import com.example.priangradingsystem.students.StudentsActivity;
 
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openGradesActivity() {
-        Intent intent = new Intent(MainActivity.this, GradeEntryActivity.class);
+        Intent intent = new Intent(MainActivity.this, SelectStudentGradeActivity.class);
         startActivity(intent);
     }
 
