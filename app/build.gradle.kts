@@ -33,6 +33,7 @@ android {
                 "src/main/res-splash",
                 "src/main/res-main",
                 "src/main/res-student",
+                "src/main/res-reports",
                 "src/main/res-records",
                 "src/main/res-common",
                 "src/main/res-login"
