@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
-import com.example.priangradingsystem.records.RecordsActivity;
+import com.example.priangradingsystem.reports.ReportsActivity;
 import com.google.android.material.button.MaterialButton;
 
 public class GradeSummaryActivity extends AppCompatActivity {
@@ -55,7 +55,7 @@ public class GradeSummaryActivity extends AppCompatActivity {
         MaterialButton btnViewFullRecords = findViewById(R.id.btnViewFullRecords);
         if (btnViewFullRecords != null) {
             btnViewFullRecords.setOnClickListener(v -> {
-                Intent intent = new Intent(GradeSummaryActivity.this, RecordsActivity.class);
+                Intent intent = new Intent(GradeSummaryActivity.this, ReportsActivity.class);
                 if (studentName != null) intent.putExtra("STUDENT_NAME", studentName);
                 if (studentLevel != null) intent.putExtra("STUDENT_LEVEL", studentLevel);
                 if (studentPhotoUri != null) intent.putExtra("STUDENT_PHOTO_URI", studentPhotoUri);

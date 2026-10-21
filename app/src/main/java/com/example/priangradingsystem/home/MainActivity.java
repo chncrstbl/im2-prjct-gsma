@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.grades.SelectStudentGradeActivity;
-import com.example.priangradingsystem.records.RecordsActivity;
+import com.example.priangradingsystem.reports.ReportsActivity;
 import com.example.priangradingsystem.students.StudentsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,12 +30,12 @@ public class MainActivity extends AppCompatActivity {
 
         View btnReportsCard = findViewById(R.id.btnReportsCard);
         if (btnReportsCard != null) {
-            btnReportsCard.setOnClickListener(v -> openRecordsActivity());
+            btnReportsCard.setOnClickListener(v -> openReportsActivity());
         }
 
         View btnAnalyticsCard = findViewById(R.id.btnAnalyticsCard);
         if (btnAnalyticsCard != null) {
-            btnAnalyticsCard.setOnClickListener(v -> openRecordsActivity());
+            btnAnalyticsCard.setOnClickListener(v -> openReportsActivity());
         }
     }
 
@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void openRecordsActivity() {
-        Intent intent = new Intent(MainActivity.this, RecordsActivity.class);
+    private void openReportsActivity() {
+        Intent intent = new Intent(MainActivity.this, ReportsActivity.class);
         startActivity(intent);
     }
 }

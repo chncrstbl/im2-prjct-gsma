@@ -52,6 +52,11 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".reports.ReportsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".grades.GradeEntryActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
