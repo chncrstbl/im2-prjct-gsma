@@ -44,7 +44,7 @@ public class AddStudentActivity extends AppCompatActivity {
         EditText etStudentFirstName = findViewById(R.id.etStudentFirstName);
         EditText etStudentMiddleName = findViewById(R.id.etStudentMiddleName);
         EditText etStudentLastName = findViewById(R.id.etStudentLastName);
-        Spinner spnStudentExtensions = findViewById(R.id.spnStudentExtensions);
+        EditText etStudentExtension = findViewById(R.id.etStudentExtension);
         Spinner spnStudentGender = findViewById(R.id.spnStudentGender);
 
         RelativeLayout btnDateOfBirth = findViewById(R.id.btnDateOfBirth);
@@ -57,13 +57,13 @@ public class AddStudentActivity extends AppCompatActivity {
         EditText etParentFirstName = findViewById(R.id.etParentFirstName);
         EditText etParentMiddleName = findViewById(R.id.etParentMiddleName);
         EditText etParentLastName = findViewById(R.id.etParentLastName);
-        Spinner spnParentExtensions = findViewById(R.id.spnParentExtensions);
+        EditText etParentExtension = findViewById(R.id.etParentExtension);
         EditText etParentAddress = findViewById(R.id.etParentAddress);
         EditText etParentContact = findViewById(R.id.etParentContact);
 
         Button btnSave = findViewById(R.id.btnSave);
 
-        setupSpinners(spnStudentExtensions, spnParentExtensions, spnGradeLevel, spnSection, spnStudentGender);
+        setupSpinners(spnGradeLevel, spnSection, spnStudentGender);
 
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
@@ -101,7 +101,7 @@ public class AddStudentActivity extends AppCompatActivity {
                 String studentFirstName = etStudentFirstName != null ? etStudentFirstName.getText().toString().trim() : "";
                 String studentMiddleName = etStudentMiddleName != null ? etStudentMiddleName.getText().toString().trim() : "";
                 String studentLastName = etStudentLastName != null ? etStudentLastName.getText().toString().trim() : "";
-                String studentExt = spnStudentExtensions != null && spnStudentExtensions.getSelectedItem() != null ? spnStudentExtensions.getSelectedItem().toString() : "";
+                String studentExt = etStudentExtension != null ? etStudentExtension.getText().toString().trim() : "";
                 String studentGender = spnStudentGender != null && spnStudentGender.getSelectedItem() != null ? spnStudentGender.getSelectedItem().toString() : "";
 
                 String dob = tvDateOfBirth != null ? tvDateOfBirth.getText().toString().trim() : "";
@@ -113,7 +113,7 @@ public class AddStudentActivity extends AppCompatActivity {
                 String parentFirstName = etParentFirstName != null ? etParentFirstName.getText().toString().trim() : "";
                 String parentMiddleName = etParentMiddleName != null ? etParentMiddleName.getText().toString().trim() : "";
                 String parentLastName = etParentLastName != null ? etParentLastName.getText().toString().trim() : "";
-                String parentExt = spnParentExtensions != null && spnParentExtensions.getSelectedItem() != null ? spnParentExtensions.getSelectedItem().toString() : "";
+                String parentExt = etParentExtension != null ? etParentExtension.getText().toString().trim() : "";
                 String parentAddress = etParentAddress != null ? etParentAddress.getText().toString().trim() : "";
                 String parentContactDigits = etParentContact != null ? etParentContact.getText().toString().trim() : "";
 
@@ -166,19 +166,15 @@ public class AddStudentActivity extends AppCompatActivity {
         }
     }
 
-    private void setupSpinners(Spinner spnStudentExt, Spinner spnParentExt, Spinner spnGrade, Spinner spnSec, Spinner spnGender) {
-        String[] extensions = getResources().getStringArray(R.array.extension_options);
+    private void setupSpinners(Spinner spnGrade, Spinner spnSec, Spinner spnGender) {
         String[] grades = getResources().getStringArray(R.array.grade_level_options);
         String[] sections = getResources().getStringArray(R.array.section_options);
         String[] genders = {"Male", "Female"};
 
-        ArrayAdapter<String> extAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, extensions);
         ArrayAdapter<String> gradeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, grades);
         ArrayAdapter<String> sectionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, sections);
         ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genders);
 
-        if (spnStudentExt != null) spnStudentExt.setAdapter(extAdapter);
-        if (spnParentExt != null) spnParentExt.setAdapter(extAdapter);
         if (spnGrade != null) spnGrade.setAdapter(gradeAdapter);
         if (spnSec != null) spnSec.setAdapter(sectionAdapter);
         if (spnGender != null) spnGender.setAdapter(genderAdapter);
