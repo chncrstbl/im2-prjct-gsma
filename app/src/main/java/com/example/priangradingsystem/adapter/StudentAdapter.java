@@ -64,18 +64,40 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        try {
-            StudentItem item = studentItemList.get(position);
-            if (item == null) return;
+        StudentItem item = studentList.get(position);
 
-            if (holder instanceof SectionHeaderViewHolder) {
-                ((SectionHeaderViewHolder) holder).bind(item);
-            } else if (holder instanceof GenderHeaderViewHolder) {
-                ((GenderHeaderViewHolder) holder).bind(item);
-            } else if (holder instanceof StudentViewHolder) {
-                ((StudentViewHolder) holder).bind(item, onStudentClick);
+        if (holder.getItemViewType() == StudentItem.TYPE_HEADER) {
+            HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
+            headerHolder.tvHeaderTitle.setText(item.getHeaderTitle());
+
+            if (item.getHeaderIconResId() != 0) {
+                headerHolder.imgHeaderIcon.setImageResource(item.getHeaderIconResId());
+                headerHolder.imgHeaderIcon.setVisibility(View.VISIBLE);
+            } else {
+                headerHolder.imgHeaderIcon.setVisibility(View.GONE);
             }
-        } catch (Exception ignored) {}
+        } else {
+            StudentViewHolder studentHolder = (StudentViewHolder) holder;
+            studentHolder.tvStudentName.setText(item.getName());
+            studentHolder.tvStudentAge.setText(item.getAge());
+
+            try {
+                if (item.getPhotoUri() != null && !item.getPhotoUri().isEmpty()) {
+                    Uri uri = Uri.parse(item.getPhotoUri());
+                    try {
+                        holder.itemView.getContext().getContentResolver().takePersistableUriPermission(
+                                uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        );
+                    } catch (Exception ignored) {}
+
+                    studentHolder.imgStudentAvatar.setImageURI(uri);
+                } else {
+                    studentHolder.imgStudentAvatar.setImageResource(android.R.drawable.ic_menu_gallery);
+                }
+            } catch (Exception e) {
+                studentHolder.imgStudentAvatar.setImageResource(android.R.drawable.ic_menu_gallery);
+            }
+        }
     }
 
     @Override
