@@ -45,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
         FullScreenUtils.enableFullScreen(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FullScreenUtils.enableFullScreen(this);
+    }
+
     private void openStudentsActivity() {
         Intent intent = new Intent(MainActivity.this, StudentsActivity.class);
         startActivity(intent);
