@@ -149,7 +149,26 @@
                 android:background="@drawable/bg_input_field_spinner"
                 android:paddingHorizontal="12dp" />
 
-            <!-- 2. Subject/Activity Field -->
+            <!-- 2. Activity Field -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginBottom="6dp"
+                android:text="@string/activity_label"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spnActivity"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_input_field_spinner"
+                android:paddingHorizontal="12dp" />
+
+            <!-- 3. Subject Field -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -168,54 +187,143 @@
                 android:background="@drawable/bg_input_field_spinner"
                 android:paddingHorizontal="12dp" />
 
-            <!-- 3. Score Field -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginBottom="6dp"
-                android:text="@string/score"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
+            <!-- Score Section (Visible for Exam, Books, Homework, Program Performance) -->
             <LinearLayout
+                android:id="@+id/layoutScoreSection"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_input_field"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/etScore"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:autofillHints="none"
-                    android:background="@null"
-                    android:hint="@string/score_hint"
-                    android:inputType="number"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="8dp"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginVertical="8dp"
-                    android:background="#B0B0B0" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="16dp"
-                    android:text="@string/score_suffix"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/score"
                     android:textColor="#000000"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_input_field"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/etScore"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:autofillHints="none"
+                        android:background="@null"
+                        android:hint="@string/score_hint"
+                        android:inputType="number"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="8dp"
+                        android:background="#B0B0B0" />
+
+                    <TextView
+                        android:id="@+id/tvScoreSuffix"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="16dp"
+                        android:text="@string/score_suffix"
+                        android:textColor="#000000"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Attendance Status Section (Visible ONLY when Activity == Attendance) -->
+            <LinearLayout
+                android:id="@+id/layoutAttendanceSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/attendance_status_label"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spnAttendanceStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_input_field_spinner"
+                    android:paddingHorizontal="12dp" />
+            </LinearLayout>
+
+            <!-- Star Section (Visible ONLY when Activity == Books or Homework) -->
+            <LinearLayout
+                android:id="@+id/layoutStarSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/stars_grading_label"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spnStars"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_input_field_spinner"
+                    android:paddingHorizontal="12dp" />
+            </LinearLayout>
+
+            <!-- Point Section (Visible ONLY when Activity == Program Performance) -->
+            <LinearLayout
+                android:id="@+id/layoutPointSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/points_grading_label"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spnPoints"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_input_field_spinner"
+                    android:paddingHorizontal="12dp" />
             </LinearLayout>
 
             <!-- 4. Assessment Date Field -->

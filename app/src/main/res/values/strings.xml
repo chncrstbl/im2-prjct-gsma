@@ -134,6 +134,11 @@
         <item>PE &amp; Arts</item>
     </string-array>
 
+    <string-array name="subject_options_filtered">
+        <item>Life Skills</item>
+        <item>PE &amp; Arts</item>
+    </string-array>
+
     <string name="enter_grades_title">Enter Grades</string>
     <string name="select_student_to_grade">Select Student to Grade</string>
     <string name="quarter_grading">Quarter Grading</string>
@@ -144,6 +149,54 @@
     <string name="subject_reading">Reading</string>
     <string name="subject_life_skills">Life Skills</string>
     <string name="subject_pe_arts">PE &amp; Arts</string>
+    <string name="activity_label">Activity</string>
+    <string name="attendance_status_label">Attendance Status</string>
+    <string name="stars_grading_label">Stars Rating (0–3 Stars)</string>
+
+    <string-array name="star_options">
+        <item>0 ⭐ (0 Stars)</item>
+        <item>1 ⭐ (1 Star)</item>
+        <item>2 ⭐ (2 Stars)</item>
+        <item>3 ⭐ (3 Stars)</item>
+    </string-array>
+
+    <string name="points_grading_label">Points Rating (0–2 Points)</string>
+
+    <string-array name="point_options">
+        <item>0 Points</item>
+        <item>1 Point</item>
+        <item>2 Points</item>
+    </string-array>
+
+    <string-array name="attendance_options">
+        <item>True (Present)</item>
+        <item>False (Absent)</item>
+        <item>Suspended</item>
+    </string-array>
+
+    <string-array name="activity_options">
+        <item>Exam</item>
+        <item>Attendance</item>
+        <item>Books</item>
+        <item>Homework</item>
+        <item>Program Performance</item>
+    </string-array>
+
+    <string-array name="activity_options_general">
+        <item>Exam</item>
+        <item>Attendance</item>
+        <item>Books</item>
+        <item>Homework</item>
+    </string-array>
+
+    <string-array name="activity_options_extended">
+        <item>Exam</item>
+        <item>Attendance</item>
+        <item>Books</item>
+        <item>Homework</item>
+        <item>Program Performance</item>
+    </string-array>
+
     <string name="score_92">92%</string>
     <string name="score">Score</string>
     <string name="score_suffix">/100</string>

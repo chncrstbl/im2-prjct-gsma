@@ -4,9 +4,12 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,8 +28,19 @@ import java.util.Locale;
 public class GradeEntryActivity extends AppCompatActivity {
 
     private Spinner spnQuarter;
+    private Spinner spnActivity;
     private Spinner spnSubject;
+    private Spinner spnAttendanceStatus;
+    private Spinner spnStars;
+    private Spinner spnPoints;
+
+    private LinearLayout layoutScoreSection;
+    private LinearLayout layoutAttendanceSection;
+    private LinearLayout layoutStarSection;
+    private LinearLayout layoutPointSection;
+
     private EditText etScore;
+    private TextView tvScoreSuffix;
     private TextView tvAssessmentDate;
 
     private TextView tvStudentName;
@@ -62,10 +76,24 @@ public class GradeEntryActivity extends AppCompatActivity {
         spnQuarter = findViewById(R.id.spnQuarter);
         setupQuarterSpinner();
 
+        spnActivity = findViewById(R.id.spnActivity);
         spnSubject = findViewById(R.id.spnSubject);
-        setupSubjectSpinner();
+        spnAttendanceStatus = findViewById(R.id.spnAttendanceStatus);
+        spnStars = findViewById(R.id.spnStars);
+        spnPoints = findViewById(R.id.spnPoints);
+
+        layoutScoreSection = findViewById(R.id.layoutScoreSection);
+        layoutAttendanceSection = findViewById(R.id.layoutAttendanceSection);
+        layoutStarSection = findViewById(R.id.layoutStarSection);
+        layoutPointSection = findViewById(R.id.layoutPointSection);
+
+        setupActivitySpinner();
+        setupAttendanceStatusSpinner();
+        setupStarSpinner();
+        setupPointSpinner();
 
         etScore = findViewById(R.id.etScore);
+        tvScoreSuffix = findViewById(R.id.tvScoreSuffix);
         tvAssessmentDate = findViewById(R.id.tvAssessmentDate);
 
         RelativeLayout btnAssessmentDate = findViewById(R.id.btnAssessmentDate);
@@ -126,12 +154,100 @@ public class GradeEntryActivity extends AppCompatActivity {
         }
     }
 
-    private void setupSubjectSpinner() {
+    private void setupAttendanceStatusSpinner() {
+        if (spnAttendanceStatus != null) {
+            String[] attendanceOptions = getResources().getStringArray(R.array.attendance_options);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, attendanceOptions);
+            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+            spnAttendanceStatus.setAdapter(adapter);
+        }
+    }
+
+    private void setupStarSpinner() {
+        if (spnStars != null) {
+            String[] starOptions = getResources().getStringArray(R.array.star_options);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, starOptions);
+            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+            spnStars.setAdapter(adapter);
+        }
+    }
+
+    private void setupPointSpinner() {
+        if (spnPoints != null) {
+            String[] pointOptions = getResources().getStringArray(R.array.point_options);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, pointOptions);
+            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+            spnPoints.setAdapter(adapter);
+        }
+    }
+
+    private void setupActivitySpinner() {
+        if (spnActivity != null) {
+            String[] activities = getResources().getStringArray(R.array.activity_options);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, activities);
+            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+            spnActivity.setAdapter(adapter);
+
+            spnActivity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String selectedActivity = activities[position];
+                    updateSubjectSpinner(selectedActivity);
+                    updateUIRulesForActivity(selectedActivity);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
+            });
+        }
+    }
+
+    private void updateSubjectSpinner(String activity) {
         if (spnSubject != null) {
-            String[] subjects = getResources().getStringArray(R.array.subject_options);
+            String[] subjects;
+            if (activity != null && activity.equalsIgnoreCase("Program Performance")) {
+                subjects = getResources().getStringArray(R.array.subject_options_filtered);
+            } else {
+                subjects = getResources().getStringArray(R.array.subject_options);
+            }
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, subjects);
             adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
             spnSubject.setAdapter(adapter);
+        }
+    }
+
+    private void updateUIRulesForActivity(String activity) {
+        if (activity == null) return;
+
+        if (activity.equalsIgnoreCase("Attendance")) {
+            if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.GONE);
+            if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.VISIBLE);
+            if (layoutStarSection != null) layoutStarSection.setVisibility(View.GONE);
+            if (layoutPointSection != null) layoutPointSection.setVisibility(View.GONE);
+        } else if (activity.equalsIgnoreCase("Exam")) {
+            if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.VISIBLE);
+            if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.GONE);
+            if (layoutStarSection != null) layoutStarSection.setVisibility(View.GONE);
+            if (layoutPointSection != null) layoutPointSection.setVisibility(View.GONE);
+            if (tvScoreSuffix != null) tvScoreSuffix.setText("/20");
+            if (etScore != null) etScore.setHint("20");
+        } else if (activity.equalsIgnoreCase("Books") || activity.equalsIgnoreCase("Homework")) {
+            if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.GONE);
+            if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.GONE);
+            if (layoutStarSection != null) layoutStarSection.setVisibility(View.VISIBLE);
+            if (layoutPointSection != null) layoutPointSection.setVisibility(View.GONE);
+        } else if (activity.equalsIgnoreCase("Program Performance")) {
+            if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.GONE);
+            if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.GONE);
+            if (layoutStarSection != null) layoutStarSection.setVisibility(View.GONE);
+            if (layoutPointSection != null) layoutPointSection.setVisibility(View.VISIBLE);
+        } else {
+            if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.VISIBLE);
+            if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.GONE);
+            if (layoutStarSection != null) layoutStarSection.setVisibility(View.GONE);
+            if (layoutPointSection != null) layoutPointSection.setVisibility(View.GONE);
+            if (tvScoreSuffix != null) tvScoreSuffix.setText("/100");
+            if (etScore != null) etScore.setHint("90");
         }
     }
 
@@ -147,16 +263,28 @@ public class GradeEntryActivity extends AppCompatActivity {
     }
 
     private void saveGrade() {
-        String score = etScore != null ? etScore.getText().toString().trim() : "";
-        String quarter = spnQuarter != null && spnQuarter.getSelectedItem() != null ? spnQuarter.getSelectedItem().toString() : "1st Quarter";
-        String subject = spnSubject != null && spnSubject.getSelectedItem() != null ? spnSubject.getSelectedItem().toString() : "Color Recognition";
+        String activity = spnActivity != null && spnActivity.getSelectedItem() != null ? spnActivity.getSelectedItem().toString() : "Exam";
+        String score = "";
 
-        if (score.isEmpty()) {
-            Toast.makeText(this, "Please enter a valid score.", Toast.LENGTH_SHORT).show();
-            return;
+        if (activity.equalsIgnoreCase("Attendance")) {
+            score = spnAttendanceStatus != null && spnAttendanceStatus.getSelectedItem() != null ? spnAttendanceStatus.getSelectedItem().toString() : "True (Present)";
+        } else if (activity.equalsIgnoreCase("Books") || activity.equalsIgnoreCase("Homework")) {
+            score = spnStars != null && spnStars.getSelectedItem() != null ? spnStars.getSelectedItem().toString() : "0 ⭐ (0 Stars)";
+        } else if (activity.equalsIgnoreCase("Program Performance")) {
+            score = spnPoints != null && spnPoints.getSelectedItem() != null ? spnPoints.getSelectedItem().toString() : "0 Points";
+        } else {
+            score = etScore != null ? etScore.getText().toString().trim() : "";
+            if (score.isEmpty()) {
+                Toast.makeText(this, "Please enter a valid score.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            score = score + (tvScoreSuffix != null ? tvScoreSuffix.getText().toString() : "/100");
         }
 
-        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + subject + ": " + score + "/100", Toast.LENGTH_LONG).show();
+        String quarter = spnQuarter != null && spnQuarter.getSelectedItem() != null ? spnQuarter.getSelectedItem().toString() : "1st Quarter";
+        String subject = spnSubject != null && spnSubject.getSelectedItem() != null ? spnSubject.getSelectedItem().toString() : "Writing";
+
+        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(GradeEntryActivity.this, GradeSummaryActivity.class);
         if (selectedStudentName != null) intent.putExtra("STUDENT_NAME", selectedStudentName);
@@ -165,6 +293,7 @@ public class GradeEntryActivity extends AppCompatActivity {
         intent.putExtra("SCORE", score);
         intent.putExtra("QUARTER", quarter);
         intent.putExtra("SUBJECT", subject);
+        intent.putExtra("ACTIVITY", activity);
         startActivity(intent);
         finish();
     }
