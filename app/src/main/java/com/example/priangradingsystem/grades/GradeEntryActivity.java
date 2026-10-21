@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,7 +30,6 @@ public class GradeEntryActivity extends AppCompatActivity {
     private Spinner spnActivity;
     private Spinner spnSubject;
     private Spinner spnAttendanceStatus;
-    private Spinner spnStars;
     private Spinner spnPoints;
 
     private LinearLayout layoutScoreSection;
@@ -37,7 +37,12 @@ public class GradeEntryActivity extends AppCompatActivity {
     private LinearLayout layoutStarSection;
     private LinearLayout layoutPointSection;
 
+    private RatingBar ratingBarStars;
+    private TextView tvStarCountText;
+    private TextView tvClearStars;
+
     private EditText etScore;
+    private EditText etRemarks;
     private TextView tvScoreSuffix;
     private TextView tvAssessmentDate;
 
@@ -77,7 +82,6 @@ public class GradeEntryActivity extends AppCompatActivity {
         spnActivity = findViewById(R.id.spnActivity);
         spnSubject = findViewById(R.id.spnSubject);
         spnAttendanceStatus = findViewById(R.id.spnAttendanceStatus);
-        spnStars = findViewById(R.id.spnStars);
         spnPoints = findViewById(R.id.spnPoints);
 
         layoutScoreSection = findViewById(R.id.layoutScoreSection);
@@ -85,12 +89,35 @@ public class GradeEntryActivity extends AppCompatActivity {
         layoutStarSection = findViewById(R.id.layoutStarSection);
         layoutPointSection = findViewById(R.id.layoutPointSection);
 
+        ratingBarStars = findViewById(R.id.ratingBarStars);
+        tvStarCountText = findViewById(R.id.tvStarCountText);
+        tvClearStars = findViewById(R.id.tvClearStars);
+
+        if (ratingBarStars != null) {
+            ratingBarStars.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+                if (tvStarCountText != null) {
+                    tvStarCountText.setText((int) rating + " ⭐");
+                }
+            });
+        }
+
+        if (tvClearStars != null) {
+            tvClearStars.setOnClickListener(v -> {
+                if (ratingBarStars != null) {
+                    ratingBarStars.setRating(0);
+                }
+                if (tvStarCountText != null) {
+                    tvStarCountText.setText("0 ⭐");
+                }
+            });
+        }
+
         setupActivitySpinner();
         setupAttendanceStatusSpinner();
-        setupStarSpinner();
         setupPointSpinner();
 
         etScore = findViewById(R.id.etScore);
+        etRemarks = findViewById(R.id.etRemarks);
         tvScoreSuffix = findViewById(R.id.tvScoreSuffix);
         tvAssessmentDate = findViewById(R.id.tvAssessmentDate);
 
@@ -155,15 +182,6 @@ public class GradeEntryActivity extends AppCompatActivity {
         }
     }
 
-    private void setupStarSpinner() {
-        if (spnStars != null) {
-            String[] starOptions = getResources().getStringArray(R.array.star_options);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, starOptions);
-            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-            spnStars.setAdapter(adapter);
-        }
-    }
-
     private void setupPointSpinner() {
         if (spnPoints != null) {
             String[] pointOptions = getResources().getStringArray(R.array.point_options);
@@ -198,7 +216,7 @@ public class GradeEntryActivity extends AppCompatActivity {
         if (spnSubject != null) {
             String[] subjects;
             if (activity != null && activity.equalsIgnoreCase("Program Performance")) {
-                subjects = getResources().getStringArray(R.array.subject_options_filtered);
+                subjects = getResources().getStringArray(R.array.subject_options_program_performance);
             } else {
                 subjects = getResources().getStringArray(R.array.subject_options);
             }
@@ -261,7 +279,8 @@ public class GradeEntryActivity extends AppCompatActivity {
         if (activity.equalsIgnoreCase("Attendance")) {
             score = spnAttendanceStatus != null && spnAttendanceStatus.getSelectedItem() != null ? spnAttendanceStatus.getSelectedItem().toString() : "True (Present)";
         } else if (activity.equalsIgnoreCase("Books") || activity.equalsIgnoreCase("Homework")) {
-            score = spnStars != null && spnStars.getSelectedItem() != null ? spnStars.getSelectedItem().toString() : "0 ⭐ (0 Stars)";
+            int stars = ratingBarStars != null ? (int) ratingBarStars.getRating() : 0;
+            score = stars + " ⭐ (" + stars + " Stars)";
         } else if (activity.equalsIgnoreCase("Program Performance")) {
             score = spnPoints != null && spnPoints.getSelectedItem() != null ? spnPoints.getSelectedItem().toString() : "0 Points";
         } else {
@@ -280,6 +299,15 @@ public class GradeEntryActivity extends AppCompatActivity {
 
         if (etScore != null) {
             etScore.setText("");
+        }
+        if (ratingBarStars != null) {
+            ratingBarStars.setRating(0);
+        }
+        if (tvStarCountText != null) {
+            tvStarCountText.setText("0 ⭐");
+        }
+        if (etRemarks != null) {
+            etRemarks.setText("");
         }
     }
 
