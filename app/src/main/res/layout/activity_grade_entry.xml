@@ -255,7 +255,7 @@
                     android:paddingHorizontal="12dp" />
             </LinearLayout>
 
-            <!-- Star Section (Visible ONLY when Activity == Books or Homework) -->
+            <!-- Star Section (Interactive RatingBar + Clear Button) -->
             <LinearLayout
                 android:id="@+id/layoutStarSection"
                 android:layout_width="match_parent"
@@ -263,23 +263,66 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginBottom="6dp"
-                    android:text="@string/stars_grading_label"
-                    android:textColor="#000000"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/spnStars"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/tvClearStars"
+                        android:text="@string/stars_grading_label"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvClearStars"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:text="@string/clear_stars"
+                        android:textColor="#D32F2F"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/bg_input_field_spinner"
-                    android:paddingHorizontal="12dp" />
+                    android:background="@drawable/bg_input_field"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RatingBar
+                        android:id="@+id/ratingBarStars"
+                        style="?android:attr/ratingBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="3"
+                        android:progressTint="#FFCC00"
+                        android:rating="0"
+                        android:secondaryProgressTint="#FFCC00"
+                        android:stepSize="1.0" />
+
+                    <TextView
+                        android:id="@+id/tvStarCountText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="0 ⭐"
+                        android:textColor="#000000"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Point Section (Visible ONLY when Activity == Program Performance) -->
