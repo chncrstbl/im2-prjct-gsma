@@ -25,8 +25,8 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/back"
-            android:src="@android:drawable/ic_media_previous"
-            app:tint="#000000"
+            android:src="@drawable/ic_chevron_left"
+            app:tint="#FFFFFF"
             tools:ignore="ImageContrastCheck" />
 
         <ImageView
@@ -104,7 +104,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/filter_options"
             android:padding="10dp"
-            android:src="@drawable/ic_filter_sliders"
+            android:src="@drawable/ic_tune"
             app:tint="#000000"
             tools:ignore="ImageContrastCheck" />
     </LinearLayout>

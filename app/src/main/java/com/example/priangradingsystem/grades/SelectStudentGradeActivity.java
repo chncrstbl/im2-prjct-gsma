@@ -202,7 +202,9 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
             if (savedList != null && !savedList.isEmpty()) {
                 masterStudentList.clear();
                 for (StudentItem item : savedList) {
-                    masterStudentList.add(item);
+                    if (item != null) {
+                        masterStudentList.add(item);
+                    }
                 }
             }
         }
