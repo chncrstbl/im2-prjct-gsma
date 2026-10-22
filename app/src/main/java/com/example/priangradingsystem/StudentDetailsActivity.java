@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import com.example.priangradingsystem.students.AddStudentActivity;
 
-@SuppressWarnings({"SetTextI18n", "ConcatenationWithLocaleDependantString", "MethodLength"})
 public class StudentDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "StudentDetailsActivity";

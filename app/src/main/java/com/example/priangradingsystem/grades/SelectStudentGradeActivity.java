@@ -63,17 +63,20 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
         EditText etSearch = findViewById(R.id.etSearch);
         RecyclerView rvStudents = findViewById(R.id.rvStudents);
 
-        adapter = new StudentAdapter(displayedStudentList);
-        adapter.setOnStudentClickListener(item -> {
-            Intent intent = new Intent(SelectStudentGradeActivity.this, GradeEntryActivity.class);
-            intent.putExtra("STUDENT_NAME", item.getName());
-            String level = item.getLevel() != null ? item.getLevel() : item.getSection();
-            intent.putExtra("STUDENT_LEVEL", level);
-            if (item.getPhotoUri() != null) {
-                intent.putExtra("STUDENT_PHOTO_URI", item.getPhotoUri());
+        // Naka-ayos na constructor na may kasamang click listener
+        adapter = new StudentAdapter(displayedStudentList, item -> {
+            if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
+                Intent intent = new Intent(SelectStudentGradeActivity.this, GradeEntryActivity.class);
+                intent.putExtra("STUDENT_NAME", item.getName());
+                String level = item.getLevel() != null && !item.getLevel().isEmpty() ? item.getLevel() : item.getSection();
+                intent.putExtra("STUDENT_LEVEL", level);
+                if (item.getPhotoUri() != null) {
+                    intent.putExtra("STUDENT_PHOTO_URI", item.getPhotoUri());
+                }
+                startActivity(intent);
             }
-            startActivity(intent);
         });
+
         if (rvStudents != null) {
             rvStudents.setLayoutManager(new LinearLayoutManager(this));
             rvStudents.setAdapter(adapter);
@@ -99,7 +102,7 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    currentSearchQuery = s.toString().trim().toLowerCase();
+                    currentSearchQuery = s != null ? s.toString().trim().toLowerCase() : "";
                     applyCombinedFilters();
                 }
 
@@ -115,14 +118,10 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
 
         List<String> sortedHeaders = new ArrayList<>();
         for (StudentItem item : masterStudentList) {
-            switch (item.getItemViewType()) {
-                case StudentItem.TYPE_HEADER:
-                    if (!sortedHeaders.contains(item.getHeaderTitle())) {
-                        sortedHeaders.add(item.getHeaderTitle());
-                    }
-                    break;
-                default:
-                    break;
+            if (item != null && item.getItemViewType() == StudentItem.TYPE_HEADER) {
+                if (item.getHeaderTitle() != null && !sortedHeaders.contains(item.getHeaderTitle())) {
+                    sortedHeaders.add(item.getHeaderTitle());
+                }
             }
         }
         sortedHeaders.sort(String::compareToIgnoreCase);
@@ -133,14 +132,16 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
 
             int headerIcon = android.R.drawable.ic_menu_agenda;
             for (StudentItem masterItem : masterStudentList) {
-                if (masterItem.getItemViewType() == StudentItem.TYPE_HEADER && masterItem.getHeaderTitle().equalsIgnoreCase(headerTitle)) {
+                if (masterItem != null && masterItem.getItemViewType() == StudentItem.TYPE_HEADER
+                        && masterItem.getHeaderTitle() != null
+                        && masterItem.getHeaderTitle().equalsIgnoreCase(headerTitle)) {
                     headerIcon = masterItem.getHeaderIconResId();
                     break;
                 }
             }
 
             for (StudentItem item : masterStudentList) {
-                if (item.getItemViewType() == StudentItem.TYPE_STUDENT
+                if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT
                         && item.getSection() != null
                         && item.getSection().equalsIgnoreCase(headerTitle)) {
 
@@ -169,7 +170,9 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
             }
         }
 
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private boolean doesSectionHeaderMatchSearch(String headerTitle) {
@@ -199,14 +202,6 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
             if (savedList != null && !savedList.isEmpty()) {
                 masterStudentList.clear();
                 for (StudentItem item : savedList) {
-                    if (item.getSection() != null) {
-                        item.setSection(item.getSection().replaceAll("(?i)\\s*-\\s*Section\\s*[A-Z0-9]+", "").replaceAll("(?i)\\s*Section\\s*[A-Z0-9]+", "").trim());
-                    }
-                    if (item.getHeaderTitle() != null) {
-                        item = new StudentItem(item.getItemViewType(),
-                                item.getHeaderTitle().replaceAll("(?i)\\s*-\\s*Section\\s*[A-Z0-9]+", "").replaceAll("(?i)\\s*Section\\s*[A-Z0-9]+", "").trim(),
-                                item.getHeaderIconResId());
-                    }
                     masterStudentList.add(item);
                 }
             }

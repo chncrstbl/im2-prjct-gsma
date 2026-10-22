@@ -7,15 +7,14 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:background="#FFFFFF"
-    tools:ignore="SystemUI,VisualLintOverlap,MissingDefaultResource,VisualLintBounds,HardcodedText">
+    tools:ignore="HardcodedText,VisualLintBounds,InaccessibleLabel">
 
     <!-- Top Navigation Header -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#FFC107"
-        android:paddingHorizontal="16dp"
-        tools:ignore="VisualLintBounds">
+        android:paddingHorizontal="16dp">
 
         <ImageView
             android:id="@+id/btnBack"
@@ -24,7 +23,8 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/back"
-            android:src="@drawable/vectoray"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#000000"
             tools:ignore="ImageContrastCheck,VisualLintBounds" />
 
         <TextView
@@ -32,11 +32,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Edit Student"
-            android:textColor="#000000"
-            android:textSize="22sp"
+            android:text="Enter Student Information"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
             android:textStyle="bold"
-            tools:ignore="VisualLintBounds" />
+            tools:ignore="TextContrastCheck" />
     </RelativeLayout>
 
     <ScrollView
@@ -48,7 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="20dp">
 
             <!-- Add Photo Section -->
             <LinearLayout
@@ -69,7 +70,7 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/add_photo"
+                        android:contentDescription="Add Photo"
                         android:src="@android:drawable/ic_menu_camera"
                         app:tint="#333333" />
                 </FrameLayout>
@@ -78,16 +79,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="@string/add_photo"
+                    android:text="Add Photo"
                     android:textColor="#000000"
                     android:textSize="15sp"
-                    android:textStyle="bold"
-                    tools:ignore="VisualLintBounds" />
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- SECTION: Student Name -->
             <TextView
-                android:id="@+id/lblStudentFirstName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -101,17 +100,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="12dp"
-                android:autofillHints="personGivenName"
+                android:autofillHints="name"
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
                 android:textColor="#000000"
                 android:hint=""
-                android:labelFor="@+id/lblStudentFirstName"
-                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds,SpeakableTextPresentCheck,LabelFor" />
+                tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
             <TextView
-                android:id="@+id/lblStudentMiddleName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -125,17 +122,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="12dp"
-                android:autofillHints="personMiddleName"
+                android:autofillHints="name"
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
                 android:textColor="#000000"
                 android:hint=""
-                android:labelFor="@+id/lblStudentMiddleName"
-                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds,SpeakableTextPresentCheck,LabelFor" />
+                tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
             <TextView
-                android:id="@+id/lblStudentLastName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -149,17 +144,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="12dp"
-                android:autofillHints="personFamilyName"
+                android:autofillHints="name"
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
                 android:textColor="#000000"
                 android:hint=""
-                android:labelFor="@+id/lblStudentLastName"
-                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds,SpeakableTextPresentCheck,LabelFor" />
+                tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
             <TextView
-                android:id="@+id/lblStudentExtension"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -172,119 +165,95 @@
                 android:id="@+id/etStudentExtension"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginBottom="12dp"
-                android:autofillHints="nameSuffix"
+                android:layout_marginBottom="16dp"
+                android:autofillHints="name"
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
                 android:textColor="#000000"
                 android:hint=""
-                android:labelFor="@+id/lblStudentExtension"
-                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds,SpeakableTextPresentCheck,LabelFor" />
+                tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
-            <!-- Student Gender Spinner -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="Gender"
-                android:textColor="#333333"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/spnStudentGender"
+            <!-- ROW 1: Birthdate & Gender -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/bg_input_field_spinner"
-                android:paddingHorizontal="16dp"
-                tools:ignore="TouchTargetSizeCheck" />
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
-            <!-- Date of Birth Selector -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="Birthdate"
-                android:textColor="#333333"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <RelativeLayout
-                android:id="@+id/btnDateOfBirth"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/bg_input_field_spinner"
-                android:paddingHorizontal="16dp">
-
-                <ImageView
-                    android:id="@+id/imgCalendarIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:contentDescription="@string/date_of_birth"
-                    android:src="@android:drawable/ic_menu_my_calendar"
-                    app:tint="#000000" />
-
-                <TextView
-                    android:id="@+id/tvDateOfBirth"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="12dp"
-                    android:layout_toEndOf="@id/imgCalendarIcon"
-                    android:text="@string/date_of_birth"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    tools:ignore="TextContrastCheck,VisualLintBounds" />
-            </RelativeLayout>
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:orientation="vertical">
 
-            <!-- Auto-calculated Age Box -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="Age"
-                android:textColor="#333333"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Birthdate"
+                        android:textColor="#333333"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_input_field_disabled"
-                android:paddingHorizontal="16dp">
+                    <RelativeLayout
+                        android:id="@+id/btnDateOfBirth"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_input_field_spinner"
+                        android:paddingHorizontal="12dp">
 
-                <TextView
-                    android:id="@+id/tvAgeLabel"
-                    android:layout_width="wrap_content"
+                        <ImageView
+                            android:id="@+id/imgCalendarIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:src="@android:drawable/ic_menu_my_calendar"
+                            app:tint="#000000"
+                            android:contentDescription="Calendar" />
+
+                        <TextView
+                            android:id="@+id/tvDateOfBirth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="8dp"
+                            android:layout_toEndOf="@id/imgCalendarIcon"
+                            android:text="Date of Birth"
+                            android:textColor="#000000"
+                            android:textSize="14sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@id/tvCalculatedAge"
-                    android:text="@string/age_auto_calculated"
-                    android:textColor="#555555"
-                    android:textSize="15sp"
-                    tools:ignore="VisualLintBounds" />
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvCalculatedAge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    tools:ignore="VisualLintBounds"
-                    tools:text="5" />
-            </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Gender"
+                        android:textColor="#333333"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
-            <!-- Grade Level & Section Side-by-Side Spinners -->
+                    <Spinner
+                        android:id="@+id/spnStudentGender"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_input_field_spinner"
+                        android:paddingHorizontal="12dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ROW 2: Age & Grade Level -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -303,18 +272,39 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="Grade"
+                        android:text="Age"
                         android:textColor="#333333"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
-                    <Spinner
-                        android:id="@+id/spnGradeLevel"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:background="@drawable/bg_input_field_spinner"
-                        android:paddingHorizontal="12dp"
-                        tools:ignore="TouchTargetSizeCheck" />
+                        android:background="@drawable/bg_input_field_disabled"
+                        android:paddingHorizontal="12dp">
+
+                        <TextView
+                            android:id="@+id/tvAgeLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@id/tvCalculatedAge"
+                            android:text="Age (Auto)"
+                            android:textColor="#555555"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvCalculatedAge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:textColor="#000000"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:text="5" />
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -328,18 +318,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="Section"
+                        android:text="Grade Level"
                         android:textColor="#333333"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <Spinner
-                        android:id="@+id/spnSection"
+                        android:id="@+id/spnGradeLevel"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:background="@drawable/bg_input_field_spinner"
-                        android:paddingHorizontal="12dp"
-                        tools:ignore="TouchTargetSizeCheck" />
+                        android:paddingHorizontal="12dp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -348,14 +337,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:text="@string/parents_name"
+                android:text="Parents Name"
                 android:textColor="#000000"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                tools:ignore="VisualLintBounds" />
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/lblParentFirstName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -369,17 +356,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="12dp"
-                android:autofillHints="personGivenName"
+                android:autofillHints="name"
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
                 android:textColor="#000000"
                 android:hint=""
-                android:labelFor="@+id/lblParentFirstName"
-                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds,SpeakableTextPresentCheck,LabelFor" />
+                tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
             <TextView
-                android:id="@+id/lblParentMiddleName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -393,17 +378,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="12dp"
-                android:autofillHints="personMiddleName"
+                android:autofillHints="name"
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
                 android:textColor="#000000"
                 android:hint=""
-                android:labelFor="@+id/lblParentMiddleName"
-                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds,SpeakableTextPresentCheck,LabelFor" />
+                tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
             <TextView
-                android:id="@+id/lblParentLastName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -417,17 +400,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="12dp"
-                android:autofillHints="personFamilyName"
+                android:autofillHints="name"
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
                 android:textColor="#000000"
                 android:hint=""
-                android:labelFor="@+id/lblParentLastName"
-                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds,SpeakableTextPresentCheck,LabelFor" />
+                tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
             <TextView
-                android:id="@+id/lblParentExtension"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -441,18 +422,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginBottom="12dp"
-                android:autofillHints="nameSuffix"
+                android:autofillHints="name"
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
                 android:textColor="#000000"
                 android:hint=""
-                android:labelFor="@+id/lblParentExtension"
-                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds,SpeakableTextPresentCheck,LabelFor" />
+                tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
             <!-- Parent Address Field -->
             <TextView
-                android:id="@+id/lblParentAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -472,8 +451,7 @@
                 android:paddingHorizontal="16dp"
                 android:textColor="#000000"
                 android:hint=""
-                android:labelFor="@+id/lblParentAddress"
-                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds,SpeakableTextPresentCheck,LabelFor" />
+                tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
             <!-- Parent Contact Field with Separated Country Code (+63) -->
             <TextView
@@ -497,15 +475,15 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:contentDescription="@string/parent_guardian_contact_number"
                     android:src="@android:drawable/stat_sys_phone_call"
-                    app:tint="#000000" />
+                    app:tint="#000000"
+                    android:contentDescription="Phone" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="@string/country_code_ph"
+                    android:text="+63"
                     android:textColor="#000000"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -521,29 +499,30 @@
                     android:id="@+id/etParentContact"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:autofillHints="phoneNumber"
+                    android:autofillHints="phone"
                     android:background="@null"
-                    android:hint="@string/phone_hint"
+                    android:hint="912 345 6789"
+                    android:textColorHint="@android:color/transparent"
                     android:inputType="phone"
                     android:textColor="#000000"
-                    android:textColorHint="#888888"
                     android:textSize="15sp"
-                    tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck,VisualLintBounds" />
+                    tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,VisualLintTextFieldSize" />
             </LinearLayout>
 
             <!-- Save Button -->
             <Button
                 android:id="@+id/btnSave"
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
+                android:layout_height="52dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
                 android:backgroundTint="#FFC107"
-                android:text="@string/save"
-                android:textColor="#000000"
-                android:textSize="20sp"
+                android:text="Save"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                app:cornerRadius="27dp"
-                tools:ignore="VisualLintButtonSize,VisualLintBounds" />
+                app:cornerRadius="26dp"
+                tools:ignore="VisualLintButtonSize" />
 
         </LinearLayout>
     </ScrollView>

@@ -42,6 +42,11 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".StudentDetailsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".records.FilterActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
