@@ -415,9 +415,9 @@ public class StudentsActivity extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<StudentItem>>() {}.getType();
                 List<StudentItem> savedList = gson.fromJson(json, type);
 
-            if (savedList != null) {
-                masterStudentList.clear();
-                masterStudentList.addAll(savedList);
+                if (savedList != null) {
+                    masterStudentList.addAll(savedList);
+                }
             }
         } catch (Exception e) {
             Log.e(TAG, "Error loading saved students safely", e);
