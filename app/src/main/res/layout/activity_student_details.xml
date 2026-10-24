@@ -5,17 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5"
-    tools:ignore="SystemUI,VisualLintOverlap,MissingDefaultResource,VisualLintBounds,HardcodedText">
+    android:background="#FFFFFF"
+    tools:ignore="HardcodedText,VisualLintBounds,VisualLintTextFieldSize,VisualLintButtonSize,InaccessibleLabel">
 
+    <!-- Top Navigation Header with Status Bar Integration -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:background="#FFC107"
-        android:paddingTop="32dp"
-        android:paddingBottom="16dp"
         android:paddingHorizontal="16dp"
-        android:layout_marginBottom="12dp">
+        android:paddingTop="24dp">
 
         <ImageView
             android:id="@+id/btnBack"
@@ -23,199 +22,344 @@
             android:layout_height="32dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
+            android:src="@drawable/ic_chevron_left"
+            app:tint="#FFFFFF"
             android:contentDescription="Back"
-            android:src="@android:drawable/ic_media_previous"
-            app:tint="#000000"
-            tools:ignore="ImageContrastCheck,VisualLintBounds" />
+            tools:ignore="ImageContrastCheck" />
 
         <TextView
             android:id="@+id/tvHeaderTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/btnBack"
-            android:layout_marginStart="16dp"
+            android:layout_centerInParent="true"
             android:text="Student Information"
-            android:textColor="#000000"
-            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
             android:textStyle="bold"
-            tools:ignore="VisualLintBounds" />
+            tools:ignore="TextContrastCheck" />
     </RelativeLayout>
 
     <!-- Scrollable Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp"
             android:gravity="center_horizontal">
 
-            <!-- Student Photo -->
-            <ImageView
-                android:id="@+id/studentImageView"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_marginTop="12dp"
-                android:background="#E0E0E0"
-                android:contentDescription="Student Photo"
-                android:scaleType="centerCrop"
-                tools:ignore="HardcodedText" />
+            <!-- Student Photo Circle -->
+            <FrameLayout
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field_disabled">
 
-            <TextView
-                android:id="@+id/studentNameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/studentSubtitleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="14sp"
-                android:textColor="#666666" />
-
-            <!-- Student Information Section -->
-            <TextView
-                android:id="@+id/studentInfoTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Student Information"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                tools:ignore="HardcodedText" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/studentInfoCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="10dp">
-
-                <LinearLayout
+                <ImageView
+                    android:id="@+id/studentImageView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="14dp">
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Student Photo"
+                    tools:ignore="ImageContrastCheck" />
+            </FrameLayout>
 
-                    <TextView
-                        android:id="@+id/genderTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="4dp"
-                        android:textSize="14sp"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:id="@+id/ageTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        android:textSize="14sp"
-                        android:textColor="#000000" />
-
-                    <TextView
-                        android:id="@+id/dobTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="4dp"
-                        android:textSize="14sp"
-                        android:textColor="#000000" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Parents / Guardian Information Section -->
             <TextView
-                android:id="@+id/parentInfoTitle"
+                android:id="@+id/tvStudentFullNameHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Student Name"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/tvStudentSectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                android:text="Section"
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+            <!-- Main Info Card (Light Blue Container) -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Parents / Guardian Information"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                tools:ignore="HardcodedText" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/parentInfoCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#E3F2FD"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="14dp">
+                    android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/parentTextView"
+                    <!-- First Row: Student Name Details (Left) & DOB/Age/Gender (Right) -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="4dp"
-                        android:textSize="14sp"
-                        android:textColor="#000000" />
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
 
+                        <!-- Left Column: Student Name Fields -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.2"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="First Name:  "
+                                android:textColor="#333333"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/tvFirstNameVal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#555555"
+                                android:textSize="13sp"
+                                android:layout_marginBottom="6dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Middle Name:  "
+                                android:textColor="#333333"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/tvMiddleNameVal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#555555"
+                                android:textSize="13sp"
+                                android:layout_marginBottom="6dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Last Name:  "
+                                android:textColor="#333333"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/tvLastNameVal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#555555"
+                                android:textSize="13sp"
+                                android:layout_marginBottom="6dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Extensions (e.g., Jr., III):"
+                                android:textColor="#333333"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/tvExtensionVal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#555555"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <!-- Right Column: DOB, Age, Gender -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Date of Birth:"
+                                android:textColor="#333333"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/dobTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#555555"
+                                android:textSize="13sp"
+                                android:layout_marginBottom="6dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Age:"
+                                android:textColor="#333333"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/ageTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#555555"
+                                android:textSize="13sp"
+                                android:layout_marginBottom="6dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Gender:"
+                                android:textColor="#333333"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/genderTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#555555"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Divider Line -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#CBD5E1"
+                        android:layout_marginVertical="14dp" />
+
+                    <!-- Parents Name Section -->
                     <TextView
-                        android:id="@+id/addressTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Parents Name"
+                        android:textColor="#000000"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        android:textSize="14sp"
-                        android:textColor="#000000" />
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/contactTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="4dp"
-                        android:textSize="14sp"
-                        android:textColor="#000000" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="First Name:"
+                            android:textColor="#333333"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvParentFirstNameVal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#555555"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Middle Name:"
+                            android:textColor="#333333"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvParentMiddleNameVal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#555555"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Last Name:"
+                            android:textColor="#333333"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvParentLastNameVal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#555555"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Extensions (e.g., Sr.):"
+                            android:textColor="#333333"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvParentExtensionVal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#555555"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Parent/Guardian Contact Number:"
+                            android:textColor="#333333"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/contactTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#555555"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Action Buttons -->
-            <LinearLayout
+            <!-- Edit Information Button (Yellow Pill Shape) -->
+            <Button
+                android:id="@+id/editButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_height="52dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#FFC107"
+                android:text="Edit Information"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="26dp"
+                tools:ignore="TextContrastCheck" />
+
+            <!-- Delete Button (Pill Shape, Red) -->
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
                 android:layout_marginBottom="16dp"
-                tools:ignore="ButtonStyle">
-
-                <Button
-                    android:id="@+id/editButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    android:backgroundTint="#FFC107"
-                    android:text="Edit"
-                    android:textColor="#000000"
-                    tools:ignore="HardcodedText" />
-
-                <Button
-                    android:id="@+id/deleteButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:backgroundTint="#D32F2F"
-                    android:text="Delete"
-                    android:textColor="#FFFFFF"
-                    tools:ignore="HardcodedText" />
-            </LinearLayout>
+                android:backgroundTint="#D32F2F"
+                android:text="Delete"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="26dp"
+                tools:ignore="TextContrastCheck" />
 
         </LinearLayout>
     </ScrollView>

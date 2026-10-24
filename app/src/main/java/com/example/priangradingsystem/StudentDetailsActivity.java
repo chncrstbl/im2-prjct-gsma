@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import com.example.priangradingsystem.students.AddStudentActivity;
 
 public class StudentDetailsActivity extends AppCompatActivity {
@@ -29,11 +27,21 @@ public class StudentDetailsActivity extends AppCompatActivity {
     private String studentContact = "";
     private String studentPhotoUri = "";
 
+    private String firstName = "";
+    private String middleName = "";
+    private String lastName = "";
+    private String extension = "";
+    private String parentFirstName = "";
+    private String parentMiddleName = "";
+    private String parentLastName = "";
+    private String parentExtension = "";
+
     private ImageView studentImageView;
-    private TextView nameTextView, subtitleTextView, genderTextView, ageTextView, dobTextView;
-    private TextView parentTextView, addressTextView, contactTextView;
-    private TextView studentInfoTitle, parentInfoTitle;
-    private CardView studentInfoCard, parentInfoCard;
+    private TextView genderTextView, ageTextView, dobTextView;
+    private TextView tvStudentFullNameHeader, tvStudentSectionHeader;
+    private TextView tvFirstNameVal, tvMiddleNameVal, tvLastNameVal, tvExtensionVal;
+    private TextView tvParentFirstNameVal, tvParentMiddleNameVal, tvParentLastNameVal, tvParentExtensionVal;
+    private TextView contactTextView;
 
     private final ActivityResultLauncher<Intent> editStudentLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -59,6 +67,16 @@ public class StudentDetailsActivity extends AppCompatActivity {
         studentContact = data.getStringExtra("STUDENT_CONTACT");
         studentPhotoUri = data.getStringExtra("STUDENT_PHOTO_URI");
 
+        firstName = data.getStringExtra("STUDENT_FIRST_NAME");
+        middleName = data.getStringExtra("STUDENT_MIDDLE_NAME");
+        lastName = data.getStringExtra("STUDENT_LAST_NAME");
+        extension = data.getStringExtra("STUDENT_EXTENSION");
+        parentFirstName = data.getStringExtra("PARENT_FIRST_NAME");
+        parentMiddleName = data.getStringExtra("PARENT_MIDDLE_NAME");
+        parentLastName = data.getStringExtra("PARENT_LAST_NAME");
+        parentExtension = data.getStringExtra("PARENT_EXTENSION");
+
+        parseNamesIfNeeded();
         populateUI();
 
         Intent updatedIntent = createUpdatedIntent(oldName);
@@ -77,6 +95,16 @@ public class StudentDetailsActivity extends AppCompatActivity {
         updatedIntent.putExtra("updated_address", studentAddress);
         updatedIntent.putExtra("updated_contact", studentContact);
         updatedIntent.putExtra("updated_photo", studentPhotoUri);
+
+        updatedIntent.putExtra("STUDENT_FIRST_NAME", firstName);
+        updatedIntent.putExtra("STUDENT_MIDDLE_NAME", middleName);
+        updatedIntent.putExtra("STUDENT_LAST_NAME", lastName);
+        updatedIntent.putExtra("STUDENT_EXTENSION", extension);
+
+        updatedIntent.putExtra("PARENT_FIRST_NAME", parentFirstName);
+        updatedIntent.putExtra("PARENT_MIDDLE_NAME", parentMiddleName);
+        updatedIntent.putExtra("PARENT_LAST_NAME", parentLastName);
+        updatedIntent.putExtra("PARENT_EXTENSION", parentExtension);
         return updatedIntent;
     }
 
@@ -101,24 +129,38 @@ public class StudentDetailsActivity extends AppCompatActivity {
             studentAddress = intent.getStringExtra("STUDENT_ADDRESS");
             studentContact = intent.getStringExtra("STUDENT_CONTACT");
             studentPhotoUri = intent.getStringExtra("STUDENT_PHOTO_URI");
+
+            firstName = intent.getStringExtra("STUDENT_FIRST_NAME");
+            middleName = intent.getStringExtra("STUDENT_MIDDLE_NAME");
+            lastName = intent.getStringExtra("STUDENT_LAST_NAME");
+            extension = intent.getStringExtra("STUDENT_EXTENSION");
+
+            parentFirstName = intent.getStringExtra("PARENT_FIRST_NAME");
+            parentMiddleName = intent.getStringExtra("PARENT_MIDDLE_NAME");
+            parentLastName = intent.getStringExtra("PARENT_LAST_NAME");
+            parentExtension = intent.getStringExtra("PARENT_EXTENSION");
         }
 
-        studentImageView = findViewById(R.id.studentImageView);
-        nameTextView = findViewById(R.id.studentNameTextView);
-        subtitleTextView = findViewById(R.id.studentSubtitleTextView);
+        parseNamesIfNeeded();
 
+        studentImageView = findViewById(R.id.studentImageView);
         genderTextView = findViewById(R.id.genderTextView);
         ageTextView = findViewById(R.id.ageTextView);
         dobTextView = findViewById(R.id.dobTextView);
 
-        parentTextView = findViewById(R.id.parentTextView);
-        addressTextView = findViewById(R.id.addressTextView);
-        contactTextView = findViewById(R.id.contactTextView);
+        tvStudentFullNameHeader = findViewById(R.id.tvStudentFullNameHeader);
+        tvStudentSectionHeader = findViewById(R.id.tvStudentSectionHeader);
 
-        studentInfoTitle = findViewById(R.id.studentInfoTitle);
-        studentInfoCard = findViewById(R.id.studentInfoCard);
-        parentInfoTitle = findViewById(R.id.parentInfoTitle);
-        parentInfoCard = findViewById(R.id.parentInfoCard);
+        tvFirstNameVal = findViewById(R.id.tvFirstNameVal);
+        tvMiddleNameVal = findViewById(R.id.tvMiddleNameVal);
+        tvLastNameVal = findViewById(R.id.tvLastNameVal);
+        tvExtensionVal = findViewById(R.id.tvExtensionVal);
+
+        tvParentFirstNameVal = findViewById(R.id.tvParentFirstNameVal);
+        tvParentMiddleNameVal = findViewById(R.id.tvParentMiddleNameVal);
+        tvParentLastNameVal = findViewById(R.id.tvParentLastNameVal);
+        tvParentExtensionVal = findViewById(R.id.tvParentExtensionVal);
+        contactTextView = findViewById(R.id.contactTextView);
 
         Button editButton = findViewById(R.id.editButton);
         Button deleteButton = findViewById(R.id.deleteButton);
@@ -139,6 +181,17 @@ public class StudentDetailsActivity extends AppCompatActivity {
                     editIntent.putExtra("STUDENT_ADDRESS", studentAddress);
                     editIntent.putExtra("STUDENT_CONTACT", studentContact);
                     editIntent.putExtra("STUDENT_PHOTO_URI", studentPhotoUri);
+
+                    editIntent.putExtra("STUDENT_FIRST_NAME", firstName);
+                    editIntent.putExtra("STUDENT_MIDDLE_NAME", middleName);
+                    editIntent.putExtra("STUDENT_LAST_NAME", lastName);
+                    editIntent.putExtra("STUDENT_EXTENSION", extension);
+
+                    editIntent.putExtra("PARENT_FIRST_NAME", parentFirstName);
+                    editIntent.putExtra("PARENT_MIDDLE_NAME", parentMiddleName);
+                    editIntent.putExtra("PARENT_LAST_NAME", parentLastName);
+                    editIntent.putExtra("PARENT_EXTENSION", parentExtension);
+
                     editStudentLauncher.launch(editIntent);
                 } catch (Exception e) {
                     Log.e(TAG, "Error launching AddStudentActivity for edit", e);
@@ -157,6 +210,44 @@ public class StudentDetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void parseNamesIfNeeded() {
+        if ((firstName == null || firstName.isEmpty()) && studentName != null && !studentName.isEmpty()) {
+            String[] parts = studentName.trim().split("\\s+");
+            if (parts.length == 1) {
+                firstName = parts[0];
+            } else if (parts.length == 2) {
+                firstName = parts[0];
+                lastName = parts[1];
+            } else if (parts.length >= 3) {
+                firstName = parts[0];
+                StringBuilder mid = new StringBuilder();
+                for (int i = 1; i < parts.length - 1; i++) {
+                    mid.append(parts[i]).append(" ");
+                }
+                middleName = mid.toString().trim();
+                lastName = parts[parts.length - 1];
+            }
+        }
+
+        if ((parentFirstName == null || parentFirstName.isEmpty()) && studentParent != null && !studentParent.isEmpty()) {
+            String[] pParts = studentParent.trim().split("\\s+");
+            if (pParts.length == 1) {
+                parentFirstName = pParts[0];
+            } else if (pParts.length == 2) {
+                parentFirstName = pParts[0];
+                parentLastName = pParts[1];
+            } else if (pParts.length >= 3) {
+                parentFirstName = pParts[0];
+                StringBuilder pMid = new StringBuilder();
+                for (int i = 1; i < pParts.length - 1; i++) {
+                    pMid.append(pParts[i]).append(" ");
+                }
+                parentMiddleName = pMid.toString().trim();
+                parentLastName = pParts[pParts.length - 1];
+            }
+        }
+    }
+
     private void populateUI() {
         if (studentImageView != null) {
             if (studentPhotoUri != null && !studentPhotoUri.trim().isEmpty()) {
@@ -172,107 +263,33 @@ public class StudentDetailsActivity extends AppCompatActivity {
             }
         }
 
-        if (nameTextView != null) {
-            if (studentName != null && !studentName.trim().isEmpty()) {
-                nameTextView.setText(studentName);
-                nameTextView.setVisibility(View.VISIBLE);
-            } else {
-                nameTextView.setVisibility(View.GONE);
-            }
+        String fullDisplay = (firstName != null ? firstName : "") +
+                (middleName != null && !middleName.isEmpty() ? " " + middleName : "") +
+                (lastName != null ? " " + lastName : "") +
+                (extension != null && !extension.isEmpty() ? " " + extension : "");
+        if (fullDisplay.trim().isEmpty()) fullDisplay = studentName;
+
+        if (tvStudentFullNameHeader != null) {
+            tvStudentFullNameHeader.setText(!fullDisplay.trim().isEmpty() ? fullDisplay : "Student Name");
         }
 
-        if (subtitleTextView != null) {
-            if (studentClass != null && !studentClass.trim().isEmpty()) {
-                String cleanedClass = studentClass;
-                if (cleanedClass.startsWith("Nursery - Nursery")) {
-                    cleanedClass = cleanedClass.replace("Nursery - Nursery", "Nursery");
-                } else if (cleanedClass.startsWith("Pre-K - Pre-K")) {
-                    cleanedClass = cleanedClass.replace("Pre-K - Pre-K", "Pre-K");
-                }
-                subtitleTextView.setText(cleanedClass);
-                subtitleTextView.setVisibility(View.VISIBLE);
-            } else {
-                subtitleTextView.setVisibility(View.GONE);
-            }
+        if (tvStudentSectionHeader != null) {
+            tvStudentSectionHeader.setText(studentClass != null && !studentClass.isEmpty() ? studentClass : "Section");
         }
 
-        boolean hasGender = studentGender != null && !studentGender.trim().isEmpty() && !studentGender.equalsIgnoreCase("Not specified") && !studentGender.equalsIgnoreCase("N/A");
-        boolean hasAge = studentAge != null && !studentAge.trim().isEmpty() && !studentAge.equalsIgnoreCase("N/A");
-        boolean hasDob = studentDob != null && !studentDob.trim().isEmpty() && !studentDob.equalsIgnoreCase("N/A");
+        if (dobTextView != null) dobTextView.setText(studentDob != null ? studentDob : "-");
+        if (ageTextView != null) ageTextView.setText(studentAge != null ? studentAge : "-");
+        if (genderTextView != null) genderTextView.setText(studentGender != null ? studentGender : "-");
 
-        if (genderTextView != null) {
-            if (hasGender) {
-                genderTextView.setText("Gender: " + studentGender);
-                genderTextView.setVisibility(View.VISIBLE);
-            } else {
-                genderTextView.setVisibility(View.GONE);
-            }
-        }
+        if (tvFirstNameVal != null) tvFirstNameVal.setText(firstName != null && !firstName.isEmpty() ? firstName : "-");
+        if (tvMiddleNameVal != null) tvMiddleNameVal.setText(middleName != null && !middleName.isEmpty() ? middleName : "-");
+        if (tvLastNameVal != null) tvLastNameVal.setText(lastName != null && !lastName.isEmpty() ? lastName : "-");
+        if (tvExtensionVal != null) tvExtensionVal.setText(extension != null && !extension.isEmpty() ? extension : "N/A");
 
-        if (ageTextView != null) {
-            if (hasAge) {
-                String displayAge = studentAge.startsWith("Age ") ? studentAge : "Age: " + studentAge;
-                ageTextView.setText(displayAge);
-                ageTextView.setVisibility(View.VISIBLE);
-            } else {
-                ageTextView.setVisibility(View.GONE);
-            }
-        }
-
-        if (dobTextView != null) {
-            if (hasDob) {
-                dobTextView.setText("Date of Birth: " + studentDob);
-                dobTextView.setVisibility(View.VISIBLE);
-            } else {
-                dobTextView.setVisibility(View.GONE);
-            }
-        }
-
-        if (!hasGender && !hasAge && !hasDob) {
-            if (studentInfoTitle != null) studentInfoTitle.setVisibility(View.GONE);
-            if (studentInfoCard != null) studentInfoCard.setVisibility(View.GONE);
-        } else {
-            if (studentInfoTitle != null) studentInfoTitle.setVisibility(View.VISIBLE);
-            if (studentInfoCard != null) studentInfoCard.setVisibility(View.VISIBLE);
-        }
-
-        boolean hasParent = studentParent != null && !studentParent.trim().isEmpty() && !studentParent.equalsIgnoreCase("N/A");
-        boolean hasAddress = studentAddress != null && !studentAddress.trim().isEmpty() && !studentAddress.equalsIgnoreCase("N/A");
-        boolean hasContact = studentContact != null && !studentContact.trim().isEmpty() && !studentContact.equalsIgnoreCase("N/A");
-
-        if (parentTextView != null) {
-            if (hasParent) {
-                parentTextView.setText("Name: " + studentParent);
-                parentTextView.setVisibility(View.VISIBLE);
-            } else {
-                parentTextView.setVisibility(View.GONE);
-            }
-        }
-
-        if (addressTextView != null) {
-            if (hasAddress) {
-                addressTextView.setText("Address: " + studentAddress);
-                addressTextView.setVisibility(View.VISIBLE);
-            } else {
-                addressTextView.setVisibility(View.GONE);
-            }
-        }
-
-        if (contactTextView != null) {
-            if (hasContact) {
-                contactTextView.setText("Contact No: " + studentContact);
-                contactTextView.setVisibility(View.VISIBLE);
-            } else {
-                contactTextView.setVisibility(View.GONE);
-            }
-        }
-
-        if (!hasParent && !hasAddress && !hasContact) {
-            if (parentInfoTitle != null) parentInfoTitle.setVisibility(View.GONE);
-            if (parentInfoCard != null) parentInfoCard.setVisibility(View.GONE);
-        } else {
-            if (parentInfoTitle != null) parentInfoTitle.setVisibility(View.VISIBLE);
-            if (parentInfoCard != null) parentInfoCard.setVisibility(View.VISIBLE);
-        }
+        if (tvParentFirstNameVal != null) tvParentFirstNameVal.setText(parentFirstName != null && !parentFirstName.isEmpty() ? parentFirstName : "-");
+        if (tvParentMiddleNameVal != null) tvParentMiddleNameVal.setText(parentMiddleName != null && !parentMiddleName.isEmpty() ? parentMiddleName : "-");
+        if (tvParentLastNameVal != null) tvParentLastNameVal.setText(parentLastName != null && !parentLastName.isEmpty() ? parentLastName : "-");
+        if (tvParentExtensionVal != null) tvParentExtensionVal.setText(parentExtension != null && !parentExtension.isEmpty() ? parentExtension : "N/A");
+        if (contactTextView != null) contactTextView.setText(studentContact != null && !studentContact.isEmpty() ? studentContact : "-");
     }
 }

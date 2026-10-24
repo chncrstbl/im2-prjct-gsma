@@ -24,6 +24,16 @@ public class StudentItem {
     private int headerIconResId;
     private final int itemViewType;
 
+    private String firstName;
+    private String middleName;
+    private String lastName;
+    private String extension;
+
+    private String parentFirstName;
+    private String parentMiddleName;
+    private String parentLastName;
+    private String parentExtension;
+
     public StudentItem(int itemViewType, String name, String age, String level, String performance) {
         this.itemViewType = itemViewType;
         this.name = name;
@@ -62,4 +72,28 @@ public class StudentItem {
     public String getPerformance() { return performance; }
     public String getHeaderTitle() { return headerTitle; }
     public int getHeaderIconResId() { return headerIconResId; }
+
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getMiddleName() { return middleName; }
+    public void setMiddleName(String middleName) { this.middleName = middleName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getExtension() { return extension; }
+    public void setExtension(String extension) { this.extension = extension; }
+
+    public String getParentFirstName() { return parentFirstName; }
+    public void setParentFirstName(String parentFirstName) { this.parentFirstName = parentFirstName; }
+
+    public String getParentMiddleName() { return parentMiddleName; }
+    public void setParentMiddleName(String parentMiddleName) { this.parentMiddleName = parentMiddleName; }
+
+    public String getParentLastName() { return parentLastName; }
+    public void setParentLastName(String parentLastName) { this.parentLastName = parentLastName; }
+
+    public String getParentExtension() { return parentExtension; }
+    public void setParentExtension(String parentExtension) { this.parentExtension = parentExtension; }
 }
