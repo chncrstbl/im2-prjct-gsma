@@ -228,32 +228,14 @@ public class SelectStudentsActivity extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<StudentItem>>() {}.getType();
                 List<StudentItem> savedList = gson.fromJson(json, type);
 
-                if (savedList != null) {
-                    for (StudentItem item : savedList) {
-                        if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
-                            String name = item.getName() != null ? item.getName().toLowerCase() : "";
-                            if (name.contains("arevalo, vea") || name.contains("cueva, ive brayne") ||
-                                name.contains("jumao-as, lea") || name.contains("de guzman, jamaila") ||
-                                name.contains("ceron, angel adrian") || name.contains("delos santos, brylle") ||
-                                name.startsWith("person ")) {
-                                continue;
-                            }
-
-                            boolean exists = false;
-                            for (StudentItem existing : masterStudentList) {
-                                if (existing.getName() != null && existing.getName().equalsIgnoreCase(item.getName())) {
-                                    exists = true;
-                                    break;
-                                }
-                            }
-                            if (!exists) {
-                                masterStudentList.add(item);
-                            }
-                        }
+                for (StudentItem item : savedList) {
+                    if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
+                        masterStudentList.add(item);
                     }
                 }
             }
-        } catch (Exception ignored) {}
+        }
+        }
 
         applyCombinedFilters();
     }
