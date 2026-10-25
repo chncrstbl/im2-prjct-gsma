@@ -1,5 +1,6 @@
 package com.example.priangradingsystem.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,8 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
     private static final String DATABASE_NAME = "Database.db";
-    private static final int DATABASE_VERSION = 1;
-
+    private static final int DATABASE_VERSION = 2;
     private final Context context;
     private final File dbPath;
 
@@ -71,16 +71,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Upgrade database schema if needed
+
+        try {
+            db.execSQL("ALTER TABLE students ADD COLUMN level TEXT DEFAULT 'Nursery';");
+        } catch (Exception ignored) {}
     }
 
-    /**
-     * Authenticates a teacher against the teachers table in Database.db.
-     *
-     * @param username Input username
-     * @param password Input password
-     * @return true if credentials match a row in the teachers table
-     */
     public boolean authenticateTeacher(String username, String password) {
         if (username == null || password == null) return false;
 
@@ -94,9 +90,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    /**
-     * Retrieves Teacher object by matching username and password.
-     */
     public Teacher getTeacherByCredentials(String username, String password) {
         if (username == null || password == null) return null;
 
@@ -115,5 +108,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, "Error fetching teacher by credentials", e);
         }
         return null;
+    }
+
+    // CRUD: (Nursery / Toddler)
+    public boolean insertStudent(String firstName, String middleName, String lastName, String birthdate, String sex, String age, String guardianName, String guardianContact, String address, String photoUri, String level) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("first_name", firstName);
+        values.put("middle_name", middleName);
+        values.put("last_name", lastName);
+        values.put("birthdate", birthdate);
+        values.put("sex", sex);
+        values.put("age", age);
+        values.put("guardian_name", guardianName);
+        values.put("guardian_contact", guardianContact);
+        values.put("address", address);
+        values.put("photo_uri", photoUri);
+        values.put("level", level != null ? level : "Nursery");
+
+        long result = db.insert("students", null, values);
+        return result != -1;
+    }
+
+    // CRUD: Update Student
+    public boolean updateStudent(int studentId, String firstName, String middleName, String lastName, String birthdate, String sex, String age, String guardianName, String guardianContact, String address, String photoUri, String level) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("first_name", firstName);
+        values.put("middle_name", middleName);
+        values.put("last_name", lastName);
+        values.put("birthdate", birthdate);
+        values.put("sex", sex);
+        values.put("age", age);
+        values.put("guardian_name", guardianName);
+        values.put("guardian_contact", guardianContact);
+        values.put("address", address);
+        values.put("photo_uri", photoUri);
+        values.put("level", level != null ? level : "Nursery"); // Ina-update ang level
+
+        int result = db.update("students", values, "student_id = ?", new String[]{String.valueOf(studentId)});
+        return result > 0;
+    }
+
+    public boolean deleteStudent(int studentId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete("students", "student_id = ?", new String[]{String.valueOf(studentId)});
+        return result > 0;
+    }
+
+    public Cursor getAllStudents() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM students ORDER BY last_name COLLATE NOCASE ASC", null);
     }
 }

@@ -65,8 +65,9 @@
                     android:layout_height="72dp"
                     android:background="@drawable/bg_input_field_disabled">
 
+                    <!-- Naitama na ang ID para magtugma sa Java code -->
                     <ImageView
-                        android:id="@+id/imgProfilePhoto"
+                        android:id="@+id/studentImageView"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:layout_gravity="center"

@@ -9,6 +9,7 @@ public class StudentItem {
     public static final int TYPE_STUDENT = 1;
     public static final int TYPE_GENDER_HEADER = 2;
 
+    private int id;
     private String name;
     private String age;
     private String level;
@@ -49,7 +50,25 @@ public class StudentItem {
     }
 
     public int getItemViewType() { return itemViewType; }
-    public String getName() { return name; }
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getName() {
+        if (name != null && !name.trim().isEmpty() && !name.equalsIgnoreCase("Unnamed Student") && !name.equalsIgnoreCase("Unnamed")) {
+            return name;
+        }
+
+        StringBuilder fullName = new StringBuilder();
+        if (firstName != null && !firstName.trim().isEmpty()) fullName.append(firstName.trim());
+        if (middleName != null && !middleName.trim().isEmpty()) fullName.append(" ").append(middleName.trim());
+        if (lastName != null && !lastName.trim().isEmpty()) fullName.append(" ").append(lastName.trim());
+        if (extension != null && !extension.trim().isEmpty()) fullName.append(" ").append(extension.trim());
+
+        String result = fullName.toString().trim();
+        return result.isEmpty() ? "Unnamed Student" : result;
+    }
+
     public void setName(String name) { this.name = name; }
     public String getAge() { return age; }
     public void setAge(String age) { this.age = age; }
@@ -61,7 +80,21 @@ public class StudentItem {
     public void setGender(String gender) { this.gender = gender; }
     public String getDob() { return dob; }
     public void setDob(String dob) { this.dob = dob; }
-    public String getParentName() { return parentName; }
+
+    public String getParentName() {
+        if (parentName != null && !parentName.trim().isEmpty()) {
+            return parentName;
+        }
+
+        StringBuilder fullParent = new StringBuilder();
+        if (parentFirstName != null && !parentFirstName.trim().isEmpty()) fullParent.append(parentFirstName.trim());
+        if (parentMiddleName != null && !parentMiddleName.trim().isEmpty()) fullParent.append(" ").append(parentMiddleName.trim());
+        if (parentLastName != null && !parentLastName.trim().isEmpty()) fullParent.append(" ").append(parentLastName.trim());
+        if (parentExtension != null && !parentExtension.trim().isEmpty()) fullParent.append(" ").append(parentExtension.trim());
+
+        return fullParent.toString().trim();
+    }
+
     public void setParentName(String parentName) { this.parentName = parentName; }
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }

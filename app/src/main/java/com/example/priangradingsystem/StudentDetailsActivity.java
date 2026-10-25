@@ -11,12 +11,17 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.priangradingsystem.data.DatabaseHelper;
 import com.example.priangradingsystem.students.AddStudentActivity;
 
 public class StudentDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "StudentDetailsActivity";
 
+    private DatabaseHelper dbHelper;
+
+    private int studentId = -1;
     private String studentName = "";
     private String studentClass = "";
     private String studentGender = "";
@@ -42,6 +47,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
     private TextView tvFirstNameVal, tvMiddleNameVal, tvLastNameVal, tvExtensionVal;
     private TextView tvParentFirstNameVal, tvParentMiddleNameVal, tvParentLastNameVal, tvParentExtensionVal;
     private TextView contactTextView;
+    private TextView addressTextView;
 
     private final ActivityResultLauncher<Intent> editStudentLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -57,8 +63,15 @@ public class StudentDetailsActivity extends AppCompatActivity {
     private void handleEditResult(Intent data) {
         String oldName = studentName;
 
+        studentId = data.getIntExtra("STUDENT_ID", studentId);
         studentName = data.getStringExtra("STUDENT_NAME");
-        studentClass = data.getStringExtra("STUDENT_CLASS");
+
+        String rawClass = data.getStringExtra("STUDENT_CLASS");
+        if (rawClass != null && rawClass.contains("-")) {
+            rawClass = rawClass.split("-")[0].trim();
+        }
+        studentClass = rawClass != null ? rawClass : "Nursery";
+
         studentAge = data.getStringExtra("STUDENT_AGE");
         studentGender = data.getStringExtra("STUDENT_GENDER");
         studentDob = data.getStringExtra("STUDENT_DOB");
@@ -71,12 +84,13 @@ public class StudentDetailsActivity extends AppCompatActivity {
         middleName = data.getStringExtra("STUDENT_MIDDLE_NAME");
         lastName = data.getStringExtra("STUDENT_LAST_NAME");
         extension = data.getStringExtra("STUDENT_EXTENSION");
+
         parentFirstName = data.getStringExtra("PARENT_FIRST_NAME");
         parentMiddleName = data.getStringExtra("PARENT_MIDDLE_NAME");
         parentLastName = data.getStringExtra("PARENT_LAST_NAME");
         parentExtension = data.getStringExtra("PARENT_EXTENSION");
 
-        parseNamesIfNeeded();
+        parseParentNameIfNeeded();
         populateUI();
 
         Intent updatedIntent = createUpdatedIntent(oldName);
@@ -113,6 +127,8 @@ public class StudentDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_details);
 
+        dbHelper = new DatabaseHelper(this);
+
         ImageView btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
@@ -120,8 +136,15 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
+            studentId = intent.getIntExtra("STUDENT_ID", -1);
             studentName = intent.getStringExtra("STUDENT_NAME");
-            studentClass = intent.getStringExtra("STUDENT_CLASS");
+
+            String rawClass = intent.getStringExtra("STUDENT_CLASS");
+            if (rawClass != null && rawClass.contains("-")) {
+                rawClass = rawClass.split("-")[0].trim();
+            }
+            studentClass = rawClass != null ? rawClass : "Nursery";
+
             studentGender = intent.getStringExtra("STUDENT_GENDER");
             studentAge = intent.getStringExtra("STUDENT_AGE");
             studentDob = intent.getStringExtra("STUDENT_DOB");
@@ -141,7 +164,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
             parentExtension = intent.getStringExtra("PARENT_EXTENSION");
         }
 
-        parseNamesIfNeeded();
+        parseParentNameIfNeeded();
 
         studentImageView = findViewById(R.id.studentImageView);
         genderTextView = findViewById(R.id.genderTextView);
@@ -161,6 +184,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
         tvParentLastNameVal = findViewById(R.id.tvParentLastNameVal);
         tvParentExtensionVal = findViewById(R.id.tvParentExtensionVal);
         contactTextView = findViewById(R.id.contactTextView);
+        addressTextView = findViewById(R.id.addressTextView);
 
         Button editButton = findViewById(R.id.editButton);
         Button deleteButton = findViewById(R.id.deleteButton);
@@ -172,6 +196,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
                 try {
                     Intent editIntent = new Intent(StudentDetailsActivity.this, AddStudentActivity.class);
                     editIntent.putExtra("IS_EDIT_MODE", true);
+                    editIntent.putExtra("STUDENT_ID", studentId);
                     editIntent.putExtra("STUDENT_NAME", studentName);
                     editIntent.putExtra("STUDENT_CLASS", studentClass);
                     editIntent.putExtra("STUDENT_GENDER", studentGender);
@@ -201,49 +226,43 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
         if (deleteButton != null) {
             deleteButton.setOnClickListener(v -> {
-                Toast.makeText(this, "Student deleted", Toast.LENGTH_SHORT).show();
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("deleted_name", studentName);
-                setResult(RESULT_OK, resultIntent);
-                finish();
+                try {
+                    if (studentId != -1) {
+                        boolean deleted = dbHelper.deleteStudent(studentId);
+                        if (deleted) {
+                            Toast.makeText(this, "Student deleted successfully", Toast.LENGTH_SHORT).show();
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("deleted_name", studentName);
+                            resultIntent.putExtra("STUDENT_ID", studentId);
+                            setResult(RESULT_OK, resultIntent);
+                            finish();
+                        } else {
+                            Toast.makeText(this, "Failed to delete student from database", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(this, "Invalid student ID", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error deleting student", e);
+                    Toast.makeText(this, "Error deleting student", Toast.LENGTH_SHORT).show();
+                }
             });
         }
     }
 
-    private void parseNamesIfNeeded() {
-        if ((firstName == null || firstName.isEmpty()) && studentName != null && !studentName.isEmpty()) {
-            String[] parts = studentName.trim().split("\\s+");
+    private void parseParentNameIfNeeded() {
+        if ((parentFirstName == null || parentFirstName.trim().isEmpty()) &&
+                studentParent != null && !studentParent.trim().isEmpty()) {
+            String[] parts = studentParent.trim().split("\\s+");
             if (parts.length == 1) {
-                firstName = parts[0];
+                parentFirstName = parts[0];
             } else if (parts.length == 2) {
-                firstName = parts[0];
-                lastName = parts[1];
+                parentFirstName = parts[0];
+                parentLastName = parts[1];
             } else if (parts.length >= 3) {
-                firstName = parts[0];
-                StringBuilder mid = new StringBuilder();
-                for (int i = 1; i < parts.length - 1; i++) {
-                    mid.append(parts[i]).append(" ");
-                }
-                middleName = mid.toString().trim();
-                lastName = parts[parts.length - 1];
-            }
-        }
-
-        if ((parentFirstName == null || parentFirstName.isEmpty()) && studentParent != null && !studentParent.isEmpty()) {
-            String[] pParts = studentParent.trim().split("\\s+");
-            if (pParts.length == 1) {
-                parentFirstName = pParts[0];
-            } else if (pParts.length == 2) {
-                parentFirstName = pParts[0];
-                parentLastName = pParts[1];
-            } else if (pParts.length >= 3) {
-                parentFirstName = pParts[0];
-                StringBuilder pMid = new StringBuilder();
-                for (int i = 1; i < pParts.length - 1; i++) {
-                    pMid.append(pParts[i]).append(" ");
-                }
-                parentMiddleName = pMid.toString().trim();
-                parentLastName = pParts[pParts.length - 1];
+                parentFirstName = parts[0];
+                parentMiddleName = parts[1];
+                parentLastName = parts[parts.length - 1];
             }
         }
     }
@@ -274,7 +293,11 @@ public class StudentDetailsActivity extends AppCompatActivity {
         }
 
         if (tvStudentSectionHeader != null) {
-            tvStudentSectionHeader.setText(studentClass != null && !studentClass.isEmpty() ? studentClass : "Section");
+            String cleanLvl = studentClass != null ? studentClass : "";
+            if (cleanLvl.contains("-")) {
+                cleanLvl = cleanLvl.split("-")[0].trim();
+            }
+            tvStudentSectionHeader.setText(!cleanLvl.isEmpty() ? cleanLvl : "Level");
         }
 
         if (dobTextView != null) dobTextView.setText(studentDob != null ? studentDob : "-");
@@ -290,6 +313,8 @@ public class StudentDetailsActivity extends AppCompatActivity {
         if (tvParentMiddleNameVal != null) tvParentMiddleNameVal.setText(parentMiddleName != null && !parentMiddleName.isEmpty() ? parentMiddleName : "-");
         if (tvParentLastNameVal != null) tvParentLastNameVal.setText(parentLastName != null && !parentLastName.isEmpty() ? parentLastName : "-");
         if (tvParentExtensionVal != null) tvParentExtensionVal.setText(parentExtension != null && !parentExtension.isEmpty() ? parentExtension : "N/A");
+
         if (contactTextView != null) contactTextView.setText(studentContact != null && !studentContact.isEmpty() ? studentContact : "-");
+        if (addressTextView != null) addressTextView.setText(studentAddress != null && !studentAddress.isEmpty() ? studentAddress : "-");
     }
 }
