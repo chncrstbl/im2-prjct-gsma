@@ -8,7 +8,7 @@ import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.grades.SelectStudentGradeActivity;
 import com.example.priangradingsystem.records.StudentRecordsActivity;
-import com.example.priangradingsystem.reports.ReportsActivity;
+import com.example.priangradingsystem.reports.SelectStudentsActivity;
 import com.example.priangradingsystem.students.StudentsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openReportsActivity() {
-        Intent intent = new Intent(MainActivity.this, ReportsActivity.class);
+        Intent intent = new Intent(MainActivity.this, SelectStudentsActivity.class);
         startActivity(intent);
     }
 }

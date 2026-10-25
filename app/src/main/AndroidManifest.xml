@@ -67,6 +67,11 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".reports.SelectStudentsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".grades.GradeEntryActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
@@ -78,11 +83,6 @@
 
         <activity
             android:name=".grades.SelectStudentGradeActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".StudentDetailsActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
