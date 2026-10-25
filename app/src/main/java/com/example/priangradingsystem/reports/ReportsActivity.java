@@ -3,15 +3,21 @@ package com.example.priangradingsystem.reports;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
-import com.google.android.material.button.MaterialButton;
 
 public class ReportsActivity extends AppCompatActivity {
+
+    private TextView tvTotalScore, tvOverallPercentage, tvWritingScore, tvMathScore, tvReadingScore, tvLifeSkillsScore, tvPEArtsScore;
+    private ProgressBar progressBarPerformance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +33,26 @@ public class ReportsActivity extends AppCompatActivity {
         TextView tvStudentGradeLevel = findViewById(R.id.tvStudentGradeLevel);
         ImageView imgStudentAvatar = findViewById(R.id.imgStudentAvatar);
 
+        tvTotalScore = findViewById(R.id.tvTotalScore);
+        tvOverallPercentage = findViewById(R.id.tvOverallPercentage);
+        progressBarPerformance = findViewById(R.id.progressBarPerformance);
+
+        tvWritingScore = findViewById(R.id.tvWritingScore);
+        tvMathScore = findViewById(R.id.tvMathScore);
+        tvReadingScore = findViewById(R.id.tvReadingScore);
+        tvLifeSkillsScore = findViewById(R.id.tvLifeSkillsScore);
+        tvPEArtsScore = findViewById(R.id.tvPEArtsScore);
+
         if (studentName != null && !studentName.trim().isEmpty() && tvStudentName != null) {
             tvStudentName.setText(studentName);
+        } else if (tvStudentName != null) {
+            tvStudentName.setText("Vea Arevalo");
         }
 
         if (studentLevel != null && !studentLevel.trim().isEmpty() && tvStudentGradeLevel != null) {
             tvStudentGradeLevel.setText(studentLevel);
+        } else if (tvStudentGradeLevel != null) {
+            tvStudentGradeLevel.setText("Nursery");
         }
 
         if (studentPhotoUri != null && !studentPhotoUri.trim().isEmpty() && imgStudentAvatar != null) {
@@ -52,26 +72,60 @@ public class ReportsActivity extends AppCompatActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        MaterialButton btnDownloadPdf = findViewById(R.id.btnDownloadPdf);
-        if (btnDownloadPdf != null) {
-            String nameForReport = (studentName != null && !studentName.isEmpty()) ? studentName : "Student";
-            btnDownloadPdf.setOnClickListener(v ->
-                Toast.makeText(this, "Downloading PDF report for " + nameForReport + "...", Toast.LENGTH_SHORT).show()
+        Spinner spinnerQuarter = findViewById(R.id.spinnerQuarter);
+        if (spinnerQuarter != null) {
+            String[] quarters = new String[]{"Quarter 1", "Quarter 2", "Quarter 3"};
+            ArrayAdapter<String> quarterAdapter = new ArrayAdapter<>(
+                    this,
+                    R.layout.item_spinner,
+                    quarters
             );
-        }
+            quarterAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
+            spinnerQuarter.setAdapter(quarterAdapter);
 
-        MaterialButton btnShare = findViewById(R.id.btnShare);
-        if (btnShare != null) {
-            btnShare.setOnClickListener(v -> {
-                String nameForShare = (studentName != null && !studentName.isEmpty()) ? studentName : "Vea Arevalo";
-                String levelForShare = (studentLevel != null && !studentLevel.isEmpty()) ? studentLevel : "Nursery";
+            spinnerQuarter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    updateQuarterData(position);
+                }
 
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Student Records - " + nameForShare);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, "Student Records for " + nameForShare + " (" + levelForShare + ")\nOverall Performance: 90% Passed");
-                startActivity(Intent.createChooser(shareIntent, "Share Records via"));
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
             });
+        }
+    }
+
+    private void updateQuarterData(int quarterIndex) {
+        if (quarterIndex == 0) { // Quarter 1
+            if (tvTotalScore != null) tvTotalScore.setText("91%");
+            if (tvOverallPercentage != null) tvOverallPercentage.setText("91%");
+            if (progressBarPerformance != null) progressBarPerformance.setProgress(91);
+
+            if (tvWritingScore != null) tvWritingScore.setText("92%");
+            if (tvMathScore != null) tvMathScore.setText("85%");
+            if (tvReadingScore != null) tvReadingScore.setText("88%");
+            if (tvLifeSkillsScore != null) tvLifeSkillsScore.setText("97%");
+            if (tvPEArtsScore != null) tvPEArtsScore.setText("95%");
+        } else if (quarterIndex == 1) { // Quarter 2
+            if (tvTotalScore != null) tvTotalScore.setText("89%");
+            if (tvOverallPercentage != null) tvOverallPercentage.setText("89%");
+            if (progressBarPerformance != null) progressBarPerformance.setProgress(89);
+
+            if (tvWritingScore != null) tvWritingScore.setText("90%");
+            if (tvMathScore != null) tvMathScore.setText("88%");
+            if (tvReadingScore != null) tvReadingScore.setText("86%");
+            if (tvLifeSkillsScore != null) tvLifeSkillsScore.setText("92%");
+            if (tvPEArtsScore != null) tvPEArtsScore.setText("89%");
+        } else if (quarterIndex == 2) { // Quarter 3
+            if (tvTotalScore != null) tvTotalScore.setText("94%");
+            if (tvOverallPercentage != null) tvOverallPercentage.setText("94%");
+            if (progressBarPerformance != null) progressBarPerformance.setProgress(94);
+
+            if (tvWritingScore != null) tvWritingScore.setText("95%");
+            if (tvMathScore != null) tvMathScore.setText("92%");
+            if (tvReadingScore != null) tvReadingScore.setText("94%");
+            if (tvLifeSkillsScore != null) tvLifeSkillsScore.setText("98%");
+            if (tvPEArtsScore != null) tvPEArtsScore.setText("93%");
         }
     }
 

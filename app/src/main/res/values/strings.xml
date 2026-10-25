@@ -213,4 +213,5 @@
     <string name="sample_student_grade2">Nursery</string>
     <string name="sample_date">October 10, 2026</string>
     <string name="score_hint">90</string>
+    <string name="grade_reports_title">Grade Reports</string>
 </resources>
