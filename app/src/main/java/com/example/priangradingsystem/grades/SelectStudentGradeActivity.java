@@ -1,9 +1,7 @@
 package com.example.priangradingsystem.grades;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,19 +19,13 @@ import com.example.priangradingsystem.adapter.StudentAdapter;
 import com.example.priangradingsystem.data.DatabaseHelper;
 import com.example.priangradingsystem.model.StudentItem;
 import com.example.priangradingsystem.records.FilterActivity;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @SuppressWarnings("all")
 public class SelectStudentGradeActivity extends AppCompatActivity {
-
-    private static final String PREFS_NAME = "StudentPrefs";
-    private static final String KEY_STUDENT_LIST = "master_student_list";
 
     private StudentAdapter adapter;
     private final List<StudentItem> masterStudentList = new ArrayList<>();
@@ -200,7 +192,7 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
     private void loadSavedStudents() {
         masterStudentList.clear();
 
-        // 1. Query real students from Database
+        // Query real students EXCLUSIVELY from Database.db
         try {
             DatabaseHelper dbHelper = new DatabaseHelper(this);
             Cursor cursor = dbHelper.getAllStudents();
@@ -234,40 +226,6 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
                     masterStudentList.add(student);
                 }
                 cursor.close();
-            }
-        } catch (Exception ignored) {}
-
-        // 2. Query saved students from SharedPreferences
-        try {
-            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            String json = sharedPreferences.getString(KEY_STUDENT_LIST, null);
-
-            if (json != null) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<ArrayList<StudentItem>>() {}.getType();
-                List<StudentItem> savedList = gson.fromJson(json, type);
-
-                if (savedList != null) {
-                    for (StudentItem item : savedList) {
-                        if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
-                            // Exclude mock "Person 1" to "Person 6"
-                            if (item.getName() != null && item.getName().toLowerCase().startsWith("person ")) {
-                                continue;
-                            }
-
-                            boolean exists = false;
-                            for (StudentItem existing : masterStudentList) {
-                                if (existing.getName() != null && existing.getName().equalsIgnoreCase(item.getName())) {
-                                    exists = true;
-                                    break;
-                                }
-                            }
-                            if (!exists) {
-                                masterStudentList.add(item);
-                            }
-                        }
-                    }
-                }
             }
         } catch (Exception ignored) {}
 
