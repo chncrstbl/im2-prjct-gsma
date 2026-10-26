@@ -2,10 +2,11 @@ package com.example.priangradingsystem.records;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.activity.result.ActivityResultLauncher;
@@ -16,11 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.adapter.StudentAdapter;
+import com.example.priangradingsystem.data.DatabaseHelper;
 import com.example.priangradingsystem.model.StudentItem;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,8 +27,7 @@ import java.util.List;
 @SuppressWarnings("all")
 public class StudentRecordsActivity extends AppCompatActivity {
 
-    private static final String PREFS_NAME = "StudentPrefs";
-    private static final String KEY_STUDENT_LIST = "master_student_list";
+    private static final String TAG = "StudentRecordsActivity";
 
     private StudentAdapter adapter;
     private final List<StudentItem> masterStudentList = new ArrayList<>();
@@ -100,7 +98,7 @@ public class StudentRecordsActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    currentSearchQuery = s.toString().trim().toLowerCase();
+                    currentSearchQuery = s != null ? s.toString().trim().toLowerCase() : "";
                     applyCombinedFilters();
                 }
 
@@ -119,21 +117,48 @@ public class StudentRecordsActivity extends AppCompatActivity {
 
     private void loadSavedStudents() {
         masterStudentList.clear();
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String json = prefs.getString(KEY_STUDENT_LIST, null);
-        if (json != null) {
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<StudentItem>>() {}.getType();
-            List<StudentItem> savedList = gson.fromJson(json, type);
-            if (savedList != null) {
-                masterStudentList.addAll(savedList);
-            }
-        }
 
-        if (masterStudentList.isEmpty()) {
-            masterStudentList.add(new StudentItem(StudentItem.TYPE_STUDENT, "Vea Arevalo", "4", "Nursery", "Excellent"));
-            masterStudentList.add(new StudentItem(StudentItem.TYPE_STUDENT, "John Mark", "5", "Pre-K", "Good"));
-            masterStudentList.add(new StudentItem(StudentItem.TYPE_STUDENT, "Sarah Jenkins", "4", "Nursery", "Needs Improvement"));
+        try {
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+            Cursor cursor = dbHelper.getAllStudents();
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    String fName = cursor.getString(cursor.getColumnIndexOrThrow("first_name"));
+                    String mName = cursor.getString(cursor.getColumnIndexOrThrow("middle_name"));
+                    String lName = cursor.getString(cursor.getColumnIndexOrThrow("last_name"));
+                    String age = cursor.getString(cursor.getColumnIndexOrThrow("age"));
+                    String photoUri = cursor.getString(cursor.getColumnIndexOrThrow("photo_uri"));
+
+                    String level = "Nursery";
+                    try {
+                        int levelColIdx = cursor.getColumnIndex("level");
+                        if (levelColIdx != -1) {
+                            String dbLevel = cursor.getString(levelColIdx);
+                            if (dbLevel != null && !dbLevel.trim().isEmpty()) {
+                                level = dbLevel.trim();
+                                if (level.contains("-")) {
+                                    level = level.split("-")[0].trim();
+                                }
+                            }
+                        }
+                    } catch (Exception ignored) {}
+
+                    String displayName = fName + (mName != null && !mName.trim().isEmpty() ? " " + mName : "") + " " + lName;
+                    displayName = displayName.trim();
+                    if (displayName.isEmpty()) {
+                        displayName = lName + ", " + fName;
+                    }
+                    String ageStr = (age != null && !age.trim().isEmpty()) ? (age.toLowerCase().startsWith("age") ? age : "Age " + age) : "";
+
+                    StudentItem student = new StudentItem(StudentItem.TYPE_STUDENT, displayName, ageStr, level, "Good");
+                    student.setSection(level);
+                    student.setPhotoUri(photoUri);
+                    masterStudentList.add(student);
+                }
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading students from database", e);
         }
 
         applyCombinedFilters();
