@@ -20,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
     private static final String DATABASE_NAME = "Database.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private final Context context;
     private final File dbPath;
     private String lastError = "";
@@ -107,6 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(createStudentsTable);
 
             createGradeRecordsTable(db);
+            createAttendanceTable(db);
         } catch (Exception e) {
             Log.e(TAG, "Error creating database tables", e);
         }
@@ -125,6 +126,64 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(student_id) REFERENCES students(student_id) ON DELETE CASCADE" +
                 ");");
         db.execSQL("CREATE INDEX IF NOT EXISTS idx_grades_student ON grade_records(student_id)");
+    }
+
+    /** One attendance status per student and calendar date. */
+    private void createAttendanceTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS attendance_records (" +
+                "attendance_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "student_id INTEGER NOT NULL, " +
+                "attendance_date TEXT NOT NULL, " +
+                "status TEXT NOT NULL CHECK(status IN ('Present', 'Absent', 'Suspended')), " +
+                "UNIQUE(student_id, attendance_date), " +
+                "FOREIGN KEY(student_id) REFERENCES students(student_id) ON DELETE CASCADE" +
+                ");");
+        db.execSQL("CREATE INDEX IF NOT EXISTS idx_attendance_student_date " +
+                "ON attendance_records(student_id, attendance_date)");
+    }
+
+    public String getAttendanceStatus(long studentId, String date) {
+        if (studentId < 1 || date == null) return "";
+        SQLiteDatabase db = getReadableDatabase();
+        try (Cursor c = db.rawQuery(
+                "SELECT status FROM attendance_records WHERE student_id = ? AND attendance_date = ?",
+                new String[]{String.valueOf(studentId), date})) {
+            return c.moveToFirst() ? c.getString(0) : "";
+        } catch (Exception e) {
+            Log.e(TAG, "Could not read attendance status", e);
+            return "";
+        }
+    }
+
+    public boolean saveAttendanceStatus(long studentId, String date, String status) {
+        if (studentId < 1 || date == null ||
+                !("Present".equals(status) || "Absent".equals(status) || "Suspended".equals(status))) {
+            return false;
+        }
+        ContentValues values = new ContentValues();
+        values.put("student_id", studentId);
+        values.put("attendance_date", date);
+        values.put("status", status);
+        try {
+            long result = getWritableDatabase().insertWithOnConflict(
+                    "attendance_records", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            return result != -1;
+        } catch (Exception e) {
+            Log.e(TAG, "Could not save attendance status", e);
+            return false;
+        }
+    }
+
+    public boolean deleteAttendanceStatus(long studentId, String date) {
+        if (studentId < 1 || date == null) return false;
+        try {
+            return getWritableDatabase().delete(
+                    "attendance_records", "student_id = ? AND attendance_date = ?",
+                    new String[]{String.valueOf(studentId), date}) > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Could not delete attendance status", e);
+            return false;
+        }
     }
 
     /**
@@ -154,6 +213,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE grade_records RENAME TO grade_records_old");
             db.execSQL("DROP INDEX IF EXISTS idx_grades_student");
             createGradeRecordsTable(db);
+
 
             String idExpr = cols.contains("student_name")
                     ? "COALESCE(o.student_id, (SELECT s.student_id FROM students s " +
@@ -432,6 +492,185 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.e(TAG, "Error in getAllGradeRecords", e);
             return null;
+        }
+    }
+
+    // ------------------------------------------------------------------------------------
+    // Grade record lookup / save / edit / delete
+    //
+    // Cross-quarter fix: the old lookup matched the quarter with LIKE '<first 3 chars>%' and
+    // looked up the student by display name on every call. Quarters are now compared by an exact,
+    // normalized value ("1", "1.0", "Quarter 1", "1st" -> "1st Quarter"), and RecordsActivity
+    // works on student_id / record_id so one quarter's row can never be read or overwritten
+    // while another quarter is selected.
+    // ------------------------------------------------------------------------------------
+
+    /** Canonical quarter label: "1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter". */
+    public static String normalizeQuarter(String quarter) {
+        if (quarter == null) return "1st Quarter";
+        String q = quarter.trim();
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)").matcher(q);
+        if (!m.find()) return q;
+        switch (Integer.parseInt(m.group(1))) {
+            case 1: return "1st Quarter";
+            case 2: return "2nd Quarter";
+            case 3: return "3rd Quarter";
+            case 4: return "4th Quarter";
+            default: return q;
+        }
+    }
+
+    private static String activityKey(String activity) {
+        String a = activity == null ? "" : activity.trim().toLowerCase(java.util.Locale.ROOT);
+        // "Book" == "Books", "Exam" == "Exams"
+        return (a.length() > 3 && a.endsWith("s")) ? a.substring(0, a.length() - 1) : a;
+    }
+
+    private static String subjectKey(String subject) {
+        return subject == null ? "" : subject.trim().toLowerCase(java.util.Locale.ROOT);
+    }
+
+    /** Resolves a student's id from a display name. Returns -1 when not found. */
+    public long getStudentIdByName(String studentName) {
+        try {
+            return findStudentId(getReadableDatabase(), studentName);
+        } catch (Exception e) {
+            Log.e(TAG, "Error in getStudentIdByName", e);
+            return -1;
+        }
+    }
+
+    private long findGradeRecordId(SQLiteDatabase db, long studentId, String quarter, String subject, String activity) {
+        String q = normalizeQuarter(quarter);
+        String s = subjectKey(subject);
+        String a = activityKey(activity);
+        try (Cursor c = db.rawQuery("SELECT record_id, quarter, subject, activity FROM grade_records " +
+                "WHERE student_id = ? ORDER BY record_id DESC", new String[]{String.valueOf(studentId)})) {
+            while (c.moveToNext()) {
+                if (normalizeQuarter(c.getString(1)).equals(q)
+                        && subjectKey(c.getString(2)).equals(s)
+                        && activityKey(c.getString(3)).equals(a)) {
+                    return c.getLong(0);
+                }
+            }
+        }
+        return -1;
+    }
+
+    /** record_id of the row for exactly this student + quarter + subject + activity, or -1. */
+    public long findGradeRecordId(long studentId, String quarter, String subject, String activity) {
+        try {
+            return findGradeRecordId(getReadableDatabase(), studentId, quarter, subject, activity);
+        } catch (Exception e) {
+            Log.e(TAG, "Error in findGradeRecordId", e);
+            return -1;
+        }
+    }
+
+    /** All grade records of one student: record_id, quarter, subject, activity, score, remarks, date. */
+    public Cursor getGradeRecordsForStudent(long studentId) {
+        try {
+            return getReadableDatabase().rawQuery(
+                    "SELECT record_id, quarter, subject, activity, score, remarks, date " +
+                    "FROM grade_records WHERE student_id = ? ORDER BY record_id DESC",
+                    new String[]{String.valueOf(studentId)});
+        } catch (Exception e) {
+            Log.e(TAG, "Error in getGradeRecordsForStudent", e);
+            return null;
+        }
+    }
+
+    public String getGradeRecordScore(long studentId, String quarter, String subject, String activity) {
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            long id = findGradeRecordId(db, studentId, quarter, subject, activity);
+            if (id < 0) return null;
+            try (Cursor c = db.rawQuery("SELECT score FROM grade_records WHERE record_id = ?",
+                    new String[]{String.valueOf(id)})) {
+                if (c.moveToFirst()) return c.getString(0);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in getGradeRecordScore", e);
+        }
+        return null;
+    }
+
+    public boolean saveOrUpdateGradeRecord(long studentId, String quarter, String subject, String activity, String score) {
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            lastError = "";
+            if (studentId < 0) {
+                lastError = "No student selected.";
+                return false;
+            }
+
+            String date = new java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+            String cleanQuarter = normalizeQuarter(quarter);
+            String cleanSubject = subject != null ? subject.trim() : "";
+            String cleanActivity = activity != null ? activity.trim() : "";
+
+            long recordId = findGradeRecordId(db, studentId, cleanQuarter, cleanSubject, cleanActivity);
+
+            ContentValues values = new ContentValues();
+            values.put("student_id", studentId);
+            values.put("subject", cleanSubject);
+            values.put("quarter", cleanQuarter);
+            values.put("score", score != null ? score : "0");
+            values.put("date", date);
+            values.put("activity", cleanActivity);
+
+            if (recordId != -1) {
+                return db.update("grade_records", values, "record_id = ?", new String[]{String.valueOf(recordId)}) > 0;
+            }
+            return db.insertOrThrow("grade_records", null, values) != -1;
+        } catch (Exception e) {
+            lastError = e.getMessage() != null ? e.getMessage() : e.toString();
+            Log.e(TAG, "Error in saveOrUpdateGradeRecord", e);
+            return false;
+        }
+    }
+
+    /** Name-based overload kept for older callers. */
+    public boolean saveOrUpdateGradeRecord(String studentName, String quarter, String subject, String activity, String score) {
+        long studentId = getStudentIdByName(studentName);
+        if (studentId < 0) {
+            lastError = "Student \"" + studentName + "\" not found.";
+            return false;
+        }
+        return saveOrUpdateGradeRecord(studentId, quarter, subject, activity, score);
+    }
+
+    /** Name-based overload kept for older callers. */
+    public String getGradeRecordScore(String studentName, String quarter, String subject, String activity) {
+        long studentId = getStudentIdByName(studentName);
+        if (studentId < 0) return null;
+        return getGradeRecordScore(studentId, quarter, subject, activity);
+    }
+
+    /** Edits the score of one specific record. */
+    public boolean updateGradeRecordScore(long recordId, String score) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put("score", score != null ? score : "0");
+            values.put("date", new java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault()).format(new java.util.Date()));
+            lastError = "";
+            return getWritableDatabase().update("grade_records", values, "record_id = ?",
+                    new String[]{String.valueOf(recordId)}) > 0;
+        } catch (Exception e) {
+            lastError = e.getMessage() != null ? e.getMessage() : e.toString();
+            Log.e(TAG, "Error in updateGradeRecordScore", e);
+            return false;
+        }
+    }
+
+    /** Deletes one specific record. */
+    public boolean deleteGradeRecord(long recordId) {
+        try {
+            return getWritableDatabase().delete("grade_records", "record_id = ?",
+                    new String[]{String.valueOf(recordId)}) > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error in deleteGradeRecord", e);
+            return false;
         }
     }
 }
