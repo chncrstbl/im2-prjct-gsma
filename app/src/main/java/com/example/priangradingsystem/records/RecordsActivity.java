@@ -1,14 +1,17 @@
 package com.example.priangradingsystem.records;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
@@ -20,16 +23,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import com.example.priangradingsystem.data.DatabaseHelper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class RecordsActivity extends AppCompatActivity {
 
+    private static final String[] SUBJECTS = {"Writing", "Math", "Reading", "Life Skills", "PE & Arts"};
+    private static final String[] ACTIVITIES = {"Books", "Homework", "Attendance", "Exam", "Program Performance"};
+
     private Button btn1stQtr, btn2ndQtr, btn3rdQtr;
     private int currentQuarter = 1;
-    private final Map<String, Integer> recordRatings = new HashMap<>();
-    private final Map<String, String> examScores = new HashMap<>();
+    private DatabaseHelper dbHelper;
+    private String studentName = "Vea Arevalo";
+    /** Resolved once; every read/write below is keyed on this id, never on the display name. */
+    private long studentId = -1;
+
+    /** One row of the student's grade_records table. */
+    private static class GradeRow {
+        long id;
+        String quarter, subject, activity, score, date;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +53,27 @@ public class RecordsActivity extends AppCompatActivity {
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_records);
 
+        dbHelper = new DatabaseHelper(this);
+
         ImageView btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
         // Student info from intent if available
-        String studentName = getIntent().getStringExtra("STUDENT_NAME");
+        String nameFromIntent = getIntent().getStringExtra("STUDENT_NAME");
+        if (nameFromIntent != null && !nameFromIntent.trim().isEmpty()) {
+            studentName = nameFromIntent.trim();
+        }
+
+        // Prefer an explicit id (avoids mixing up two students with the same name); fall back to the name.
+        long idFromIntent = getIntent().getLongExtra("STUDENT_ID", -1);
+        if (idFromIntent < 0) idFromIntent = getIntent().getIntExtra("STUDENT_ID", -1);
+        studentId = idFromIntent > 0 ? idFromIntent : dbHelper.getStudentIdByName(studentName);
+        if (studentId < 0) {
+            Toast.makeText(this, "Student \"" + studentName + "\" was not found in the database.", Toast.LENGTH_LONG).show();
+        }
+
         String studentLevel = getIntent().getStringExtra("STUDENT_LEVEL");
         String studentPhotoUri = getIntent().getStringExtra("STUDENT_PHOTO_URI");
 
@@ -51,7 +81,7 @@ public class RecordsActivity extends AppCompatActivity {
         TextView tvStudentGradeLevel = findViewById(R.id.tvStudentGradeLevel);
         ImageView imgStudentAvatar = findViewById(R.id.imgStudentAvatar);
 
-        if (studentName != null && !studentName.trim().isEmpty() && tvStudentName != null) {
+        if (tvStudentName != null) {
             tvStudentName.setText(studentName);
         }
         if (studentLevel != null && !studentLevel.trim().isEmpty() && tvStudentGradeLevel != null) {
@@ -91,8 +121,7 @@ public class RecordsActivity extends AppCompatActivity {
         TextView tvSelectedActivity = findViewById(R.id.tvSelectedActivity);
         if (layoutActivityDropdown != null && tvSelectedActivity != null) {
             layoutActivityDropdown.setOnClickListener(v -> {
-                String[] activities = new String[]{"Books", "Homeworks", "Attendance", "Exam", "Program Performance"};
-                showCustomDropdown(v, tvSelectedActivity, activities, selectedActivity -> {
+                showCustomDropdown(v, tvSelectedActivity, ACTIVITIES, selectedActivity -> {
                     tvSelectedActivity.setText(selectedActivity);
                     if (selectedActivity.equalsIgnoreCase("Exam")) {
                         TextView tvSelectedSubject = findViewById(R.id.tvSelectedSubject);
@@ -123,8 +152,7 @@ public class RecordsActivity extends AppCompatActivity {
         TextView tvSelectedSubject = findViewById(R.id.tvSelectedSubject);
         if (layoutSubjectDropdown != null && tvSelectedSubject != null) {
             layoutSubjectDropdown.setOnClickListener(v -> {
-                String[] subjects = new String[]{"Writing", "Math", "Reading", "Life Skills", "PE & Arts"};
-                showCustomDropdown(v, tvSelectedSubject, subjects, selectedSubject -> {
+                showCustomDropdown(v, tvSelectedSubject, SUBJECTS, selectedSubject -> {
                     tvSelectedSubject.setText(selectedSubject);
                     updateUiForActivity();
                 });
@@ -133,65 +161,278 @@ public class RecordsActivity extends AppCompatActivity {
 
         updateUiForActivity();
 
-        // Edit button opens Rating Dialog or Exam Score Dialog
+        // EDIT: the record for the current Quarter + Activity + Subject
         ImageView btnEditRecord = findViewById(R.id.btnEditRecord);
         if (btnEditRecord != null) {
             btnEditRecord.setOnClickListener(v -> {
-                boolean isExam = tvSelectedActivity != null && tvSelectedActivity.getText().toString().equalsIgnoreCase("Exam");
+                String activity = currentActivity();
+                if (activity.equalsIgnoreCase("Attendance")) {
+                    Toast.makeText(this, "Attendance is not stored in grade records.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!requireStudentAndSubject()) return;
 
-                if (isExam) {
-                    EditText input = new EditText(this);
-                    input.setHint("e.g. 20/20");
-                    TextView tvExamScore = findViewById(R.id.tvExamScore);
-                    if (tvExamScore != null) {
-                        input.setText(tvExamScore.getText().toString());
-                    }
-                    new AlertDialog.Builder(this)
-                            .setTitle("Edit Exam Score")
-                            .setView(input)
-                            .setPositiveButton("Save", (dialog, which) -> {
-                                String newScore = input.getText().toString().trim();
-                                if (!newScore.isEmpty()) {
-                                    String key = getExamScoreKey();
-                                    examScores.put(key, newScore);
-                                    if (tvExamScore != null) {
-                                        tvExamScore.setText(newScore);
-                                    }
-                                    Toast.makeText(this, "Exam score updated to " + newScore, Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .setNegativeButton("Cancel", null)
-                            .show();
+                String subject = currentSubject();
+                if (activity.equalsIgnoreCase("Exam")) {
+                    String stored = dbHelper.getGradeRecordScore(studentId, getQuarterString(), subject, "Exam");
+                    showExamScoreDialog(stored != null ? stored : "", newScore -> {
+                        if (dbHelper.saveOrUpdateGradeRecord(studentId, getQuarterString(), subject, "Exam", newScore)) {
+                            Toast.makeText(this, "Exam score saved: " + newScore, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Could not save exam score.", Toast.LENGTH_SHORT).show();
+                        }
+                        updateUiForActivity();
+                    });
                 } else {
                     String[] ratings = new String[]{"No Star", "1 Star", "2 Stars", "3 Stars"};
                     new AlertDialog.Builder(this)
                             .setTitle("Rate Grade Record")
                             .setItems(ratings, (dialog, which) -> {
-                                int selectedRating = which;
-                                ImageView ivStar1 = findViewById(R.id.ivStar1);
-                                ImageView ivStar2 = findViewById(R.id.ivStar2);
-                                ImageView ivStar3 = findViewById(R.id.ivStar3);
-                                if (ivStar1 != null && ivStar2 != null && ivStar3 != null) {
-                                    setRating(selectedRating, ivStar1, ivStar2, ivStar3, true);
+                                if (dbHelper.saveOrUpdateGradeRecord(studentId, getQuarterString(), subject, activity, String.valueOf(which))) {
+                                    Toast.makeText(this, "Grade record saved: " + ((which == 0) ? "No stars" : (which + " star(s)")), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this, "Could not save grade record.", Toast.LENGTH_SHORT).show();
                                 }
+                                updateUiForActivity();
                             })
                             .show();
                 }
             });
         }
 
+        // DELETE: the record for the current Quarter + Activity + Subject
         ImageView btnDeleteRecord = findViewById(R.id.btnDeleteRecord);
         if (btnDeleteRecord != null) {
-            btnDeleteRecord.setOnClickListener(v ->
-                Toast.makeText(this, "Delete Grade Record", Toast.LENGTH_SHORT).show()
-            );
+            btnDeleteRecord.setOnClickListener(v -> {
+                String activity = currentActivity();
+                if (activity.equalsIgnoreCase("Attendance")) {
+                    Toast.makeText(this, "Attendance is not stored in grade records.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!requireStudentAndSubject()) return;
+
+                long recordId = dbHelper.findGradeRecordId(studentId, getQuarterString(), currentSubject(), activity);
+                if (recordId < 0) {
+                    Toast.makeText(this, "No saved record for " + getQuarterString() + " / " + currentSubject() + " / " + activity + ".", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                GradeRow row = new GradeRow();
+                row.id = recordId;
+                row.quarter = getQuarterString();
+                row.subject = currentSubject();
+                row.activity = activity;
+                confirmDelete(row, this::updateUiForActivity);
+            });
         }
+
+    }
+
+    // ---------------------------------------------------------------------------------
+    // View all of the student's grade_records (tap a row to edit or delete it)
+    // ---------------------------------------------------------------------------------
+
+    private List<GradeRow> loadStudentRecords() {
+        List<GradeRow> rows = new ArrayList<>();
+        if (studentId < 0) return rows;
+        try (Cursor c = dbHelper.getGradeRecordsForStudent(studentId)) {
+            if (c == null) return rows;
+            while (c.moveToNext()) {
+                GradeRow r = new GradeRow();
+                r.id = c.getLong(c.getColumnIndexOrThrow("record_id"));
+                r.quarter = DatabaseHelper.normalizeQuarter(c.getString(c.getColumnIndexOrThrow("quarter")));
+                r.subject = nz(c.getString(c.getColumnIndexOrThrow("subject")));
+                r.activity = nz(c.getString(c.getColumnIndexOrThrow("activity")));
+                r.score = nz(c.getString(c.getColumnIndexOrThrow("score")));
+                r.date = nz(c.getString(c.getColumnIndexOrThrow("date")));
+                rows.add(r);
+            }
+        }
+        // Group by quarter, then subject, then activity
+        Collections.sort(rows, (a, b) -> {
+            int cmp = a.quarter.compareTo(b.quarter);
+            if (cmp == 0) cmp = a.subject.compareToIgnoreCase(b.subject);
+            if (cmp == 0) cmp = a.activity.compareToIgnoreCase(b.activity);
+            return cmp;
+        });
+        return rows;
+    }
+
+    private void showRecordsDialog() {
+        if (studentId < 0) {
+            Toast.makeText(this, "Student not found in the database.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        List<GradeRow> rows = loadStudentRecords();
+        if (rows.isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setTitle(studentName + " - Grade Records")
+                    .setMessage("No grade records saved yet.")
+                    .setPositiveButton("Close", null)
+                    .show();
+            return;
+        }
+
+        String[] labels = new String[rows.size()];
+        for (int i = 0; i < rows.size(); i++) {
+            GradeRow r = rows.get(i);
+            String subject = r.subject.isEmpty() ? "-" : r.subject;
+            labels[i] = r.quarter + "\n" + subject + " \u2022 " + r.activity + "  \u2192  " + describeScore(r)
+                    + (r.date.isEmpty() ? "" : "\n" + r.date);
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(studentName + " - Grade Records")
+                .setItems(labels, (dialog, which) -> showRowActions(rows.get(which)))
+                .setPositiveButton("Close", null)
+                .show();
+    }
+
+    private void showRowActions(GradeRow row) {
+        new AlertDialog.Builder(this)
+                .setTitle(row.quarter + " \u2022 " + row.subject + " \u2022 " + row.activity)
+                .setItems(new String[]{"Edit", "Delete"}, (dialog, which) -> {
+                    if (which == 0) editRow(row);
+                    else confirmDelete(row, this::afterRecordChanged);
+                })
+                .setNegativeButton("Back", (d, w) -> showRecordsDialog())
+                .show();
+    }
+
+    private void editRow(GradeRow row) {
+        if (row.activity.equalsIgnoreCase("Exam")) {
+            showExamScoreDialog(row.score, newScore -> {
+                boolean ok = dbHelper.updateGradeRecordScore(row.id, newScore);
+                Toast.makeText(this, ok ? "Exam score updated." : "Could not update record.", Toast.LENGTH_SHORT).show();
+                afterRecordChanged();
+            });
+        } else {
+            String[] ratings = new String[]{"No Star", "1 Star", "2 Stars", "3 Stars"};
+            new AlertDialog.Builder(this)
+                    .setTitle("Rate: " + row.subject + " \u2022 " + row.activity)
+                    .setItems(ratings, (dialog, which) -> {
+                        boolean ok = dbHelper.updateGradeRecordScore(row.id, String.valueOf(which));
+                        Toast.makeText(this, ok ? "Grade record updated." : "Could not update record.", Toast.LENGTH_SHORT).show();
+                        afterRecordChanged();
+                    })
+                    .setNegativeButton("Cancel", (d, w) -> showRecordsDialog())
+                    .show();
+        }
+    }
+
+    private void confirmDelete(GradeRow row, Runnable onDeleted) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete grade record?")
+                .setMessage(row.quarter + " \u2022 " + row.subject + " \u2022 " + row.activity
+                        + "\n\nThis cannot be undone.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    boolean ok = dbHelper.deleteGradeRecord(row.id);
+                    Toast.makeText(this, ok ? "Grade record deleted." : "Could not delete record.", Toast.LENGTH_SHORT).show();
+                    if (ok && onDeleted != null) onDeleted.run();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    /** Refreshes the main card, then re-opens the list so the change is visible. */
+    private void afterRecordChanged() {
+        updateUiForActivity();
+        showRecordsDialog();
+    }
+
+    interface OnScoreEntered {
+        void onScore(String score);
+    }
+
+    private void showExamScoreDialog(String initial, OnScoreEntered callback) {
+        EditText input = new EditText(this);
+        input.setHint("e.g. 15/20");
+        input.setText(initial == null ? "" : initial);
+        input.setSelection(input.getText().length());
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Edit Exam Score")
+                .setView(input)
+                .setPositiveButton("Save", null)
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String s = input.getText().toString().trim().replaceAll("\\s+", "");
+            if (!isValidExamScore(s)) {
+                input.setError("Use the format score/total, e.g. 15/20");
+                return;
+            }
+            dialog.dismiss();
+            callback.onScore(s);
+        }));
+        dialog.show();
+    }
+
+    /** "score/total" with score <= total and total > 0. */
+    private boolean isValidExamScore(String s) {
+        if (!s.matches("\\d{1,4}/\\d{1,4}")) return false;
+        String[] p = s.split("/");
+        return Integer.parseInt(p[1]) > 0 && Integer.parseInt(p[0]) <= Integer.parseInt(p[1]);
+    }
+
+    private String describeScore(GradeRow r) {
+        if (r.activity.equalsIgnoreCase("Exam")) return r.score.isEmpty() ? "-" : r.score;
+        int stars = parseStars(r.score);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= 3; i++) sb.append(i <= stars ? '\u2605' : '\u2606');
+        return sb.toString();
+    }
+
+    private int parseStars(String score) {
+        try {
+            String clean = score == null ? "" : score.replaceAll("[^0-9]", "").trim();
+            if (clean.isEmpty()) return 0;
+            return Math.min(3, Integer.parseInt(clean));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private static String nz(String s) {
+        return s == null ? "" : s.trim();
+    }
+
+    // ---------------------------------------------------------------------------------
+    // Current selection helpers
+    // ---------------------------------------------------------------------------------
+
+    private String currentActivity() {
+        TextView tv = findViewById(R.id.tvSelectedActivity);
+        return tv != null ? tv.getText().toString() : "Books";
+    }
+
+    private String currentSubject() {
+        TextView tv = findViewById(R.id.tvSelectedSubject);
+        return tv != null ? tv.getText().toString() : "";
+    }
+
+    private boolean isValidSubject(String subject) {
+        return Arrays.asList(SUBJECTS).contains(subject);
+    }
+
+    /** Saving under the "Select Subject" placeholder used to create junk rows, so block it. */
+    private boolean requireStudentAndSubject() {
+        if (studentId < 0) {
+            Toast.makeText(this, "Student not found in the database.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!isValidSubject(currentSubject())) {
+            Toast.makeText(this, "Please select a subject first.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private String getQuarterString() {
+        return (currentQuarter == 1) ? "1st Quarter" : (currentQuarter == 2) ? "2nd Quarter" : "3rd Quarter";
     }
 
     private void updateUiForActivity() {
         TextView tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
         TextView tvSelectedActivity = findViewById(R.id.tvSelectedActivity);
-        TextView tvSelectedSubject = findViewById(R.id.tvSelectedSubject);
         TextView tvSelectedMonth = findViewById(R.id.tvSelectedMonth);
         TextView tvRecordSubtitle = findViewById(R.id.tvRecordSubtitle);
         View tvSubjectLabel = findViewById(R.id.tvSubjectLabel);
@@ -226,12 +467,8 @@ public class RecordsActivity extends AppCompatActivity {
             if (layoutAttendanceContainer != null) layoutAttendanceContainer.setVisibility(View.GONE);
 
             if (isExam) {
-                if (tvSelectedSubject != null && tvSelectedSubject.getText().toString().equals("Reading")) {
-                    tvSelectedSubject.setText("Select Subject");
-                }
                 if (tvRecordSubtitle != null) {
-                    String qName = (currentQuarter == 1) ? "1st Quarter" : (currentQuarter == 2) ? "2nd Quarter" : "3rd Quarter";
-                    tvRecordSubtitle.setText(qName);
+                    tvRecordSubtitle.setText(getQuarterString());
                     tvRecordSubtitle.setVisibility(View.VISIBLE);
                 }
                 if (layoutStarsContainer != null) layoutStarsContainer.setVisibility(View.GONE);
@@ -251,19 +488,55 @@ public class RecordsActivity extends AppCompatActivity {
         if (grid == null) return;
         grid.removeAllViews();
 
-        int daysCount = 31;
-        if (month.equalsIgnoreCase("February")) {
-            daysCount = 28;
-        } else if (month.equalsIgnoreCase("April") || month.equalsIgnoreCase("June") || month.equalsIgnoreCase("September") || month.equalsIgnoreCase("November")) {
-            daysCount = 30;
+        String[] monthNames = new String[]{
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+        };
+        int monthIndex = Arrays.asList(monthNames).indexOf(month);
+        if (monthIndex < 0) monthIndex = 0;
+
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        int year = calendar.get(java.util.Calendar.YEAR);
+        calendar.set(java.util.Calendar.YEAR, year);
+        calendar.set(java.util.Calendar.MONTH, monthIndex);
+        calendar.set(java.util.Calendar.DAY_OF_MONTH, 1);
+        int daysCount = calendar.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
+
+        float density = getResources().getDisplayMetrics().density;
+        int heightPx = (int) (28 * density);
+        int marginPx = (int) (4 * density);
+
+        // The calendar displays Monday-Friday only, matching the weekday headings in the XML.
+        int firstDayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK);
+        int leadingWeekdaySlots = (firstDayOfWeek == java.util.Calendar.SUNDAY
+                || firstDayOfWeek == java.util.Calendar.SATURDAY)
+                ? 0 : firstDayOfWeek - java.util.Calendar.MONDAY;
+
+        for (int i = 0; i < leadingWeekdaySlots; i++) {
+            addAttendanceBlankCell(grid, heightPx, marginPx);
         }
 
-        Random random = new Random(month.hashCode() + currentQuarter);
+        for (int day = 1; day <= daysCount; day++) {
+            calendar.set(java.util.Calendar.DAY_OF_MONTH, day);
+            int dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK);
+            if (dayOfWeek == java.util.Calendar.SATURDAY || dayOfWeek == java.util.Calendar.SUNDAY) {
+                continue;
+            }
 
-        for (int i = 0; i < daysCount; i++) {
-            View dayBox = new View(this);
-            int heightPx = (int) (28 * getResources().getDisplayMetrics().density);
-            int marginPx = (int) (4 * getResources().getDisplayMetrics().density);
+            final int selectedDay = day;
+            String dateKey = String.format(java.util.Locale.US, "%04d-%02d-%02d",
+                    year, monthIndex + 1, selectedDay);
+            String status = dbHelper.getAttendanceStatus(studentId, dateKey);
+
+            TextView dayBox = new TextView(this);
+            dayBox.setText(String.valueOf(selectedDay));
+            dayBox.setGravity(Gravity.CENTER);
+            dayBox.setTextSize(12);
+            dayBox.setTextColor(Color.BLACK);
+            dayBox.setBackgroundColor(attendanceColor(status));
+            dayBox.setContentDescription("Day " + selectedDay
+                    + (status.isEmpty() ? ", no attendance recorded" : ", " + status));
+
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
             lp.width = 0;
             lp.height = heightPx;
@@ -271,61 +544,89 @@ public class RecordsActivity extends AppCompatActivity {
             lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED);
             lp.setMargins(marginPx, marginPx, marginPx, marginPx);
             dayBox.setLayoutParams(lp);
-
-            boolean isPresent = random.nextDouble() > 0.25;
-            boolean isDarkGreen = random.nextDouble() > 0.5;
-            if (isPresent) {
-                dayBox.setBackgroundColor(isDarkGreen ? Color.parseColor("#006622") : Color.parseColor("#00A859"));
-            } else {
-                dayBox.setBackgroundColor(Color.parseColor("#E0E0E0"));
-            }
+            dayBox.setClickable(true);
+            dayBox.setFocusable(true);
+            dayBox.setOnClickListener(v -> showAttendanceStatusDialog(selectedDay, dateKey, month));
             grid.addView(dayBox);
         }
     }
 
-    private String getRatingKey() {
-        TextView tvSubject = findViewById(R.id.tvSelectedSubject);
-        TextView tvActivity = findViewById(R.id.tvSelectedActivity);
-        String subject = (tvSubject != null) ? tvSubject.getText().toString() : "Reading";
-        String activity = (tvActivity != null) ? tvActivity.getText().toString() : "Books";
-        return currentQuarter + "_" + subject + "_" + activity;
+    private void addAttendanceBlankCell(GridLayout grid, int heightPx, int marginPx) {
+        View blank = new View(this);
+        GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+        lp.width = 0;
+        lp.height = heightPx;
+        lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+        lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED);
+        lp.setMargins(marginPx, marginPx, marginPx, marginPx);
+        blank.setLayoutParams(lp);
+        grid.addView(blank);
     }
 
-    private String getExamScoreKey() {
-        TextView tvSubject = findViewById(R.id.tvSelectedSubject);
-        String subject = (tvSubject != null) ? tvSubject.getText().toString() : "Select Subject";
-        return currentQuarter + "_" + subject + "_Exam";
+    private int attendanceColor(String status) {
+        if ("Present".equalsIgnoreCase(status)) return Color.parseColor("#4CAF50");
+        if ("Absent".equalsIgnoreCase(status)) return Color.parseColor("#BDBDBD");
+        if ("Suspended".equalsIgnoreCase(status)) return Color.parseColor("#FFCC00");
+        return Color.parseColor("#F5F5F5");
+    }
+
+    private void showAttendanceStatusDialog(int day, String dateKey, String month) {
+        if (studentId < 0) {
+            Toast.makeText(this, "Student not found in the database.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String[] statuses = new String[]{"Present", "Absent", "Suspended", "Clear attendance"};
+        new AlertDialog.Builder(this)
+                .setTitle("Attendance — " + month + " " + day)
+                .setItems(statuses, (dialog, which) -> {
+                    if (which == 3) {
+                        boolean deleted = dbHelper.deleteAttendanceStatus(studentId, dateKey);
+                        Toast.makeText(this, deleted ? "Attendance cleared." : "No attendance to clear.",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        String selectedStatus = statuses[which];
+                        boolean saved = dbHelper.saveAttendanceStatus(studentId, dateKey, selectedStatus);
+                        Toast.makeText(this,
+                                saved ? selectedStatus + " saved for " + month + " " + day + "."
+                                      : "Could not save attendance.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    populateAttendanceGridForMonth(month);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void loadRatingForCurrentSelection() {
         ImageView ivStar1 = findViewById(R.id.ivStar1);
         ImageView ivStar2 = findViewById(R.id.ivStar2);
         ImageView ivStar3 = findViewById(R.id.ivStar3);
-        if (ivStar1 != null && ivStar2 != null && ivStar3 != null) {
-            String key = getRatingKey();
-            Integer val = recordRatings.get(key);
-            int rating = val != null ? val : 0;
-            setRatingInternal(rating, ivStar1, ivStar2, ivStar3);
-        }
+        if (ivStar1 == null || ivStar2 == null || ivStar3 == null) return;
+
+        // Clear first, so nothing from the previously shown quarter/subject can linger on screen.
+        setRatingInternal(0, ivStar1, ivStar2, ivStar3);
+
+        String subject = currentSubject();
+        if (studentId < 0 || !isValidSubject(subject)) return;
+
+        String dbScore = dbHelper.getGradeRecordScore(studentId, getQuarterString(), subject, currentActivity());
+        setRatingInternal(parseStars(dbScore), ivStar1, ivStar2, ivStar3);
     }
 
     private void loadExamScoreForCurrentSelection() {
         TextView tvExamScore = findViewById(R.id.tvExamScore);
-        if (tvExamScore != null) {
-            String key = getExamScoreKey();
-            String score = examScores.getOrDefault(key, "20/20");
-            tvExamScore.setText(score);
-        }
-    }
+        if (tvExamScore == null) return;
 
-    private void setRating(int rating, ImageView s1, ImageView s2, ImageView s3, boolean showToast) {
-        String key = getRatingKey();
-        recordRatings.put(key, rating);
-        setRatingInternal(rating, s1, s2, s3);
-        if (showToast) {
-            String msg = (rating == 0) ? "No stars" : (rating + " star(s)");
-            Toast.makeText(this, "Rating updated for current Quarter/Subject to " + msg, Toast.LENGTH_SHORT).show();
+        String score = "0/20";
+        String subject = currentSubject();
+        if (studentId >= 0 && isValidSubject(subject)) {
+            String dbScore = dbHelper.getGradeRecordScore(studentId, getQuarterString(), subject, "Exam");
+            if (dbScore != null && !dbScore.trim().isEmpty()) {
+                score = dbScore.trim();
+            }
         }
+        tvExamScore.setText(score);
     }
 
     private void setRatingInternal(int rating, ImageView s1, ImageView s2, ImageView s3) {
