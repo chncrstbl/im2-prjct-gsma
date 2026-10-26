@@ -1,6 +1,5 @@
 package com.example.priangradingsystem.grades;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 @SuppressWarnings("all")
@@ -121,9 +119,14 @@ public class GradeEntryActivity extends AppCompatActivity {
         tvScoreSuffix = findViewById(R.id.tvScoreSuffix);
         tvAssessmentDate = findViewById(R.id.tvAssessmentDate);
 
+        // The date is always today's date (not selectable).
+        if (tvAssessmentDate != null) {
+            tvAssessmentDate.setText(getTodayDate());
+        }
         RelativeLayout btnAssessmentDate = findViewById(R.id.btnAssessmentDate);
         if (btnAssessmentDate != null) {
-            btnAssessmentDate.setOnClickListener(v -> showDatePicker());
+            btnAssessmentDate.setOnClickListener(null);
+            btnAssessmentDate.setClickable(false);
         }
 
         ImageView btnBack = findViewById(R.id.btnBack);
@@ -261,15 +264,8 @@ public class GradeEntryActivity extends AppCompatActivity {
         }
     }
 
-    private void showDatePicker() {
-        Calendar cal = Calendar.getInstance();
-        DatePickerDialog dialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-            String dateStr = String.format(Locale.getDefault(), "October %d, %d", dayOfMonth, year);
-            if (tvAssessmentDate != null) {
-                tvAssessmentDate.setText(dateStr);
-            }
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-        dialog.show();
+    private String getTodayDate() {
+        return new java.text.SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(new java.util.Date());
     }
 
     private void saveGrade() {
@@ -294,8 +290,18 @@ public class GradeEntryActivity extends AppCompatActivity {
 
         String quarter = spnQuarter != null && spnQuarter.getSelectedItem() != null ? spnQuarter.getSelectedItem().toString() : "1st Quarter";
         String subject = spnSubject != null && spnSubject.getSelectedItem() != null ? spnSubject.getSelectedItem().toString() : "Writing";
+        String assessmentDate = getTodayDate();
+        String remarks = etRemarks != null ? etRemarks.getText().toString().trim() : "";
 
-        Toast.makeText(this, "Grade successfully saved for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
+        com.example.priangradingsystem.data.DatabaseHelper dbHelper = new com.example.priangradingsystem.data.DatabaseHelper(this);
+        boolean isSaved = dbHelper.insertGradeRecord(selectedStudentName, selectedStudentLevel, quarter, subject, activity, score, assessmentDate, remarks);
+
+        if (!isSaved) {
+            Toast.makeText(this, "Failed to save grade: " + dbHelper.getLastError(), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
 
         if (etScore != null) {
             etScore.setText("");
