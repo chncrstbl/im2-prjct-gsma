@@ -65,7 +65,7 @@ public class RecordsActivity extends AppCompatActivity {
                 } catch (Exception ignored) {}
                 imgStudentAvatar.setImageURI(uri);
             } catch (Exception e) {
-                imgStudentAvatar.setImageResource(R.drawable.children);
+                imgStudentAvatar.setImageResource(R.drawable.profile_foreground_placeholder_female);
             }
         }
 
