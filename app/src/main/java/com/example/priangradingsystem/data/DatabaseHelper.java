@@ -19,9 +19,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
     private static final String DATABASE_NAME = "Database.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private final Context context;
     private final File dbPath;
+    private String lastError = "";
+
+    public String getLastError() { return lastError; }
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void copyDatabaseIfNeeded() {
-        if (!dbPath.exists()) {
+        if (!dbPath.exists() || dbPath.length() == 0) {
             File parentDir = dbPath.getParentFile();
             if (parentDir != null && !parentDir.exists()) {
                 if (!parentDir.mkdirs()) {
@@ -56,25 +59,97 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTeachersTable = "CREATE TABLE IF NOT EXISTS teachers (" +
-                "teacher_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "full_name TEXT NOT NULL, " +
-                "username TEXT NOT NULL UNIQUE, " +
-                "password_hash TEXT NOT NULL" +
-                ");";
-        db.execSQL(createTeachersTable);
-
-        String insertDefaultTeacher = "INSERT OR IGNORE INTO teachers (full_name, username, password_hash) " +
-                "VALUES ('Marian F. Ceron', 'Prian', 'Ham20456');";
-        db.execSQL(insertDefaultTeacher);
+        createTables(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        ensureTablesAndColumns(db);
+    }
 
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        ensureTablesAndColumns(db);
+    }
+
+    private void createTables(SQLiteDatabase db) {
         try {
-            db.execSQL("ALTER TABLE students ADD COLUMN level TEXT DEFAULT 'Nursery';");
-        } catch (Exception ignored) {}
+            String createTeachersTable = "CREATE TABLE IF NOT EXISTS teachers (" +
+                    "teacher_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "full_name TEXT NOT NULL, " +
+                    "username TEXT NOT NULL UNIQUE, " +
+                    "password_hash TEXT NOT NULL" +
+                    ");";
+            db.execSQL(createTeachersTable);
+
+            String insertDefaultTeacher = "INSERT OR IGNORE INTO teachers (full_name, username, password_hash) " +
+                    "VALUES ('Marian F. Ceron', 'Prian', 'Ham20456');";
+            db.execSQL(insertDefaultTeacher);
+
+            String createStudentsTable = "CREATE TABLE IF NOT EXISTS students (" +
+                    "student_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "first_name TEXT NOT NULL, " +
+                    "middle_name TEXT, " +
+                    "last_name TEXT NOT NULL, " +
+                    "birthdate TEXT, " +
+                    "sex TEXT, " +
+                    "age TEXT, " +
+                    "guardian_name TEXT, " +
+                    "guardian_contact TEXT, " +
+                    "address TEXT, " +
+                    "photo_uri TEXT, " +
+                    "status TEXT NOT NULL DEFAULT 'Active', " +
+                    "date_added TEXT DEFAULT CURRENT_TIMESTAMP, " +
+                    "level TEXT DEFAULT 'Nursery'" +
+                    ");";
+            db.execSQL(createStudentsTable);
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating database tables", e);
+        }
+    }
+
+    private void ensureTablesAndColumns(SQLiteDatabase db) {
+        try {
+            createTables(db);
+
+            // Every column the app writes to. Any that are missing in an older/bundled
+            // database are added here, so inserts never fail with "no such column".
+            String[][] required = {
+                    {"middle_name", "TEXT"},
+                    {"birthdate", "TEXT"},
+                    {"sex", "TEXT"},
+                    {"age", "TEXT"},
+                    {"guardian_name", "TEXT"},
+                    {"guardian_contact", "TEXT"},
+                    {"address", "TEXT"},
+                    {"photo_uri", "TEXT"},
+                    {"status", "TEXT DEFAULT 'Active'"},
+                    {"date_added", "TEXT"},
+                    {"level", "TEXT DEFAULT 'Nursery'"}
+            };
+
+            java.util.Set<String> existing = new java.util.HashSet<>();
+            try (Cursor cursor = db.rawQuery("PRAGMA table_info(students)", null)) {
+                int nameIndex = cursor.getColumnIndex("name");
+                while (cursor.moveToNext()) {
+                    if (nameIndex != -1) existing.add(cursor.getString(nameIndex).toLowerCase());
+                }
+            }
+
+            for (String[] col : required) {
+                if (!existing.contains(col[0])) {
+                    try {
+                        db.execSQL("ALTER TABLE students ADD COLUMN " + col[0] + " " + col[1] + ";");
+                        Log.d(TAG, "Added missing column: " + col[0]);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to add column " + col[0], e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in ensureTablesAndColumns", e);
+        }
     }
 
     public boolean authenticateTeacher(String username, String password) {
@@ -112,52 +187,80 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // CRUD: (Nursery / Toddler)
     public boolean insertStudent(String firstName, String middleName, String lastName, String birthdate, String sex, String age, String guardianName, String guardianContact, String address, String photoUri, String level) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("first_name", firstName);
-        values.put("middle_name", middleName);
-        values.put("last_name", lastName);
-        values.put("birthdate", birthdate);
-        values.put("sex", sex);
-        values.put("age", age);
-        values.put("guardian_name", guardianName);
-        values.put("guardian_contact", guardianContact);
-        values.put("address", address);
-        values.put("photo_uri", photoUri);
-        values.put("level", level != null ? level : "Nursery");
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("first_name", firstName != null ? firstName : "");
+            values.put("middle_name", middleName != null ? middleName : "");
+            values.put("last_name", lastName != null ? lastName : "");
+            values.put("birthdate", birthdate != null ? birthdate : "");
+            values.put("sex", sex != null ? sex : "");
+            values.put("age", age != null ? age : "");
+            values.put("guardian_name", guardianName != null ? guardianName : "");
+            values.put("guardian_contact", guardianContact != null ? guardianContact : "");
+            values.put("address", address != null ? address : "");
+            values.put("photo_uri", photoUri != null ? photoUri : "");
+            values.put("level", level != null ? level : "Nursery");
 
-        long result = db.insert("students", null, values);
-        return result != -1;
+            lastError = "";
+            long result = db.insertOrThrow("students", null, values);
+            return result != -1;
+        } catch (Exception e) {
+            lastError = e.getMessage() != null ? e.getMessage() : e.toString();
+            Log.e(TAG, "Error in insertStudent", e);
+            return false;
+        }
     }
 
     // CRUD: Update Student
     public boolean updateStudent(int studentId, String firstName, String middleName, String lastName, String birthdate, String sex, String age, String guardianName, String guardianContact, String address, String photoUri, String level) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("first_name", firstName);
-        values.put("middle_name", middleName);
-        values.put("last_name", lastName);
-        values.put("birthdate", birthdate);
-        values.put("sex", sex);
-        values.put("age", age);
-        values.put("guardian_name", guardianName);
-        values.put("guardian_contact", guardianContact);
-        values.put("address", address);
-        values.put("photo_uri", photoUri);
-        values.put("level", level != null ? level : "Nursery"); // Ina-update ang level
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("first_name", firstName != null ? firstName : "");
+            values.put("middle_name", middleName != null ? middleName : "");
+            values.put("last_name", lastName != null ? lastName : "");
+            values.put("birthdate", birthdate != null ? birthdate : "");
+            values.put("sex", sex != null ? sex : "");
+            values.put("age", age != null ? age : "");
+            values.put("guardian_name", guardianName != null ? guardianName : "");
+            values.put("guardian_contact", guardianContact != null ? guardianContact : "");
+            values.put("address", address != null ? address : "");
+            values.put("photo_uri", photoUri != null ? photoUri : "");
+            values.put("level", level != null ? level : "Nursery");
 
-        int result = db.update("students", values, "student_id = ?", new String[]{String.valueOf(studentId)});
-        return result > 0;
+            lastError = "";
+            int result = db.update("students", values, "student_id = ?", new String[]{String.valueOf(studentId)});
+            if (result <= 0) {
+                lastError = "No student found with id " + studentId;
+                Log.e(TAG, "updateStudent failed: " + lastError);
+            }
+            return result > 0;
+        } catch (Exception e) {
+            lastError = e.getMessage() != null ? e.getMessage() : e.toString();
+            Log.e(TAG, "Error in updateStudent", e);
+            return false;
+        }
     }
 
     public boolean deleteStudent(int studentId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete("students", "student_id = ?", new String[]{String.valueOf(studentId)});
-        return result > 0;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            int result = db.delete("students", "student_id = ?", new String[]{String.valueOf(studentId)});
+            return result > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error in deleteStudent", e);
+            return false;
+        }
     }
 
     public Cursor getAllStudents() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM students ORDER BY last_name COLLATE NOCASE ASC", null);
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            return db.rawQuery("SELECT * FROM students ORDER BY last_name COLLATE NOCASE ASC", null);
+        } catch (Exception e) {
+            Log.e(TAG, "Error in getAllStudents", e);
+            return null;
+        }
     }
 }

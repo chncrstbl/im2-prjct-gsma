@@ -203,6 +203,19 @@ public class AddStudentActivity extends AppCompatActivity {
                     etParentContact.setText(cleanContact);
                 }
 
+                String editGender = getIntent().getStringExtra("STUDENT_GENDER");
+                if (editGender != null && spnStudentGender != null) {
+                    android.widget.SpinnerAdapter rawAdapter = spnStudentGender.getAdapter();
+                    if (rawAdapter instanceof ArrayAdapter) {
+                        @SuppressWarnings("unchecked")
+                        ArrayAdapter<String> adapter = (ArrayAdapter<String>) rawAdapter;
+                        int spinnerPosition = adapter.getPosition(editGender);
+                        if (spinnerPosition >= 0) {
+                            spnStudentGender.setSelection(spinnerPosition);
+                        }
+                    }
+                }
+
                 String editClass = getIntent().getStringExtra("STUDENT_CLASS");
                 if (editClass != null && spnGradeLevel != null) {
                     if (editClass.contains("-")) {
@@ -365,7 +378,10 @@ public class AddStudentActivity extends AppCompatActivity {
                 setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
-                Toast.makeText(this, "Database operation failed. Please try again.", Toast.LENGTH_SHORT).show();
+                String err = dbHelper.getLastError();
+                Log.e(TAG, "Save failed: " + err);
+                Toast.makeText(this, "Database operation failed. Please try again."
+                        + (err.isEmpty() ? "" : "\n(" + err + ")"), Toast.LENGTH_LONG).show();
             }
 
         } catch (Exception e) {
