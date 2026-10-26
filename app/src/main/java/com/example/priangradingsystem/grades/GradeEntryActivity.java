@@ -264,7 +264,9 @@ public class GradeEntryActivity extends AppCompatActivity {
     private void showDatePicker() {
         Calendar cal = Calendar.getInstance();
         DatePickerDialog dialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-            String dateStr = String.format(Locale.getDefault(), "October %d, %d", dayOfMonth, year);
+            String[] months = {"January", "February", "March", "April", "May", "June", "July",
+                    "August", "September", "October", "November", "December"};
+            String dateStr = String.format(Locale.getDefault(), "%s %d, %d", months[month], dayOfMonth, year);
             if (tvAssessmentDate != null) {
                 tvAssessmentDate.setText(dateStr);
             }
@@ -300,11 +302,12 @@ public class GradeEntryActivity extends AppCompatActivity {
         com.example.priangradingsystem.data.DatabaseHelper dbHelper = new com.example.priangradingsystem.data.DatabaseHelper(this);
         boolean isSaved = dbHelper.insertGradeRecord(selectedStudentName, selectedStudentLevel, quarter, subject, activity, score, assessmentDate, remarks);
 
-        if (isSaved) {
-            Toast.makeText(this, "Grade successfully saved to Database.db for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Grade saved for " + selectedStudentName, Toast.LENGTH_SHORT).show();
+        if (!isSaved) {
+            Toast.makeText(this, "Failed to save grade: " + dbHelper.getLastError(), Toast.LENGTH_LONG).show();
+            return;
         }
+
+        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
 
         if (etScore != null) {
             etScore.setText("");

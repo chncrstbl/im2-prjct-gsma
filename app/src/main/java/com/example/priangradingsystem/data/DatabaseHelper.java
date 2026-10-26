@@ -106,27 +106,84 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ");";
             db.execSQL(createStudentsTable);
 
-            String createGradeRecordsTable = "CREATE TABLE IF NOT EXISTS grade_records (" +
-                    "record_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "student_name TEXT NOT NULL, " +
-                    "student_level TEXT, " +
-                    "quarter TEXT, " +
-                    "subject TEXT, " +
-                    "activity TEXT, " +
-                    "score TEXT, " +
-                    "assessment_date TEXT, " +
-                    "remarks TEXT, " +
-                    "date_submitted TEXT DEFAULT CURRENT_TIMESTAMP" +
-                    ");";
-            db.execSQL(createGradeRecordsTable);
+            createGradeRecordsTable(db);
         } catch (Exception e) {
             Log.e(TAG, "Error creating database tables", e);
+        }
+    }
+
+    private void createGradeRecordsTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS grade_records (" +
+                "record_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "student_id INTEGER, " +
+                "student_name TEXT NOT NULL, " +
+                "student_level TEXT, " +
+                "quarter TEXT, " +
+                "subject TEXT, " +
+                "activity TEXT, " +
+                "score TEXT, " +
+                "assessment_date TEXT, " +
+                "date TEXT, " +
+                "remarks TEXT, " +
+                "date_submitted TEXT DEFAULT CURRENT_TIMESTAMP" +
+                ");");
+    }
+
+    /**
+     * The bundled Database.db ships an old grade_records table (student_id NOT NULL,
+     * quarter REAL, UNIQUE(student_id, subject, quarter)) that rejects the app's inserts.
+     * Rebuild it with the current layout and carry over any existing rows.
+     */
+    private void migrateLegacyGradeRecords(SQLiteDatabase db) {
+        boolean legacy = false;
+        java.util.Set<String> oldCols = new java.util.HashSet<>();
+        try (Cursor c = db.rawQuery("PRAGMA table_info(grade_records)", null)) {
+            int n = c.getColumnIndex("name");
+            int nn = c.getColumnIndex("notnull");
+            while (c.moveToNext()) {
+                String col = c.getString(n).toLowerCase();
+                oldCols.add(col);
+                if (col.equals("student_id") && c.getInt(nn) == 1) legacy = true;
+            }
+        }
+        if (!legacy && oldCols.contains("student_name")) return;
+
+        try {
+            db.execSQL("ALTER TABLE grade_records RENAME TO grade_records_old");
+            db.execSQL("DROP INDEX IF EXISTS idx_grades_student");
+            createGradeRecordsTable(db);
+
+            String[] copyCols = {"student_id", "student_name", "student_level", "quarter", "subject",
+                    "activity", "score", "assessment_date", "date", "remarks"};
+            StringBuilder target = new StringBuilder();
+            StringBuilder source = new StringBuilder();
+            for (String col : copyCols) {
+                if (oldCols.contains(col)) {
+                    if (target.length() > 0) { target.append(", "); source.append(", "); }
+                    target.append(col);
+                    source.append("o.").append(col);
+                }
+            }
+            if (!oldCols.contains("student_name") && oldCols.contains("student_id")) {
+                target.append(", student_name");
+                source.append(", COALESCE((SELECT s.last_name || ', ' || s.first_name FROM students s " +
+                        "WHERE s.student_id = o.student_id), 'Unknown')");
+            }
+            if (target.length() > 0) {
+                db.execSQL("INSERT INTO grade_records (" + target + ") SELECT " + source +
+                        " FROM grade_records_old o");
+            }
+            db.execSQL("DROP TABLE grade_records_old");
+            Log.d(TAG, "Migrated legacy grade_records table.");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to migrate grade_records", e);
         }
     }
 
     private void ensureTablesAndColumns(SQLiteDatabase db) {
         try {
             createTables(db);
+            migrateLegacyGradeRecords(db);
 
             // Every column the app writes to. Any that are missing in an older/bundled
             // database are added here, so inserts never fail with "no such column".
