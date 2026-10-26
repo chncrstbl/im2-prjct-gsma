@@ -25,15 +25,14 @@
             android:contentDescription="@string/back"
             android:src="@drawable/back_button" />
 
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="Student Records"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:maxHeight="32dp"
+            android:src="@drawable/select_student" />
     </RelativeLayout>
 
     <LinearLayout
