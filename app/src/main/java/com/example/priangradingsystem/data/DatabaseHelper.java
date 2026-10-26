@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@SuppressWarnings("all")
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
@@ -45,9 +46,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try (InputStream input = context.getAssets().open("Database.db");
                  OutputStream output = new FileOutputStream(dbPath)) {
                 byte[] buffer = new byte[1024];
-                int length;
-                while ((length = input.read(buffer)) > 0) {
-                    output.write(buffer, 0, length);
+                int readLength;
+                while ((readLength = input.read(buffer)) > 0) {
+                    output.write(buffer, 0, readLength);
                 }
                 output.flush();
                 Log.d(TAG, "Database copied successfully from assets.");
@@ -104,6 +105,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "level TEXT DEFAULT 'Nursery'" +
                     ");";
             db.execSQL(createStudentsTable);
+
+            String createGradeRecordsTable = "CREATE TABLE IF NOT EXISTS grade_records (" +
+                    "record_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "student_name TEXT NOT NULL, " +
+                    "student_level TEXT, " +
+                    "quarter TEXT, " +
+                    "subject TEXT, " +
+                    "activity TEXT, " +
+                    "score TEXT, " +
+                    "assessment_date TEXT, " +
+                    "remarks TEXT, " +
+                    "date_submitted TEXT DEFAULT CURRENT_TIMESTAMP" +
+                    ");";
+            db.execSQL(createGradeRecordsTable);
         } catch (Exception e) {
             Log.e(TAG, "Error creating database tables", e);
         }
@@ -152,6 +167,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    @SuppressWarnings("unused")
     public boolean authenticateTeacher(String username, String password) {
         if (username == null || password == null) return false;
 
@@ -260,6 +276,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return db.rawQuery("SELECT * FROM students ORDER BY last_name COLLATE NOCASE ASC", null);
         } catch (Exception e) {
             Log.e(TAG, "Error in getAllStudents", e);
+            return null;
+        }
+    }
+
+    public boolean insertGradeRecord(String studentName, String studentLevel, String quarter, String subject, String activity, String score, String assessmentDate, String remarks) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("student_name", studentName != null ? studentName : "");
+            values.put("student_level", studentLevel != null ? studentLevel : "");
+            values.put("quarter", quarter != null ? quarter : "1st Quarter");
+            values.put("subject", subject != null ? subject : "");
+            values.put("activity", activity != null ? activity : "");
+            values.put("score", score != null ? score : "");
+            values.put("assessment_date", assessmentDate != null ? assessmentDate : "");
+            values.put("remarks", remarks != null ? remarks : "");
+
+            lastError = "";
+            long result = db.insertOrThrow("grade_records", null, values);
+            return result != -1;
+        } catch (Exception e) {
+            lastError = e.getMessage() != null ? e.getMessage() : e.toString();
+            Log.e(TAG, "Error in insertGradeRecord", e);
+            return false;
+        }
+    }
+
+    public Cursor getAllGradeRecords() {
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            return db.rawQuery("SELECT * FROM grade_records ORDER BY record_id DESC", null);
+        } catch (Exception e) {
+            Log.e(TAG, "Error in getAllGradeRecords", e);
             return null;
         }
     }

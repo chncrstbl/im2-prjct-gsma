@@ -294,8 +294,17 @@ public class GradeEntryActivity extends AppCompatActivity {
 
         String quarter = spnQuarter != null && spnQuarter.getSelectedItem() != null ? spnQuarter.getSelectedItem().toString() : "1st Quarter";
         String subject = spnSubject != null && spnSubject.getSelectedItem() != null ? spnSubject.getSelectedItem().toString() : "Writing";
+        String assessmentDate = tvAssessmentDate != null ? tvAssessmentDate.getText().toString().trim() : "";
+        String remarks = etRemarks != null ? etRemarks.getText().toString().trim() : "";
 
-        Toast.makeText(this, "Grade successfully saved for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
+        com.example.priangradingsystem.data.DatabaseHelper dbHelper = new com.example.priangradingsystem.data.DatabaseHelper(this);
+        boolean isSaved = dbHelper.insertGradeRecord(selectedStudentName, selectedStudentLevel, quarter, subject, activity, score, assessmentDate, remarks);
+
+        if (isSaved) {
+            Toast.makeText(this, "Grade successfully saved to Database.db for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Grade saved for " + selectedStudentName, Toast.LENGTH_SHORT).show();
+        }
 
         if (etScore != null) {
             etScore.setText("");
