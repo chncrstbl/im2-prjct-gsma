@@ -167,7 +167,15 @@ public class RecordsActivity extends AppCompatActivity {
             btnEditRecord.setOnClickListener(v -> {
                 String activity = currentActivity();
                 if (activity.equalsIgnoreCase("Attendance")) {
-                    Toast.makeText(this, "Attendance is not stored in grade records.", Toast.LENGTH_SHORT).show();
+                    String stored = dbHelper.getGradeRecordScore(studentName, getQuarterString(), "Attendance", "Attendance");
+                    showExamScoreDialog(stored != null ? stored : "Present: 20/22", newScore -> {
+                        if (dbHelper.saveOrUpdateGradeRecord(studentName, getQuarterString(), "Attendance", "Attendance", newScore)) {
+                            Toast.makeText(this, "Attendance record saved: " + newScore, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Could not save attendance record.", Toast.LENGTH_SHORT).show();
+                        }
+                        updateUiForActivity();
+                    });
                     return;
                 }
                 if (!requireStudentAndSubject()) return;
@@ -205,21 +213,18 @@ public class RecordsActivity extends AppCompatActivity {
         if (btnDeleteRecord != null) {
             btnDeleteRecord.setOnClickListener(v -> {
                 String activity = currentActivity();
-                if (activity.equalsIgnoreCase("Attendance")) {
-                    Toast.makeText(this, "Attendance is not stored in grade records.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (!requireStudentAndSubject()) return;
+                String subject = activity.equalsIgnoreCase("Attendance") ? "Attendance" : currentSubject();
+                if (!activity.equalsIgnoreCase("Attendance") && !requireStudentAndSubject()) return;
 
-                long recordId = dbHelper.findGradeRecordId(studentId, getQuarterString(), currentSubject(), activity);
+                long recordId = dbHelper.findGradeRecordId(studentId, getQuarterString(), subject, activity);
                 if (recordId < 0) {
-                    Toast.makeText(this, "No saved record for " + getQuarterString() + " / " + currentSubject() + " / " + activity + ".", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "No saved record for " + getQuarterString() + " / " + activity + ".", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 GradeRow row = new GradeRow();
                 row.id = recordId;
                 row.quarter = getQuarterString();
-                row.subject = currentSubject();
+                row.subject = subject;
                 row.activity = activity;
                 confirmDelete(row, this::updateUiForActivity);
             });

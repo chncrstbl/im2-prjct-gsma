@@ -146,30 +146,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (studentId < 1 || date == null) return "";
         SQLiteDatabase db = getReadableDatabase();
         try (Cursor c = db.rawQuery(
-                "SELECT status FROM attendance_records WHERE student_id = ? AND attendance_date = ?",
-                new String[]{String.valueOf(studentId), date})) {
+                "SELECT score FROM grade_records WHERE student_id = ? AND LOWER(activity) = 'attendance' AND (date = ? OR remarks = ?) ORDER BY record_id DESC LIMIT 1",
+                new String[]{String.valueOf(studentId), date, date})) {
             return c.moveToFirst() ? c.getString(0) : "";
         } catch (Exception e) {
-            Log.e(TAG, "Could not read attendance status", e);
+            Log.e(TAG, "Could not read attendance status from grade_records", e);
             return "";
         }
     }
 
     public boolean saveAttendanceStatus(long studentId, String date, String status) {
-        if (studentId < 1 || date == null ||
-                !("Present".equals(status) || "Absent".equals(status) || "Suspended".equals(status))) {
-            return false;
-        }
-        ContentValues values = new ContentValues();
-        values.put("student_id", studentId);
-        values.put("attendance_date", date);
-        values.put("status", status);
+        return saveAttendanceStatus(studentId, date, status, "1st Quarter", "Attendance");
+    }
+
+    public boolean saveAttendanceStatus(long studentId, String date, String status, String quarter, String subject) {
+        if (studentId < 1 || date == null) return false;
         try {
-            long result = getWritableDatabase().insertWithOnConflict(
-                    "attendance_records", null, values, SQLiteDatabase.CONFLICT_REPLACE);
-            return result != -1;
+            SQLiteDatabase db = getWritableDatabase();
+            String cleanQuarter = quarter != null ? quarter : "1st Quarter";
+            String cleanSubject = subject != null ? subject : "Attendance";
+
+            String checkQuery = "SELECT record_id FROM grade_records WHERE student_id = ? AND LOWER(activity) = 'attendance' AND (date = ? OR remarks = ?) LIMIT 1";
+            long recordId = -1;
+            try (Cursor cursor = db.rawQuery(checkQuery, new String[]{String.valueOf(studentId), date, date})) {
+                if (cursor.moveToFirst()) {
+                    recordId = cursor.getLong(0);
+                }
+            }
+
+            ContentValues values = new ContentValues();
+            values.put("student_id", studentId);
+            values.put("subject", cleanSubject);
+            values.put("quarter", cleanQuarter);
+            values.put("activity", "Attendance");
+            values.put("score", status != null ? status : "");
+            values.put("date", date);
+            values.put("remarks", date);
+
+            if (recordId != -1) {
+                int rows = db.update("grade_records", values, "record_id = ?", new String[]{String.valueOf(recordId)});
+                return rows > 0;
+            } else {
+                long newId = db.insertOrThrow("grade_records", null, values);
+                return newId != -1;
+            }
         } catch (Exception e) {
-            Log.e(TAG, "Could not save attendance status", e);
+            Log.e(TAG, "Could not save attendance status in grade_records", e);
             return false;
         }
     }
@@ -178,10 +200,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (studentId < 1 || date == null) return false;
         try {
             return getWritableDatabase().delete(
-                    "attendance_records", "student_id = ? AND attendance_date = ?",
-                    new String[]{String.valueOf(studentId), date}) > 0;
+                    "grade_records", "student_id = ? AND LOWER(activity) = 'attendance' AND (date = ? OR remarks = ?)",
+                    new String[]{String.valueOf(studentId), date, date}) > 0;
         } catch (Exception e) {
-            Log.e(TAG, "Could not delete attendance status", e);
+            Log.e(TAG, "Could not delete attendance status from grade_records", e);
             return false;
         }
     }
