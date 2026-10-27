@@ -375,6 +375,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public String getStudentSex(long studentId) {
+        if (studentId < 1) return "";
+        try (Cursor c = getReadableDatabase().rawQuery(
+                "SELECT sex FROM students WHERE student_id = ?",
+                new String[]{String.valueOf(studentId)})) {
+            return c.moveToFirst() ? (c.getString(0) != null ? c.getString(0) : "") : "";
+        } catch (Exception e) {
+            Log.e(TAG, "Error in getStudentSex", e);
+            return "";
+        }
+    }
+
     // CRUD: (Nursery / Toddler)
     public boolean insertStudent(String firstName, String middleName, String lastName, String birthdate, String sex, String age, String guardianName, String guardianContact, String address, String photoUri, String level) {
         try {
@@ -600,7 +612,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private static String subjectKey(String subject) {
-        return subject == null ? "" : subject.trim().toLowerCase(java.util.Locale.ROOT);
+        if (subject == null) return "general";
+        String s = subject.trim().toLowerCase(java.util.Locale.ROOT);
+        if (s.isEmpty() || s.equals("general") || s.equals("n/a") || s.equals("na") || s.equals("none")) {
+            return "general";
+        }
+        return s;
     }
 
     /** Resolves a student's id from a display name. Returns -1 when not found. */
@@ -718,6 +735,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long studentId = getStudentIdByName(studentName);
         if (studentId < 0) return null;
         return getGradeRecordScore(studentId, quarter, subject, activity);
+    }
+
+    public String getGradeRecordActivityName(long studentId, String quarter, String subject, String activity) {
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            long id = findGradeRecordId(db, studentId, quarter, subject, activity);
+            if (id < 0) return null;
+            try (Cursor c = db.rawQuery("SELECT activity_name FROM grade_records WHERE record_id = ?",
+                    new String[]{String.valueOf(id)})) {
+                if (c.moveToFirst()) {
+                    String name = c.getString(0);
+                    if (name != null && !name.trim().isEmpty()) {
+                        return name.trim();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in getGradeRecordActivityName", e);
+        }
+        return null;
     }
 
     /** Edits the score of one specific record. */

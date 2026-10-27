@@ -68,6 +68,9 @@ public class StudentRecordsActivity extends AppCompatActivity {
             if (item.getPhotoUri() != null) {
                 intent.putExtra("STUDENT_PHOTO_URI", item.getPhotoUri());
             }
+            if (item.getGender() != null) {
+                intent.putExtra("STUDENT_GENDER", item.getGender());
+            }
             startActivity(intent);
         });
 
@@ -150,9 +153,19 @@ public class StudentRecordsActivity extends AppCompatActivity {
                     }
                     String ageStr = (age != null && !age.trim().isEmpty()) ? (age.toLowerCase().startsWith("age") ? age : "Age " + age) : "";
 
+                    String sex = "";
+                    try {
+                        int sexIdx = cursor.getColumnIndex("sex");
+                        if (sexIdx != -1) {
+                            String dbSex = cursor.getString(sexIdx);
+                            if (dbSex != null) sex = dbSex.trim();
+                        }
+                    } catch (Exception ignored) {}
+
                     StudentItem student = new StudentItem(StudentItem.TYPE_STUDENT, displayName, ageStr, level, "Good");
                     student.setSection(level);
                     student.setPhotoUri(photoUri);
+                    student.setGender(sex);
                     masterStudentList.add(student);
                 }
                 cursor.close();

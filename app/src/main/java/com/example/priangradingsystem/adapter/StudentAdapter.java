@@ -176,11 +176,16 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 if (!hasPhoto) {
                     if (ivAvatar != null) {
-                        ivAvatar.setImageDrawable(null);
-                        ivAvatar.setVisibility(View.GONE);
+                        String gender = item.getGender();
+                        String name = item.getName();
+                        boolean isMale = (gender != null && (gender.equalsIgnoreCase("Male") || gender.equalsIgnoreCase("M")))
+                                || (name != null && (name.contains("John") || name.contains("Mark")));
+
+                        ivAvatar.setImageResource(isMale ? R.drawable.profile_foreground_placeholder_male : R.drawable.profile_foreground_placeholder_female);
+                        ivAvatar.setVisibility(View.VISIBLE);
                     }
                     if (tvNoPhotoText != null) {
-                        tvNoPhotoText.setVisibility(View.VISIBLE);
+                        tvNoPhotoText.setVisibility(View.GONE);
                     }
                 } else {
                     if (tvNoPhotoText != null) {
