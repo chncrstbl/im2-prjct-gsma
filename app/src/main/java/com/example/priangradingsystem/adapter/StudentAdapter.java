@@ -135,7 +135,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public static class StudentViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvAge;
+        TextView tvName, tvAge, tvNoPhotoText;
         ImageView ivAvatar;
 
         public StudentViewHolder(@NonNull View itemView) {
@@ -143,6 +143,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tvName = itemView.findViewById(R.id.tvStudentName);
             tvAge = itemView.findViewById(R.id.tvStudentAge);
             ivAvatar = itemView.findViewById(R.id.imgStudentAvatar);
+            tvNoPhotoText = itemView.findViewById(R.id.tvNoPhotoText);
         }
 
         public void bind(StudentItem item, Consumer<StudentItem> onClickListener) {
@@ -156,7 +157,8 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     tvAge.setText("Age " + (age != null ? age.replace("Age ", "") : "5"));
                 }
 
-                if (ivAvatar != null && item.getPhotoUri() != null && !item.getPhotoUri().isEmpty()) {
+                boolean hasPhoto = false;
+                if (ivAvatar != null && item.getPhotoUri() != null && !item.getPhotoUri().trim().isEmpty()) {
                     try {
                         Uri uri = Uri.parse(item.getPhotoUri());
                         try {
@@ -165,11 +167,25 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             );
                         } catch (Exception ignored) {}
                         ivAvatar.setImageURI(uri);
+                        ivAvatar.setVisibility(View.VISIBLE);
+                        hasPhoto = true;
                     } catch (Exception e) {
-                        ivAvatar.setImageResource(android.R.drawable.ic_menu_gallery);
+                        hasPhoto = false;
                     }
-                } else if (ivAvatar != null) {
-                    ivAvatar.setImageResource(android.R.drawable.ic_menu_gallery);
+                }
+
+                if (!hasPhoto) {
+                    if (ivAvatar != null) {
+                        ivAvatar.setImageDrawable(null);
+                        ivAvatar.setVisibility(View.GONE);
+                    }
+                    if (tvNoPhotoText != null) {
+                        tvNoPhotoText.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (tvNoPhotoText != null) {
+                        tvNoPhotoText.setVisibility(View.GONE);
+                    }
                 }
 
                 itemView.setOnClickListener(v -> {
@@ -177,7 +193,6 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         onClickListener.accept(item);
                     }
                 });
-
             } catch (Exception ignored) {}
         }
     }

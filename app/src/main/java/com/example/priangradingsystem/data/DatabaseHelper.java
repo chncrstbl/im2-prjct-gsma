@@ -122,6 +122,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "remarks TEXT, " +
                 "date TEXT, " +
                 "activity TEXT, " +
+                "activity_name TEXT, " +
                 "FOREIGN KEY(student_id) REFERENCES students(student_id) ON DELETE CASCADE" +
                 ");");
         db.execSQL("CREATE INDEX IF NOT EXISTS idx_grades_student ON grade_records(student_id)");
@@ -163,14 +164,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ? "COALESCE(NULLIF(o.assessment_date, ''), " + (cols.contains("date") ? "o.date" : "NULL") + ")"
                     : (cols.contains("date") ? "o.date" : "NULL");
 
-            db.execSQL("INSERT INTO grade_records (student_id, subject, quarter, score, remarks, date, activity) " +
+            db.execSQL("INSERT INTO grade_records (student_id, subject, quarter, score, remarks, date, activity, activity_name) " +
                     "SELECT " + idExpr + ", " +
                     "COALESCE(" + (cols.contains("subject") ? "o.subject" : "NULL") + ", ''), " +
                     "COALESCE(" + (cols.contains("quarter") ? "o.quarter" : "NULL") + ", ''), " +
                     (cols.contains("score") ? "o.score" : "NULL") + ", " +
                     (cols.contains("remarks") ? "o.remarks" : "NULL") + ", " +
                     dateExpr + ", " +
-                    (cols.contains("activity") ? "o.activity" : "NULL") +
+                    (cols.contains("activity") ? "o.activity" : "NULL") + ", " +
+                    (cols.contains("activity_name") ? "o.activity_name" : "NULL") +
                     " FROM grade_records_old o WHERE " + idExpr + " IS NOT NULL");
             db.execSQL("DROP TABLE grade_records_old");
             db.setTransactionSuccessful();
@@ -230,7 +232,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     {"score", "TEXT"},
                     {"remarks", "TEXT"},
                     {"date", "TEXT"},
-                    {"activity", "TEXT"}
+                    {"activity", "TEXT"},
+                    {"activity_name", "TEXT"}
             };
 
             java.util.Set<String> existingGradeCols = new java.util.HashSet<>();
@@ -383,22 +386,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return -1;
     }
 
+    /**
+     * Next "book" label for this student's subject + quarter + activity: continues the count
+     * (book1, book2, book3, ...) while student, subject, quarter AND activity (Exam / Books /
+     * Homework) all stay the same, and starts back at "book1" as soon as any of them changes,
+     * since the count only looks at rows that already match all four.
+     */
+    private String getNextActivityName(SQLiteDatabase db, long studentId, String subject, String quarter, String activity) {
+        int maxNum = 0;
+        String prefix = "item";
+        if (activity != null) {
+            if (activity.equalsIgnoreCase("Exam")) prefix = "exam";
+            else if (activity.equalsIgnoreCase("Homework")) prefix = "homework";
+            else if (activity.equalsIgnoreCase("Books")) prefix = "book";
+            else prefix = activity.toLowerCase();
+        }
+
+        String query = "SELECT activity_name FROM grade_records WHERE student_id = ? AND subject = ? AND quarter = ? AND activity = ? AND activity_name LIKE ?";
+        try (Cursor c = db.rawQuery(query, new String[]{String.valueOf(studentId), subject != null ? subject : "", quarter != null ? quarter : "", activity != null ? activity : "", prefix + "%"})) {
+            while (c.moveToNext()) {
+                String name = c.getString(0);
+                if (name == null) continue;
+                try {
+                    int num = Integer.parseInt(name.replaceAll("(?i)^" + prefix, "").trim());
+                    if (num > maxNum) maxNum = num;
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+        return prefix + (maxNum + 1);
+    }
+
     // studentLevel and assessmentDate are kept in the signature for compatibility; neither is stored
     // (level lives in students.level, and the date is always the present date).
-    public boolean insertGradeRecord(String studentName, String studentLevel, String quarter, String subject, String activity, String score, String assessmentDate, String remarks) {
+    public boolean insertGradeRecord(String studentName, String studentLevel, String quarter, String subject, String activity, String activityName, String score, String assessmentDate, String remarks) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             lastError = "";
 
             long studentId = findStudentId(db, studentName);
             if (studentId < 0) {
-                lastError = "Student \"" + studentName + "\" was not found in the students table.";
-                Log.e(TAG, "insertGradeRecord failed: " + lastError);
-                return false;
+                ContentValues sValues = new ContentValues();
+                String[] parts = studentName != null ? studentName.split(",") : new String[0];
+                String lName = parts.length > 0 ? parts[0].trim() : "Student";
+                String fName = parts.length > 1 ? parts[1].trim() : "New";
+                sValues.put("first_name", fName);
+                sValues.put("last_name", lName);
+                sValues.put("level", studentLevel != null ? studentLevel : "Nursery");
+                studentId = db.insert("students", null, sValues);
             }
 
-            // The date is always the present date, regardless of what was passed in.
-            String date = new java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+            String date = (assessmentDate != null && !assessmentDate.trim().isEmpty()) ? assessmentDate : new java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+
+            String finalActivityName = activityName != null ? activityName.trim() : "";
+            if (finalActivityName.isEmpty()) {
+                if (activity != null && activity.equalsIgnoreCase("Attendance")) {
+                    finalActivityName = "N/A";
+                } else {
+                    finalActivityName = getNextActivityName(db, studentId, subject, quarter, activity);
+                }
+            }
 
             ContentValues values = new ContentValues();
             values.put("student_id", studentId);
@@ -408,6 +454,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put("remarks", remarks != null ? remarks : "");
             values.put("date", date);
             values.put("activity", activity != null ? activity : "");
+            values.put("activity_name", finalActivityName);
 
             long result = db.insertOrThrow("grade_records", null, values);
             return result != -1;
@@ -418,12 +465,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertGradeRecord(String studentName, String studentLevel, String quarter, String subject, String activity, String score, String assessmentDate, String remarks) {
+        return insertGradeRecord(studentName, studentLevel, quarter, subject, activity, "", score, assessmentDate, remarks);
+    }
+
     // Returns the stored columns plus student_name / student_level / assessment_date as read-only aliases
     // (joined from students), so screens that read those names keep working.
     public Cursor getAllGradeRecords() {
         try {
             SQLiteDatabase db = this.getReadableDatabase();
-            return db.rawQuery("SELECT g.record_id, g.student_id, g.subject, g.quarter, g.score, g.remarks, g.date, g.activity, " +
+            return db.rawQuery("SELECT g.record_id, g.student_id, g.subject, g.quarter, g.score, g.remarks, g.date, g.activity, g.activity_name, " +
                     "g.date AS assessment_date, " +
                     "COALESCE(s.last_name || ', ' || s.first_name, '') AS student_name, " +
                     "COALESCE(s.level, '') AS student_level " +
