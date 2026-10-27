@@ -273,7 +273,11 @@ public class GradeEntryActivity extends AppCompatActivity {
                 etScore.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(2)});
             }
         } else if (activity.equalsIgnoreCase("Books") || activity.equalsIgnoreCase("Homework")) {
-            if (layoutSubjectSection != null) layoutSubjectSection.setVisibility(View.VISIBLE);
+            if (activity.equalsIgnoreCase("Homework")) {
+                if (layoutSubjectSection != null) layoutSubjectSection.setVisibility(View.GONE);
+            } else {
+                if (layoutSubjectSection != null) layoutSubjectSection.setVisibility(View.VISIBLE);
+            }
             if (layoutProgramNameSection != null) layoutProgramNameSection.setVisibility(View.GONE);
             if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.GONE);
             if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.GONE);
@@ -310,7 +314,8 @@ public class GradeEntryActivity extends AppCompatActivity {
         String score = "";
 
         if (activity.equalsIgnoreCase("Attendance")) {
-            score = spnAttendanceStatus != null && spnAttendanceStatus.getSelectedItem() != null ? spnAttendanceStatus.getSelectedItem().toString() : "True (Present)";
+            String attStatus = spnAttendanceStatus != null && spnAttendanceStatus.getSelectedItem() != null ? spnAttendanceStatus.getSelectedItem().toString() : "Present";
+            score = attStatus.toLowerCase().contains("absent") ? "absent" : "present";
         } else if (activity.equalsIgnoreCase("Books") || activity.equalsIgnoreCase("Homework")) {
             int stars = ratingBarStars != null ? (int) ratingBarStars.getRating() : 0;
             score = stars + " ⭐ (" + stars + " Stars)";
@@ -340,9 +345,11 @@ public class GradeEntryActivity extends AppCompatActivity {
         }
 
         String quarter = spnQuarter != null && spnQuarter.getSelectedItem() != null ? spnQuarter.getSelectedItem().toString() : "1st Quarter";
-        String subject = "General";
-        if (!activity.equalsIgnoreCase("Attendance") && spnSubject != null && spnSubject.getSelectedItem() != null) {
-            subject = spnSubject.getSelectedItem().toString();
+        String subject = "N/A";
+        if (!activity.equalsIgnoreCase("Attendance") && !activity.equalsIgnoreCase("Homework")) {
+            if (spnSubject != null && spnSubject.getSelectedItem() != null) {
+                subject = spnSubject.getSelectedItem().toString();
+            }
         }
         String assessmentDate = getTodayDate();
         String remarks = etRemarks != null ? etRemarks.getText().toString().trim() : "";
@@ -364,7 +371,7 @@ public class GradeEntryActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + activity + (activity.equalsIgnoreCase("Attendance") ? "" : " - " + subject) + ": " + score, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + activity + (activity.equalsIgnoreCase("Attendance") || activity.equalsIgnoreCase("Homework") ? "" : " - " + subject) + ": " + score, Toast.LENGTH_LONG).show();
 
         if (etScore != null) {
             etScore.setText("");
