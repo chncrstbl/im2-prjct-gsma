@@ -121,7 +121,6 @@
         <item>1st Quarter</item>
         <item>2nd Quarter</item>
         <item>3rd Quarter</item>
-        <item>4th Quarter</item>
     </string-array>
 
     <string-array name="subject_options">
@@ -154,6 +153,8 @@
     <string name="subject_life_skills">Life Skills</string>
     <string name="subject_pe_arts">PE &amp; Arts</string>
     <string name="activity_label">Activity</string>
+    <string name="program_name_label">Program Name</string>
+    <string name="program_name_hint">Enter program name....</string>
     <string name="attendance_status_label">Attendance Status</string>
     <string name="stars_grading_label">Stars Rating (0–3 Stars)</string>
 

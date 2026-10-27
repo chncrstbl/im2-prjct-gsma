@@ -30,6 +30,8 @@ public class GradeEntryActivity extends AppCompatActivity {
     private Spinner spnAttendanceStatus;
     private Spinner spnPoints;
 
+    private LinearLayout layoutSubjectSection;
+    private LinearLayout layoutProgramNameSection;
     private LinearLayout layoutScoreSection;
     private LinearLayout layoutAttendanceSection;
     private LinearLayout layoutStarSection;
@@ -39,6 +41,7 @@ public class GradeEntryActivity extends AppCompatActivity {
     private TextView tvStarCountText;
     private TextView tvClearStars;
 
+    private EditText etProgramName;
     private EditText etScore;
     private EditText etRemarks;
     private TextView tvScoreSuffix;
@@ -46,6 +49,7 @@ public class GradeEntryActivity extends AppCompatActivity {
 
     private TextView tvStudentName;
     private TextView tvStudentGradeLevel;
+    private TextView tvNoPhotoText;
     private ImageView imgStudentAvatar;
 
     private String selectedStudentName = "Ive Brayne Cueva";
@@ -70,6 +74,7 @@ public class GradeEntryActivity extends AppCompatActivity {
 
         tvStudentName = findViewById(R.id.tvStudentName);
         tvStudentGradeLevel = findViewById(R.id.tvStudentGradeLevel);
+        tvNoPhotoText = findViewById(R.id.tvNoPhotoText);
         imgStudentAvatar = findViewById(R.id.imgStudentAvatar);
 
         updateStudentCard(selectedStudentName, selectedStudentLevel, selectedStudentPhotoUri);
@@ -82,6 +87,8 @@ public class GradeEntryActivity extends AppCompatActivity {
         spnAttendanceStatus = findViewById(R.id.spnAttendanceStatus);
         spnPoints = findViewById(R.id.spnPoints);
 
+        layoutSubjectSection = findViewById(R.id.layoutSubjectSection);
+        layoutProgramNameSection = findViewById(R.id.layoutProgramNameSection);
         layoutScoreSection = findViewById(R.id.layoutScoreSection);
         layoutAttendanceSection = findViewById(R.id.layoutAttendanceSection);
         layoutStarSection = findViewById(R.id.layoutStarSection);
@@ -114,6 +121,7 @@ public class GradeEntryActivity extends AppCompatActivity {
         setupAttendanceStatusSpinner();
         setupPointSpinner();
 
+        etProgramName = findViewById(R.id.etProgramName);
         etScore = findViewById(R.id.etScore);
         etRemarks = findViewById(R.id.etRemarks);
         tvScoreSuffix = findViewById(R.id.tvScoreSuffix);
@@ -151,6 +159,7 @@ public class GradeEntryActivity extends AppCompatActivity {
         }
 
         if (imgStudentAvatar != null) {
+            boolean hasPhoto = false;
             if (photoUri != null && !photoUri.trim().isEmpty()) {
                 try {
                     Uri uri = Uri.parse(photoUri);
@@ -158,11 +167,23 @@ public class GradeEntryActivity extends AppCompatActivity {
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     } catch (Exception ignored) {}
                     imgStudentAvatar.setImageURI(uri);
+                    imgStudentAvatar.setVisibility(View.VISIBLE);
+                    hasPhoto = true;
                 } catch (Exception e) {
-                    imgStudentAvatar.setImageResource(R.drawable.children);
+                    hasPhoto = false;
+                }
+            }
+
+            if (!hasPhoto) {
+                imgStudentAvatar.setImageDrawable(null);
+                imgStudentAvatar.setVisibility(View.GONE);
+                if (tvNoPhotoText != null) {
+                    tvNoPhotoText.setVisibility(View.VISIBLE);
                 }
             } else {
-                imgStudentAvatar.setImageResource(R.drawable.children);
+                if (tvNoPhotoText != null) {
+                    tvNoPhotoText.setVisibility(View.GONE);
+                }
             }
         }
     }
@@ -233,34 +254,50 @@ public class GradeEntryActivity extends AppCompatActivity {
         if (activity == null) return;
 
         if (activity.equalsIgnoreCase("Attendance")) {
+            if (layoutSubjectSection != null) layoutSubjectSection.setVisibility(View.GONE);
+            if (layoutProgramNameSection != null) layoutProgramNameSection.setVisibility(View.GONE);
             if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.GONE);
             if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.VISIBLE);
             if (layoutStarSection != null) layoutStarSection.setVisibility(View.GONE);
             if (layoutPointSection != null) layoutPointSection.setVisibility(View.GONE);
         } else if (activity.equalsIgnoreCase("Exam")) {
+            if (layoutSubjectSection != null) layoutSubjectSection.setVisibility(View.VISIBLE);
+            if (layoutProgramNameSection != null) layoutProgramNameSection.setVisibility(View.GONE);
             if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.VISIBLE);
             if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.GONE);
             if (layoutStarSection != null) layoutStarSection.setVisibility(View.GONE);
             if (layoutPointSection != null) layoutPointSection.setVisibility(View.GONE);
             if (tvScoreSuffix != null) tvScoreSuffix.setText("/20");
-            if (etScore != null) etScore.setHint("20");
+            if (etScore != null) {
+                etScore.setHint("20");
+                etScore.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(2)});
+            }
         } else if (activity.equalsIgnoreCase("Books") || activity.equalsIgnoreCase("Homework")) {
+            if (layoutSubjectSection != null) layoutSubjectSection.setVisibility(View.VISIBLE);
+            if (layoutProgramNameSection != null) layoutProgramNameSection.setVisibility(View.GONE);
             if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.GONE);
             if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.GONE);
             if (layoutStarSection != null) layoutStarSection.setVisibility(View.VISIBLE);
             if (layoutPointSection != null) layoutPointSection.setVisibility(View.GONE);
         } else if (activity.equalsIgnoreCase("Program Performance")) {
+            if (layoutSubjectSection != null) layoutSubjectSection.setVisibility(View.VISIBLE);
+            if (layoutProgramNameSection != null) layoutProgramNameSection.setVisibility(View.VISIBLE);
             if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.GONE);
             if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.GONE);
             if (layoutStarSection != null) layoutStarSection.setVisibility(View.GONE);
             if (layoutPointSection != null) layoutPointSection.setVisibility(View.VISIBLE);
         } else {
+            if (layoutSubjectSection != null) layoutSubjectSection.setVisibility(View.VISIBLE);
+            if (layoutProgramNameSection != null) layoutProgramNameSection.setVisibility(View.GONE);
             if (layoutScoreSection != null) layoutScoreSection.setVisibility(View.VISIBLE);
             if (layoutAttendanceSection != null) layoutAttendanceSection.setVisibility(View.GONE);
             if (layoutStarSection != null) layoutStarSection.setVisibility(View.GONE);
             if (layoutPointSection != null) layoutPointSection.setVisibility(View.GONE);
             if (tvScoreSuffix != null) tvScoreSuffix.setText("/100");
-            if (etScore != null) etScore.setHint("90");
+            if (etScore != null) {
+                etScore.setHint("90");
+                etScore.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(3)});
+            }
         }
     }
 
@@ -280,31 +317,60 @@ public class GradeEntryActivity extends AppCompatActivity {
         } else if (activity.equalsIgnoreCase("Program Performance")) {
             score = spnPoints != null && spnPoints.getSelectedItem() != null ? spnPoints.getSelectedItem().toString() : "0 Points";
         } else {
-            score = etScore != null ? etScore.getText().toString().trim() : "";
-            if (score.isEmpty()) {
+            String rawScore = etScore != null ? etScore.getText().toString().trim() : "";
+            if (rawScore.isEmpty()) {
                 Toast.makeText(this, "Please enter a valid score.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            score = score + (tvScoreSuffix != null ? tvScoreSuffix.getText().toString() : "/100");
+
+            if (activity.equalsIgnoreCase("Exam")) {
+                try {
+                    int examVal = Integer.parseInt(rawScore);
+                    if (examVal < 0 || examVal > 20) {
+                        Toast.makeText(this, "Exam score must be between 0 and 20 only.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    Toast.makeText(this, "Please enter a valid number between 0 and 20.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            score = rawScore + (tvScoreSuffix != null ? tvScoreSuffix.getText().toString() : "/100");
         }
 
         String quarter = spnQuarter != null && spnQuarter.getSelectedItem() != null ? spnQuarter.getSelectedItem().toString() : "1st Quarter";
-        String subject = spnSubject != null && spnSubject.getSelectedItem() != null ? spnSubject.getSelectedItem().toString() : "Writing";
+        String subject = "General";
+        if (!activity.equalsIgnoreCase("Attendance") && spnSubject != null && spnSubject.getSelectedItem() != null) {
+            subject = spnSubject.getSelectedItem().toString();
+        }
         String assessmentDate = getTodayDate();
         String remarks = etRemarks != null ? etRemarks.getText().toString().trim() : "";
 
+        String activityName = "";
+        if (activity.equalsIgnoreCase("Program Performance")) {
+            activityName = etProgramName != null ? etProgramName.getText().toString().trim() : "";
+            if (activityName.isEmpty()) {
+                Toast.makeText(this, "Please enter a program name.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         com.example.priangradingsystem.data.DatabaseHelper dbHelper = new com.example.priangradingsystem.data.DatabaseHelper(this);
-        boolean isSaved = dbHelper.insertGradeRecord(selectedStudentName, selectedStudentLevel, quarter, subject, activity, score, assessmentDate, remarks);
+        boolean isSaved = dbHelper.insertGradeRecord(selectedStudentName, selectedStudentLevel, quarter, subject, activity, activityName, score, assessmentDate, remarks);
 
         if (!isSaved) {
             Toast.makeText(this, "Failed to save grade: " + dbHelper.getLastError(), Toast.LENGTH_LONG).show();
             return;
         }
 
-        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + activity + " - " + subject + ": " + score, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Grade saved for " + selectedStudentName + " (" + quarter + ") | " + activity + (activity.equalsIgnoreCase("Attendance") ? "" : " - " + subject) + ": " + score, Toast.LENGTH_LONG).show();
 
         if (etScore != null) {
             etScore.setText("");
+        }
+        if (etProgramName != null) {
+            etProgramName.setText("");
         }
         if (ratingBarStars != null) {
             ratingBarStars.setRating(0);
