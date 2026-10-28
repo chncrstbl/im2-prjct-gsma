@@ -443,7 +443,7 @@ public class RecordsActivity extends AppCompatActivity {
             tvHeaderTitle.setText(isExam ? "Grade Records" : "Grade Record");
         }
 
-        boolean hideSubject = isHomework || isAttendance;
+        boolean hideSubject = isHomework || isAttendance || isProgramPerformance;
         if (tvSubjectLabel != null) tvSubjectLabel.setVisibility(hideSubject ? View.GONE : View.VISIBLE);
         if (layoutSubjectDropdown != null) layoutSubjectDropdown.setVisibility(hideSubject ? View.GONE : View.VISIBLE);
 
@@ -474,7 +474,7 @@ public class RecordsActivity extends AppCompatActivity {
 
             GradeRow attendanceCounter = new GradeRow();
             attendanceCounter.id = -1;
-            attendanceCounter.quarter = "getQuarterString()";
+            attendanceCounter.quarter = getQuarterString();
             attendanceCounter.subject = "Attendance";
             attendanceCounter.activity = "Attendance";
             attendanceCounter.activityName = "Days Present";
@@ -489,19 +489,13 @@ public class RecordsActivity extends AppCompatActivity {
         }
 
         if (rows.isEmpty()) {
-            GradeRow defaultRow = new GradeRow();
-            defaultRow.id = -1;
-            defaultRow.quarter = getQuarterString();
-            defaultRow.subject = currentSubjectForActivity();
-            defaultRow.activity = activity;
-            defaultRow.activityName = isProgramPerformance ? "Program Performance" : "Grade Record";
-            if (isExam) defaultRow.score = "0/20";
-            else if (isProgramPerformance) defaultRow.score = "0/2";
-            else if (isAttendance) defaultRow.score = "0 Days";
-            else defaultRow.score = "0";
+            TextView emptyMessage = new TextView(this);
+            emptyMessage.setText("No grade records yet.");
+            emptyMessage.setTextSize(14);
+            emptyMessage.setGravity(android.view.Gravity.CENTER);
+            emptyMessage.setPadding(24, 32, 24, 32);
 
-            View card = createGradeCardView(defaultRow);
-            layoutCardsContainer.addView(card);
+            layoutCardsContainer.addView(emptyMessage);
         } else {
             for (GradeRow r : rows) {
                 View card = createGradeCardView(r);
