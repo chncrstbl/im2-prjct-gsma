@@ -363,8 +363,38 @@ public class GradeEntryActivity extends AppCompatActivity {
             }
         }
 
-        com.example.priangradingsystem.data.DatabaseHelper dbHelper = new com.example.priangradingsystem.data.DatabaseHelper(this);
-        boolean isSaved = dbHelper.insertGradeRecord(selectedStudentName, selectedStudentLevel, quarter, subject, activity, activityName, score, assessmentDate, remarks);
+        com.example.priangradingsystem.data.DatabaseHelper dbHelper =
+                new com.example.priangradingsystem.data.DatabaseHelper(this);
+
+        boolean isSaved;
+
+        if (activity.equalsIgnoreCase("Attendance")) {
+            long attendanceStudentId =
+                    dbHelper.getStudentIdByName(selectedStudentName);
+
+            isSaved = attendanceStudentId > 0
+                    && dbHelper.saveAttendanceStatus(
+                    attendanceStudentId,
+                    assessmentDate,
+                    score,
+                    quarter,
+                    subject,
+                    remarks
+            );
+
+        } else {
+            isSaved = dbHelper.insertGradeRecord(
+                    selectedStudentName,
+                    selectedStudentLevel,
+                    quarter,
+                    subject,
+                    activity,
+                    activityName,
+                    score,
+                    assessmentDate,
+                    remarks
+            );
+        }
 
         if (!isSaved) {
             Toast.makeText(this, "Failed to save grade: " + dbHelper.getLastError(), Toast.LENGTH_LONG).show();

@@ -3,9 +3,12 @@ package com.example.priangradingsystem.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.example.priangradingsystem.model.Teacher;
 
@@ -143,6 +146,88 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ON attendance_records(student_id, attendance_date)");
     }
 
+    /** Counts Present attendance entries for one student across all quarters. */
+    public int getPresentAttendanceCount(long studentId, String quarter) {
+        if (studentId < 1 || quarter == null) return 0;
+
+        String sql = "SELECT COUNT(*) FROM grade_records " +
+                "WHERE student_id = ? " +
+                "AND LOWER(TRIM(activity)) = 'attendance' " +
+                "AND LOWER(TRIM(score)) = 'present' " +
+                "AND LOWER(TRIM(quarter)) = LOWER(TRIM(?))";
+
+        try (Cursor c = getReadableDatabase().rawQuery(
+                sql,
+                new String[]{String.valueOf(studentId), quarter.trim()})) {
+            return c.moveToFirst() ? c.getInt(0) : 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Could not count present attendance entries", e);
+            return 0;
+        }
+    }
+
+    public List<String> getPresentAttendanceDates(
+            long studentId, String quarter) {
+
+        List<String> dates = new ArrayList<>();
+        if (studentId < 1 || quarter == null) return dates;
+
+        String sql = "SELECT date FROM grade_records " +
+                "WHERE student_id = ? " +
+                "AND LOWER(TRIM(activity)) = 'attendance' " +
+                "AND LOWER(TRIM(score)) = 'present' " +
+                "AND LOWER(TRIM(quarter)) = LOWER(TRIM(?)) " +
+                "ORDER BY date DESC";
+
+        try (Cursor c = getReadableDatabase().rawQuery(
+                sql,
+                new String[]{String.valueOf(studentId), quarter.trim()})) {
+            while (c.moveToNext()) {
+                String date = c.getString(0);
+                if (date != null && !date.trim().isEmpty()) {
+                    dates.add(date);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Could not retrieve present attendance dates", e);
+        }
+
+        return dates;
+    }
+
+    public Cursor getPresentAttendanceRecords(long studentId, String quarter) {
+        if (studentId < 1 || quarter == null) {return null;}
+
+        String sql = "SELECT record_id, date, time, score " +
+                "FROM grade_records " +
+                "WHERE student_id = ? " +
+                "AND LOWER(TRIM(activity)) = 'attendance' " +
+                "AND LOWER(TRIM(score)) = 'present' " +
+                "AND LOWER(TRIM(quarter)) = LOWER(TRIM(?)) " +
+                "ORDER BY date DESC, time DESC, record_id DESC";
+
+        return getReadableDatabase().rawQuery(
+                sql,
+                new String[]{String.valueOf(studentId), quarter}
+        );
+    }
+
+    public Cursor getAttendanceRecords(long studentId, String quarter) {
+        if (studentId < 1 || quarter == null) return null;
+
+        String sql = "SELECT record_id, date, time, score " +
+                "FROM grade_records " +
+                "WHERE student_id = ? " +
+                "AND LOWER(TRIM(activity)) = 'attendance' " +
+                "AND LOWER(TRIM(quarter)) = LOWER(TRIM(?)) " +
+                "ORDER BY date DESC, time DESC, record_id DESC";
+
+        return getReadableDatabase().rawQuery(
+                sql,
+                new String[]{String.valueOf(studentId), quarter.trim()}
+        );
+    }
+
     public String getAttendanceStatus(long studentId, String date) {
         if (studentId < 1 || date == null) return "";
         SQLiteDatabase db = getReadableDatabase();
@@ -156,24 +241,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean saveAttendanceStatus(long studentId, String date, String status) {
-        return saveAttendanceStatus(studentId, date, status, "1st Quarter", "Attendance");
-    }
+    public boolean saveAttendanceStatus(
+            long studentId,
+            String date,
+            String status,
+            String quarter,
+            String subject,
+            String remarks) {
 
-    public boolean saveAttendanceStatus(long studentId, String date, String status, String quarter, String subject) {
-        if (studentId < 1 || date == null) return false;
+        if (studentId < 1 || date == null || date.trim().isEmpty()) {
+            return false;
+        }
+
         try {
             SQLiteDatabase db = getWritableDatabase();
-            String cleanQuarter = quarter != null ? quarter : "1st Quarter";
-            String cleanSubject = subject != null ? subject : "Attendance";
 
-            String checkQuery = "SELECT record_id FROM grade_records WHERE student_id = ? AND LOWER(activity) = 'attendance' AND (date = ? OR remarks = ?) LIMIT 1";
-            long recordId = -1;
-            try (Cursor cursor = db.rawQuery(checkQuery, new String[]{String.valueOf(studentId), date, date})) {
-                if (cursor.moveToFirst()) {
-                    recordId = cursor.getLong(0);
-                }
-            }
+            String cleanQuarter =
+                    quarter != null ? quarter : "1st Quarter";
+            String cleanSubject =
+                    subject != null ? subject : "Attendance";
+
+            String currentTime = new java.text.SimpleDateFormat(
+                    "HH:mm:ss",
+                    java.util.Locale.getDefault()
+            ).format(new java.util.Date());
 
             ContentValues values = new ContentValues();
             values.put("student_id", studentId);
@@ -182,17 +273,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put("activity", "Attendance");
             values.put("score", status != null ? status : "");
             values.put("date", date);
-            values.put("remarks", date);
+            values.put("remarks", remarks != null ? remarks : "");
+            values.put("time", currentTime);
 
-            if (recordId != -1) {
-                int rows = db.update("grade_records", values, "record_id = ?", new String[]{String.valueOf(recordId)});
-                return rows > 0;
-            } else {
-                long newId = db.insertOrThrow("grade_records", null, values);
-                return newId != -1;
-            }
+            long newId = db.insertOrThrow(
+                    "grade_records",
+                    null,
+                    values
+            );
+
+            return newId != -1;
+
         } catch (Exception e) {
-            Log.e(TAG, "Could not save attendance status in grade_records", e);
+            Log.e(TAG, "Could not save attendance status", e);
             return false;
         }
     }
@@ -205,6 +298,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     new String[]{String.valueOf(studentId), date, date}) > 0;
         } catch (Exception e) {
             Log.e(TAG, "Could not delete attendance status from grade_records", e);
+            return false;
+        }
+    }
+
+    public boolean deleteAttendanceRecord(long recordId) {
+        if (recordId < 1) return false;
+
+        try {
+            return getWritableDatabase().delete(
+                    "grade_records",
+                    "record_id = ? AND LOWER(TRIM(activity)) = 'attendance'",
+                    new String[]{String.valueOf(recordId)}
+            ) > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Could not delete attendance record", e);
             return false;
         }
     }
@@ -314,6 +422,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     {"score", "TEXT"},
                     {"remarks", "TEXT"},
                     {"date", "TEXT"},
+                    {"time","TEXT"},
                     {"activity", "TEXT"},
                     {"activity_name", "TEXT"}
             };
@@ -563,6 +672,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return insertGradeRecord(studentName, studentLevel, quarter, subject, activity, "", score, assessmentDate, remarks);
     }
 
+    /** Inserts an independent grade entry for an already-resolved student ID. */
+    public boolean insertGradeRecordForStudent(long studentId, String quarter, String subject, String activity, String activityName, String score) {
+        try {
+            if (studentId <= 0) {
+                lastError = "No student selected.";
+                return false;
+            }
+            ContentValues values = new ContentValues();
+            values.put("student_id", studentId);
+            values.put("subject", subject != null ? subject.trim() : "N/A");
+            values.put("quarter", normalizeQuarter(quarter));
+            values.put("activity", activity != null ? activity.trim() : "");
+            values.put("activity_name", activityName != null ? activityName.trim() : "");
+            values.put("score", score != null ? score : "0");
+            values.put("date", new java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault()).format(new java.util.Date()));
+            lastError = "";
+            return getWritableDatabase().insertOrThrow("grade_records", null, values) != -1;
+        } catch (Exception e) {
+            lastError = e.getMessage() != null ? e.getMessage() : e.toString();
+            Log.e(TAG, "Error in insertGradeRecordForStudent", e);
+            return false;
+        }
+    }
+
     // Returns the stored columns plus student_name / student_level / assessment_date as read-only aliases
     // (joined from students), so screens that read those names keep working.
     public Cursor getAllGradeRecords() {
@@ -612,10 +745,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private static String subjectKey(String subject) {
-        if (subject == null) return "general";
+        if (subject == null) return "n/a";
         String s = subject.trim().toLowerCase(java.util.Locale.ROOT);
         if (s.isEmpty() || s.equals("general") || s.equals("n/a") || s.equals("na") || s.equals("none")) {
-            return "general";
+            return "n/a";
         }
         return s;
     }
@@ -675,31 +808,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getMatchingGradeRecords(long studentId, String quarter, String subject, String activity) {
-        try {
-            SQLiteDatabase db = getReadableDatabase();
-            String q = normalizeQuarter(quarter);
-            String s = subjectKey(subject);
-            String a = activityKey(activity);
-            boolean isSubjectAgnostic = a.equalsIgnoreCase("homework") || a.equalsIgnoreCase("attendance");
-
-            if (isSubjectAgnostic) {
-                return db.rawQuery(
-                        "SELECT record_id, quarter, subject, activity, activity_name, score, date FROM grade_records " +
-                        "WHERE student_id = ? AND (LOWER(quarter) = LOWER(?) OR LOWER(quarter) LIKE LOWER(? || '%')) " +
-                        "AND (LOWER(activity) = LOWER(?) OR LOWER(activity) = LOWER(?)) ORDER BY record_id ASC",
-                        new String[]{String.valueOf(studentId), q, q.length() >= 3 ? q.substring(0, 3) : q, a, a + "s"});
-            } else {
-                return db.rawQuery(
-                        "SELECT record_id, quarter, subject, activity, activity_name, score, date FROM grade_records " +
-                        "WHERE student_id = ? AND (LOWER(quarter) = LOWER(?) OR LOWER(quarter) LIKE LOWER(? || '%')) " +
-                        "AND (LOWER(subject) = LOWER(?) OR LOWER(subject) = 'n/a') " +
-                        "AND (LOWER(activity) = LOWER(?) OR LOWER(activity) = LOWER(?)) ORDER BY record_id ASC",
-                        new String[]{String.valueOf(studentId), q, q.length() >= 3 ? q.substring(0, 3) : q, s, a, a + "s"});
+        // Filter in Java after reading this student's rows so historical quarter labels
+        // ("1", "Quarter 1", "1st Quarter") and activity/subject variants are handled consistently.
+        final String[] columns = {"record_id", "quarter", "subject", "activity", "activity_name", "score", "date"};
+        MatrixCursor result = new MatrixCursor(columns);
+        try (Cursor c = getReadableDatabase().rawQuery(
+                "SELECT record_id, quarter, subject, activity, activity_name, score, date " +
+                "FROM grade_records WHERE student_id = ? ORDER BY record_id DESC",
+                new String[]{String.valueOf(studentId)})) {
+            String wantedQuarter = normalizeQuarter(quarter);
+            String wantedActivity = activityKey(activity);
+            String wantedSubject = subjectKey(subject);
+            boolean subjectAgnostic = wantedActivity.equals("homework") || wantedActivity.equals("attendance") || wantedActivity.equals("program performance");
+            while (c.moveToNext()) {
+                String rowQuarter = normalizeQuarter(c.getString(1));
+                String rowActivity = activityKey(c.getString(3));
+                if (!rowQuarter.equalsIgnoreCase(wantedQuarter) || !rowActivity.equalsIgnoreCase(wantedActivity)) continue;
+                if (!subjectAgnostic && !subjectKey(c.getString(2)).equals(wantedSubject)) continue;
+                result.addRow(new Object[]{c.getLong(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6)});
             }
         } catch (Exception e) {
             Log.e(TAG, "Error in getMatchingGradeRecords", e);
+            result.close();
             return null;
         }
+        return result;
     }
 
     public String getGradeRecordScore(long studentId, String quarter, String subject, String activity) {
@@ -735,7 +868,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String cleanSubject = subject != null ? subject.trim() : "";
             String cleanActivity = activity != null ? activity.trim() : "";
 
-            long recordId = findGradeRecordId(db, studentId, cleanQuarter, cleanSubject, cleanActivity);
+            // Program Performance permits multiple named entries for the same student/quarter/subject.
+            // A generic save must therefore insert a new row rather than overwrite the latest one.
+            boolean independentProgramEntry = cleanActivity.equalsIgnoreCase("Program Performance");
+            long recordId = independentProgramEntry ? -1 : findGradeRecordId(db, studentId, cleanQuarter, cleanSubject, cleanActivity);
 
             ContentValues values = new ContentValues();
             values.put("student_id", studentId);
@@ -794,6 +930,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, "Error in getGradeRecordActivityName", e);
         }
         return null;
+    }
+
+    /** Updates the editable fields of exactly one existing record, without searching for a similar row. */
+    public boolean updateGradeRecord(long recordId, String activityName, String score) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put("activity_name", activityName != null ? activityName.trim() : "");
+            values.put("score", score != null ? score : "0");
+            values.put("date", new java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault()).format(new java.util.Date()));
+            lastError = "";
+            return getWritableDatabase().update("grade_records", values, "record_id = ?",
+                    new String[]{String.valueOf(recordId)}) > 0;
+        } catch (Exception e) {
+            lastError = e.getMessage() != null ? e.getMessage() : e.toString();
+            Log.e(TAG, "Error in updateGradeRecord", e);
+            return false;
+        }
     }
 
     /** Edits the score of one specific record. */

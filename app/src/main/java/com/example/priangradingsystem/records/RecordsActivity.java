@@ -27,6 +27,7 @@ import com.example.priangradingsystem.data.DatabaseHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
+import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -358,9 +359,20 @@ public class RecordsActivity extends AppCompatActivity {
 
     private int parseStars(String score) {
         try {
-            String clean = score == null ? "" : score.replaceAll("[^0-9]", "").trim();
-            if (clean.isEmpty()) return 0;
-            return Math.min(3, Integer.parseInt(clean));
+            if (score == null) return 0;
+
+            String clean = score.trim();
+
+            // Read only the first number from the saved score.
+            java.util.regex.Matcher matcher =
+                    java.util.regex.Pattern.compile("^\\s*(\\d+)")
+                            .matcher(clean);
+
+            if (!matcher.find()) return 0;
+
+            int stars = Integer.parseInt(matcher.group(1));
+            return Math.max(0, Math.min(3, stars));
+
         } catch (Exception e) {
             return 0;
         }
@@ -382,8 +394,8 @@ public class RecordsActivity extends AppCompatActivity {
 
     private String currentSubjectForActivity() {
         String activity = currentActivity();
-        if (activity.equalsIgnoreCase("Homework") || activity.equalsIgnoreCase("Attendance") || activity.equalsIgnoreCase("Program Performance")) {
-            return "General";
+        if (activity.equalsIgnoreCase("Homework") || activity.equalsIgnoreCase("Attendance")) {
+            return "N/A";
         }
         return currentSubject();
     }
@@ -398,7 +410,7 @@ public class RecordsActivity extends AppCompatActivity {
             return false;
         }
         String activity = currentActivity();
-        if (activity.equalsIgnoreCase("Homework") || activity.equalsIgnoreCase("Attendance") || activity.equalsIgnoreCase("Program Performance")) {
+        if (activity.equalsIgnoreCase("Homework") || activity.equalsIgnoreCase("Attendance")) {
             return true;
         }
         if (!isValidSubject(currentSubject())) {
@@ -431,14 +443,14 @@ public class RecordsActivity extends AppCompatActivity {
             tvHeaderTitle.setText(isExam ? "Grade Records" : "Grade Record");
         }
 
-        boolean hideSubject = isHomework || isAttendance || isProgramPerformance;
+        boolean hideSubject = isHomework || isAttendance;
         if (tvSubjectLabel != null) tvSubjectLabel.setVisibility(hideSubject ? View.GONE : View.VISIBLE);
         if (layoutSubjectDropdown != null) layoutSubjectDropdown.setVisibility(hideSubject ? View.GONE : View.VISIBLE);
 
         layoutCardsContainer.removeAllViews();
 
         List<GradeRow> rows = new ArrayList<>();
-        if (studentId >= 0 && (!requireStudentAndSubject() || true)) {
+        if (studentId >= 0) {
             try (Cursor c = dbHelper.getMatchingGradeRecords(studentId, getQuarterString(), currentSubjectForActivity(), activity)) {
                 if (c != null) {
                     while (c.moveToNext()) {
@@ -454,6 +466,26 @@ public class RecordsActivity extends AppCompatActivity {
                     }
                 }
             } catch (Exception ignored) {}
+        }
+
+        // Attendance is one calculated counter, not multiple cards.
+        if (isAttendance) {
+            rows.clear();
+
+            GradeRow attendanceCounter = new GradeRow();
+            attendanceCounter.id = -1;
+            attendanceCounter.quarter = "getQuarterString()";
+            attendanceCounter.subject = "Attendance";
+            attendanceCounter.activity = "Attendance";
+            attendanceCounter.activityName = "Days Present";
+            attendanceCounter.score =
+                    String.valueOf(
+                            dbHelper.getPresentAttendanceCount(
+                                    studentId, getQuarterString()
+                            )
+                    );
+
+            rows.add(attendanceCounter);
         }
 
         if (rows.isEmpty()) {
@@ -570,11 +602,14 @@ public class RecordsActivity extends AppCompatActivity {
         btnEdit.setOnClickListener(v -> onEditCardClicked(r));
         actionsContainer.addView(btnEdit);
 
-        ImageView btnDelete = new ImageView(this);
-        btnDelete.setImageResource(R.drawable.delete_record);
-        btnDelete.setLayoutParams(new LinearLayout.LayoutParams(iconSize, iconSize));
-        btnDelete.setOnClickListener(v -> onDeleteCardClicked(r));
-        actionsContainer.addView(btnDelete);
+        if (!isAttendance) {
+            ImageView btnDelete = new ImageView(this);
+            btnDelete.setImageResource(R.drawable.delete_record);
+            btnDelete.setLayoutParams(
+                    new LinearLayout.LayoutParams(iconSize, iconSize));
+            btnDelete.setOnClickListener(v -> onDeleteCardClicked(r));
+            actionsContainer.addView(btnDelete);
+        }
 
         relativeLayout.addView(actionsContainer);
 
@@ -663,6 +698,9 @@ public class RecordsActivity extends AppCompatActivity {
             ArrayAdapter<String> scoreAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, scores);
             scoreAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spnScore.setAdapter(scoreAdapter);
+            String existingScore = r.score == null ? "0/2" : r.score.trim();
+            int scoreIndex = Arrays.asList(scores).indexOf(existingScore);
+            spnScore.setSelection(scoreIndex >= 0 ? scoreIndex : 0);
             container.addView(spnScore);
 
             new AlertDialog.Builder(this)
@@ -671,44 +709,24 @@ public class RecordsActivity extends AppCompatActivity {
                     .setPositiveButton("Save", (dialog, which) -> {
                         String progName = inputName.getText().toString().trim();
                         String selectedScore = spnScore.getSelectedItem().toString();
-                        if (r.id > 0) {
-                            dbHelper.updateGradeRecordScore(r.id, selectedScore);
-                            dbHelper.saveOrUpdateGradeRecord(studentId, r.quarter, subject, activity, progName, selectedScore);
-                        } else {
-                            dbHelper.saveOrUpdateGradeRecord(studentId, getQuarterString(), subject, activity, progName, selectedScore);
+                        if (progName.isEmpty()) {
+                            Toast.makeText(this, "Please enter a program name.", Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                        Toast.makeText(this, "Saved: " + selectedScore, Toast.LENGTH_SHORT).show();
+                        boolean saved;
+                        if (r.id > 0) {
+                            saved = dbHelper.updateGradeRecord(r.id, progName, selectedScore);
+                        } else {
+                            // A new Program Performance entry is an independent row; do not upsert a different entry.
+                            saved = dbHelper.insertGradeRecordForStudent(studentId, getQuarterString(), subject, activity, progName, selectedScore);
+                        }
+                        Toast.makeText(this, saved ? "Program Performance saved." : "Could not save Program Performance.", Toast.LENGTH_SHORT).show();
                         updateUiForActivity();
                     })
                     .setNegativeButton("Cancel", null)
                     .show();
         } else if (activity.equalsIgnoreCase("Attendance")) {
-            String cleanDigits = r.score != null ? r.score.replaceAll("[^0-9]", "").trim() : "0";
-            if (cleanDigits.isEmpty()) cleanDigits = "0";
-
-            EditText input = new EditText(this);
-            input.setHint("e.g. 20");
-            input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
-            input.setText(cleanDigits);
-            input.setSelection(input.getText().length());
-
-            new AlertDialog.Builder(this)
-                    .setTitle("Days Present")
-                    .setView(input)
-                    .setPositiveButton("Save", (dialog, which) -> {
-                        String numStr = input.getText().toString().trim();
-                        if (numStr.isEmpty()) numStr = "0";
-                        String formatted = numStr + " Days";
-                        if (r.id > 0) {
-                            dbHelper.updateGradeRecordScore(r.id, formatted);
-                        } else {
-                            dbHelper.saveOrUpdateGradeRecord(studentId, getQuarterString(), subject, activity, formatted);
-                        }
-                        Toast.makeText(this, "Attendance saved: " + formatted, Toast.LENGTH_SHORT).show();
-                        updateUiForActivity();
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+            showAttendanceDatesDialog();
         } else if (activity.equalsIgnoreCase("Exam")) {
             showExamScoreDialog(r.score, newScore -> {
                 if (r.id > 0) {
@@ -735,6 +753,97 @@ public class RecordsActivity extends AppCompatActivity {
                     })
                     .show();
         }
+    }
+
+    private void showAttendanceDatesDialog() {
+        String quarter = getQuarterString();
+
+        List<Long> recordIds = new ArrayList<>();
+        List<String> items = new ArrayList<>();
+
+        try (Cursor cursor =
+                     dbHelper.getAttendanceRecords(studentId, quarter)) {
+
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    long recordId = cursor.getLong(
+                            cursor.getColumnIndexOrThrow("record_id"));
+
+                    String date = cursor.getString(
+                            cursor.getColumnIndexOrThrow("date"));
+
+                    String time = cursor.getString(
+                            cursor.getColumnIndexOrThrow("time"));
+
+                    if (date == null) date = "Unknown date";
+                    if (time == null || time.trim().isEmpty()) {
+                        time = "Time not recorded";
+                    }
+
+                    recordIds.add(recordId);
+                    String status = cursor.getString(
+                            cursor.getColumnIndexOrThrow("score"));
+
+                    if (status == null || status.trim().isEmpty()) {
+                        status = "Unknown";
+                    }
+
+                    items.add(date + " — " + time + " — " + status);
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(
+                    this,
+                    "Could not load attendance records.",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        if (items.isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Attendance Records")
+                    .setMessage("No Present attendance records found.")
+                    .setPositiveButton("Close", null)
+                    .show();
+            return;
+        }
+
+        String[] itemArray = items.toArray(new String[0]);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Present Attendance Records")
+                .setItems(itemArray, (dialog, which) -> {
+                    long selectedRecordId = recordIds.get(which);
+
+                    new AlertDialog.Builder(this)
+                            .setTitle("Delete Attendance")
+                            .setMessage("Delete this attendance entry?\n\n"
+                                    + itemArray[which])
+                            .setNegativeButton("Cancel", null)
+                            .setPositiveButton("Delete", (confirmDialog, confirmWhich) -> {
+                                boolean deleted =
+                                        dbHelper.deleteAttendanceRecord(
+                                                selectedRecordId);
+
+                                Toast.makeText(
+                                        this,
+                                        deleted
+                                                ? "Attendance record deleted."
+                                                : "Could not delete attendance record.",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+
+                                updateUiForActivity();
+
+                                if (deleted) {
+                                    showAttendanceDatesDialog();
+                                }
+                            })
+                            .show();
+                })
+                .setNegativeButton("Close", null)
+                .show();
     }
 
     private void onDeleteCardClicked(GradeRow r) {
