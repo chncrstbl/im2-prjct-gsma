@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.adapter.StudentAdapter;
+import com.example.priangradingsystem.data.DatabaseHelper;
 import com.example.priangradingsystem.model.StudentItem;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
@@ -36,6 +38,7 @@ public class SelectStudentsActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "StudentPrefs";
     private static final String KEY_STUDENT_LIST = "master_student_list";
 
+    private DatabaseHelper dbHelper;
     private StudentAdapter adapter;
     private final List<StudentItem> masterStudentList = new ArrayList<>();
     private final List<StudentItem> displayedStudentList = new ArrayList<>();
@@ -48,6 +51,8 @@ public class SelectStudentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_select_students);
+
+        dbHelper = new DatabaseHelper(this);
 
         ImageView btnBack = findViewById(R.id.btnBack);
         ImageView btnFilter = findViewById(R.id.btnFilter);
@@ -155,48 +160,100 @@ public class SelectStudentsActivity extends AppCompatActivity {
 
     private void loadSavedStudents() {
         masterStudentList.clear();
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String json = sharedPreferences.getString(KEY_STUDENT_LIST, null);
 
-        if (json != null) {
-            Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<StudentItem>>() {}.getType();
-            List<StudentItem> savedList = gson.fromJson(json, type);
+        // 1. Query actual students from Database
+        try {
+            if (dbHelper == null) {
+                dbHelper = new DatabaseHelper(this);
+            }
+            Cursor cursor = dbHelper.getAllStudents();
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow("student_id"));
+                    String fName = cursor.getString(cursor.getColumnIndexOrThrow("first_name"));
+                    String mName = cursor.getString(cursor.getColumnIndexOrThrow("middle_name"));
+                    String lName = cursor.getString(cursor.getColumnIndexOrThrow("last_name"));
+                    String age = cursor.getString(cursor.getColumnIndexOrThrow("age"));
+                    String photoUri = cursor.getString(cursor.getColumnIndexOrThrow("photo_uri"));
 
-            if (savedList != null && !savedList.isEmpty()) {
-                for (StudentItem item : savedList) {
-                    if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
-                        masterStudentList.add(item);
+                    String level = "Nursery";
+                    try {
+                        int levelColIdx = cursor.getColumnIndex("level");
+                        if (levelColIdx != -1) {
+                            String dbLevel = cursor.getString(levelColIdx);
+                            if (dbLevel != null && !dbLevel.trim().isEmpty()) {
+                                level = dbLevel.trim();
+                                if (level.contains("-")) {
+                                    level = level.split("-")[0].trim();
+                                }
+                            }
+                        }
+                    } catch (Exception ignored) {}
+
+                    String displayName;
+                    if (lName != null && !lName.trim().isEmpty() && fName != null && !fName.trim().isEmpty()) {
+                        displayName = lName.trim() + ", " + fName.trim();
+                    } else if (fName != null && !fName.trim().isEmpty()) {
+                        displayName = fName.trim();
+                    } else if (lName != null && !lName.trim().isEmpty()) {
+                        displayName = lName.trim();
+                    } else {
+                        displayName = "Unknown Student";
+                    }
+
+                    String ageStr = (age != null && !age.trim().isEmpty()) ? age.trim() : "";
+
+                    StudentItem student = new StudentItem(StudentItem.TYPE_STUDENT, displayName, ageStr, level, "Good");
+                    student.setId(id);
+                    student.setFirstName(fName);
+                    student.setMiddleName(mName);
+                    student.setLastName(lName);
+                    student.setLevel(level);
+                    student.setSection(level);
+                    student.setPhotoUri(photoUri);
+
+                    masterStudentList.add(student);
+                }
+                cursor.close();
+            }
+        } catch (Exception ignored) {}
+
+        // 2. Query saved students from SharedPreferences (excluding legacy dummy students)
+        try {
+            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String json = sharedPreferences.getString(KEY_STUDENT_LIST, null);
+
+            if (json != null) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<ArrayList<StudentItem>>() {}.getType();
+                List<StudentItem> savedList = gson.fromJson(json, type);
+
+                if (savedList != null) {
+                    for (StudentItem item : savedList) {
+                        if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
+                            String name = item.getName() != null ? item.getName().toLowerCase() : "";
+                            if (name.contains("arevalo, vea") || name.contains("cueva, ive brayne") ||
+                                name.contains("jumao-as, lea") || name.contains("de guzman, jamaila") ||
+                                name.contains("ceron, angel adrian") || name.contains("delos santos, brylle") ||
+                                name.startsWith("person ")) {
+                                continue;
+                            }
+
+                            boolean exists = false;
+                            for (StudentItem existing : masterStudentList) {
+                                if (existing.getName() != null && existing.getName().equalsIgnoreCase(item.getName())) {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                            if (!exists) {
+                                masterStudentList.add(item);
+                            }
+                        }
                     }
                 }
             }
-        }
-
-        if (masterStudentList.isEmpty()) {
-            StudentItem s1 = new StudentItem(StudentItem.TYPE_STUDENT, "Arevalo, Vea", "4", "Nursery", "Excellent");
-            s1.setSection("Nursery");
-            masterStudentList.add(s1);
-
-            StudentItem s2 = new StudentItem(StudentItem.TYPE_STUDENT, "Cueva, Ive Brayne", "5", "Nursery", "Good");
-            s2.setSection("Nursery");
-            masterStudentList.add(s2);
-
-            StudentItem s3 = new StudentItem(StudentItem.TYPE_STUDENT, "Jumao-as, Lea", "4", "Nursery", "Needs Improvement");
-            s3.setSection("Nursery");
-            masterStudentList.add(s3);
-
-            StudentItem s4 = new StudentItem(StudentItem.TYPE_STUDENT, "De guzman, Jamaila", "4", "Toddler", "Excellent");
-            s4.setSection("Toddler");
-            masterStudentList.add(s4);
-
-            StudentItem s5 = new StudentItem(StudentItem.TYPE_STUDENT, "Ceron, Angel Adrian", "5", "Toddler", "Good");
-            s5.setSection("Toddler");
-            masterStudentList.add(s5);
-
-            StudentItem s6 = new StudentItem(StudentItem.TYPE_STUDENT, "Delos santos, Brylle", "5", "Toddler", "Good");
-            s6.setSection("Toddler");
-            masterStudentList.add(s6);
-        }
+        } catch (Exception ignored) {}
 
         applyCombinedFilters();
     }
