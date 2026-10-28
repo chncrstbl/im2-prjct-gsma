@@ -70,22 +70,30 @@
                     android:padding="12dp">
 
                     <FrameLayout
-                        android:layout_width="54dp"
-                        android:layout_height="54dp">
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_avatar_ring"
+                        android:padding="2dp">
 
-                        <ImageView
-                            android:id="@+id/imgStudentBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:contentDescription="@null"
-                            android:src="@drawable/profile_background_placeholder_female" />
-
-                        <ImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/imgStudentAvatar"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:contentDescription="@string/student_avatar"
-                            android:src="@drawable/profile_foreground_placeholder_female" />
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/CircleImageViewStyle" />
+
+                        <TextView
+                            android:id="@+id/tvNoPhotoText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="N/A"
+                            android:textColor="#888888"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            tools:ignore="HardcodedText" />
                     </FrameLayout>
 
                     <LinearLayout
@@ -373,150 +381,12 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Grade Record Item Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardGradeRecord"
+            <!-- Dynamic Cards Container -->
+            <LinearLayout
+                android:id="@+id/layoutCardsContainer"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeColor="#DDDDDD"
-                app:strokeWidth="1.5dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="16dp">
-
-                    <!-- Grade Record Symbol -->
-                    <ImageView
-                        android:id="@+id/ivRecordSymbol"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:contentDescription="@null"
-                        android:src="@drawable/grade_record_symbol" />
-
-                    <!-- Grade Record Title & Subtitle -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="12dp"
-                        android:layout_toEndOf="@id/ivRecordSymbol"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvRecordTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Grade Record"
-                            android:textColor="#000000"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvRecordSubtitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="1st Quarter"
-                            android:textColor="#888888"
-                            android:textSize="12sp"
-                            android:visibility="gone" />
-                    </LinearLayout>
-
-                    <!-- Edit and Delete Actions -->
-                    <LinearLayout
-                        android:id="@+id/layoutActions"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/btnEditRecord"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginEnd="12dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Edit"
-                            android:src="@drawable/edit_record" />
-
-                        <ImageView
-                            android:id="@+id/btnDeleteRecord"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Delete"
-                            android:src="@drawable/delete_record" />
-                    </LinearLayout>
-
-                    <!-- Star Ratings Container -->
-                    <LinearLayout
-                        android:id="@+id/layoutStarsContainer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toStartOf="@id/layoutActions"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/ivStar1"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Star 1"
-                            android:src="@drawable/star_normal" />
-
-                        <ImageView
-                            android:id="@+id/ivStar2"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Star 2"
-                            android:src="@drawable/star_normal" />
-
-                        <ImageView
-                            android:id="@+id/ivStar3"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Star 3"
-                            android:src="@drawable/star_normal" />
-                    </LinearLayout>
-
-                    <!-- Exam Score Container -->
-                    <LinearLayout
-                        android:id="@+id/layoutExamScoreContainer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toStartOf="@id/layoutActions"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/tvExamScore"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0/20"
-                            android:textColor="#000000"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
         </LinearLayout>
     </ScrollView>

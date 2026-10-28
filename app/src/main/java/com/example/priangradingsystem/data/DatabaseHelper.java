@@ -634,12 +634,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String q = normalizeQuarter(quarter);
         String s = subjectKey(subject);
         String a = activityKey(activity);
+        boolean isSubjectAgnostic = a.equalsIgnoreCase("homework") || a.equalsIgnoreCase("attendance") || a.toLowerCase(java.util.Locale.ROOT).contains("program");
+
         try (Cursor c = db.rawQuery("SELECT record_id, quarter, subject, activity FROM grade_records " +
                 "WHERE student_id = ? ORDER BY record_id DESC", new String[]{String.valueOf(studentId)})) {
             while (c.moveToNext()) {
-                if (normalizeQuarter(c.getString(1)).equals(q)
-                        && subjectKey(c.getString(2)).equals(s)
-                        && activityKey(c.getString(3)).equals(a)) {
+                boolean quarterMatches = normalizeQuarter(c.getString(1)).equals(q);
+                boolean activityMatches = activityKey(c.getString(3)).equals(a);
+                boolean subjectMatches = isSubjectAgnostic || subjectKey(c.getString(2)).equals(s);
+
+                if (quarterMatches && activityMatches && subjectMatches) {
                     return c.getLong(0);
                 }
             }
@@ -670,6 +674,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Cursor getMatchingGradeRecords(long studentId, String quarter, String subject, String activity) {
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            String q = normalizeQuarter(quarter);
+            String s = subjectKey(subject);
+            String a = activityKey(activity);
+            boolean isSubjectAgnostic = a.equalsIgnoreCase("homework") || a.equalsIgnoreCase("attendance");
+
+            if (isSubjectAgnostic) {
+                return db.rawQuery(
+                        "SELECT record_id, quarter, subject, activity, activity_name, score, date FROM grade_records " +
+                        "WHERE student_id = ? AND (LOWER(quarter) = LOWER(?) OR LOWER(quarter) LIKE LOWER(? || '%')) " +
+                        "AND (LOWER(activity) = LOWER(?) OR LOWER(activity) = LOWER(?)) ORDER BY record_id ASC",
+                        new String[]{String.valueOf(studentId), q, q.length() >= 3 ? q.substring(0, 3) : q, a, a + "s"});
+            } else {
+                return db.rawQuery(
+                        "SELECT record_id, quarter, subject, activity, activity_name, score, date FROM grade_records " +
+                        "WHERE student_id = ? AND (LOWER(quarter) = LOWER(?) OR LOWER(quarter) LIKE LOWER(? || '%')) " +
+                        "AND (LOWER(subject) = LOWER(?) OR LOWER(subject) = 'n/a') " +
+                        "AND (LOWER(activity) = LOWER(?) OR LOWER(activity) = LOWER(?)) ORDER BY record_id ASC",
+                        new String[]{String.valueOf(studentId), q, q.length() >= 3 ? q.substring(0, 3) : q, s, a, a + "s"});
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in getMatchingGradeRecords", e);
+            return null;
+        }
+    }
+
     public String getGradeRecordScore(long studentId, String quarter, String subject, String activity) {
         try {
             SQLiteDatabase db = getReadableDatabase();
@@ -686,6 +718,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean saveOrUpdateGradeRecord(long studentId, String quarter, String subject, String activity, String score) {
+        return saveOrUpdateGradeRecord(studentId, quarter, subject, activity, null, score);
+    }
+
+    public boolean saveOrUpdateGradeRecord(long studentId, String quarter, String subject, String activity, String activityName, String score) {
         try {
             SQLiteDatabase db = getWritableDatabase();
             lastError = "";
@@ -708,6 +744,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put("score", score != null ? score : "0");
             values.put("date", date);
             values.put("activity", cleanActivity);
+            if (activityName != null && !activityName.trim().isEmpty()) {
+                values.put("activity_name", activityName.trim());
+            }
 
             if (recordId != -1) {
                 return db.update("grade_records", values, "record_id = ?", new String[]{String.valueOf(recordId)}) > 0;
