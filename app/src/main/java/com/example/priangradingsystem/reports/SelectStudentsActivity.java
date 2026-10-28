@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -160,66 +161,6 @@ public class SelectStudentsActivity extends AppCompatActivity {
 
     private void loadSavedStudents() {
         masterStudentList.clear();
-
-        // 1. Query actual students from Database
-        try {
-            if (dbHelper == null) {
-                dbHelper = new DatabaseHelper(this);
-            }
-            Cursor cursor = dbHelper.getAllStudents();
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    int id = cursor.getInt(cursor.getColumnIndexOrThrow("student_id"));
-                    String fName = cursor.getString(cursor.getColumnIndexOrThrow("first_name"));
-                    String mName = cursor.getString(cursor.getColumnIndexOrThrow("middle_name"));
-                    String lName = cursor.getString(cursor.getColumnIndexOrThrow("last_name"));
-                    String age = cursor.getString(cursor.getColumnIndexOrThrow("age"));
-                    String photoUri = cursor.getString(cursor.getColumnIndexOrThrow("photo_uri"));
-
-                    String level = "Nursery";
-                    try {
-                        int levelColIdx = cursor.getColumnIndex("level");
-                        if (levelColIdx != -1) {
-                            String dbLevel = cursor.getString(levelColIdx);
-                            if (dbLevel != null && !dbLevel.trim().isEmpty()) {
-                                level = dbLevel.trim();
-                                if (level.contains("-")) {
-                                    level = level.split("-")[0].trim();
-                                }
-                            }
-                        }
-                    } catch (Exception ignored) {}
-
-                    String displayName;
-                    if (lName != null && !lName.trim().isEmpty() && fName != null && !fName.trim().isEmpty()) {
-                        displayName = lName.trim() + ", " + fName.trim();
-                    } else if (fName != null && !fName.trim().isEmpty()) {
-                        displayName = fName.trim();
-                    } else if (lName != null && !lName.trim().isEmpty()) {
-                        displayName = lName.trim();
-                    } else {
-                        displayName = "Unknown Student";
-                    }
-
-                    String ageStr = (age != null && !age.trim().isEmpty()) ? age.trim() : "";
-
-                    StudentItem student = new StudentItem(StudentItem.TYPE_STUDENT, displayName, ageStr, level, "Good");
-                    student.setId(id);
-                    student.setFirstName(fName);
-                    student.setMiddleName(mName);
-                    student.setLastName(lName);
-                    student.setLevel(level);
-                    student.setSection(level);
-                    student.setPhotoUri(photoUri);
-
-                    masterStudentList.add(student);
-                }
-                cursor.close();
-            }
-        } catch (Exception ignored) {}
-
-        // 2. Query saved students from SharedPreferences (excluding legacy dummy students)
-        try {
             SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             String json = sharedPreferences.getString(KEY_STUDENT_LIST, null);
 
@@ -228,14 +169,14 @@ public class SelectStudentsActivity extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<StudentItem>>() {}.getType();
                 List<StudentItem> savedList = gson.fromJson(json, type);
 
-                for (StudentItem item : savedList) {
-                    if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
-                        masterStudentList.add(item);
+                    for (StudentItem item : savedList) {
+                        if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
+                                masterStudentList.add(item);
+                            }
+                        }
                     }
                 }
             }
-        }
-        }
 
         applyCombinedFilters();
     }
