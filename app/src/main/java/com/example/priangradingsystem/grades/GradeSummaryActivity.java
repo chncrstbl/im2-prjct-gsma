@@ -19,6 +19,7 @@ public class GradeSummaryActivity extends AppCompatActivity {
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_grade_summary);
 
+        long studentId = getIntent().getLongExtra("STUDENT_ID", -1);
         String studentName = getIntent().getStringExtra("STUDENT_NAME");
         String studentLevel = getIntent().getStringExtra("STUDENT_LEVEL");
         String studentPhotoUri = getIntent().getStringExtra("STUDENT_PHOTO_URI");
@@ -56,6 +57,7 @@ public class GradeSummaryActivity extends AppCompatActivity {
         if (btnViewFullRecords != null) {
             btnViewFullRecords.setOnClickListener(v -> {
                 Intent intent = new Intent(GradeSummaryActivity.this, ReportsActivity.class);
+                if (studentId > 0) intent.putExtra("STUDENT_ID", studentId);
                 if (studentName != null) intent.putExtra("STUDENT_NAME", studentName);
                 if (studentLevel != null) intent.putExtra("STUDENT_LEVEL", studentLevel);
                 if (studentPhotoUri != null) intent.putExtra("STUDENT_PHOTO_URI", studentPhotoUri);

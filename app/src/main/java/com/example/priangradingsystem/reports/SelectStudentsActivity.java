@@ -63,6 +63,7 @@ public class SelectStudentsActivity extends AppCompatActivity {
         adapter = new StudentAdapter(displayedStudentList, item -> {
             if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
                 Intent intent = new Intent(SelectStudentsActivity.this, ReportsActivity.class);
+                intent.putExtra("STUDENT_ID", (long) item.getId());
                 intent.putExtra("STUDENT_NAME", item.getName());
                 String level = item.getLevel() != null && !item.getLevel().isEmpty() ? item.getLevel() : item.getSection();
                 intent.putExtra("STUDENT_LEVEL", level);

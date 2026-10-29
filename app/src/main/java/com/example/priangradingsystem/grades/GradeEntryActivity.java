@@ -331,12 +331,12 @@ public class GradeEntryActivity extends AppCompatActivity {
             if (activity.equalsIgnoreCase("Exam")) {
                 try {
                     int examVal = Integer.parseInt(rawScore);
-                    if (examVal < 0 || examVal > 20) {
-                        Toast.makeText(this, "Exam score must be between 0 and 20 only.", Toast.LENGTH_LONG).show();
+                    if (examVal < 1 || examVal > 20) {
+                        Toast.makeText(this, "Exam score must be a whole number from 1 to 20.", Toast.LENGTH_LONG).show();
                         return;
                     }
                 } catch (NumberFormatException e) {
-                    Toast.makeText(this, "Please enter a valid number between 0 and 20.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Please enter a whole number from 1 to 20.", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
