@@ -163,11 +163,7 @@ public class SelectStudentsActivity extends AppCompatActivity {
     private void loadSavedStudents() {
         masterStudentList.clear();
 
-        // 1. Query real students from SQLite Database
         try {
-            if (dbHelper == null) {
-                dbHelper = new DatabaseHelper(this);
-            }
             Cursor cursor = dbHelper.getAllStudents();
             if (cursor != null) {
                 while (cursor.moveToNext()) {
@@ -175,12 +171,7 @@ public class SelectStudentsActivity extends AppCompatActivity {
                     String fName = cursor.getString(cursor.getColumnIndexOrThrow("first_name"));
                     String mName = cursor.getString(cursor.getColumnIndexOrThrow("middle_name"));
                     String lName = cursor.getString(cursor.getColumnIndexOrThrow("last_name"));
-                    String dob = cursor.getString(cursor.getColumnIndexOrThrow("birthdate"));
-                    String gender = cursor.getString(cursor.getColumnIndexOrThrow("sex"));
                     String age = cursor.getString(cursor.getColumnIndexOrThrow("age"));
-                    String guardian = cursor.getString(cursor.getColumnIndexOrThrow("guardian_name"));
-                    String contact = cursor.getString(cursor.getColumnIndexOrThrow("guardian_contact"));
-                    String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
                     String photoUri = cursor.getString(cursor.getColumnIndexOrThrow("photo_uri"));
 
                     String level = "Nursery";
@@ -197,26 +188,17 @@ public class SelectStudentsActivity extends AppCompatActivity {
                         }
                     } catch (Exception ignored) {}
 
-                    String displayName = ((fName != null ? fName : "") + " " + (lName != null ? lName : "")).trim();
+                    String displayName = fName + (mName != null && !mName.trim().isEmpty() ? " " + mName : "") + " " + lName;
+                    displayName = displayName.trim();
                     if (displayName.isEmpty()) {
-                        displayName = "Unnamed Student";
+                        displayName = lName + ", " + fName;
                     }
                     String ageStr = (age != null && !age.trim().isEmpty()) ? (age.toLowerCase().startsWith("age") ? age : "Age " + age) : "";
 
                     StudentItem student = new StudentItem(StudentItem.TYPE_STUDENT, displayName, ageStr, level, "Good");
                     student.setId(id);
-                    student.setFirstName(fName);
-                    student.setMiddleName(mName);
-                    student.setLastName(lName);
-                    student.setGender(gender);
-                    student.setDob(dob);
-                    student.setParentName(guardian);
-                    student.setContact(contact);
-                    student.setAddress(address);
-                    student.setPhotoUri(photoUri);
-                    student.setLevel(level);
                     student.setSection(level);
-
+                    student.setPhotoUri(photoUri);
                     masterStudentList.add(student);
                 }
                 cursor.close();
@@ -224,39 +206,6 @@ public class SelectStudentsActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("SelectStudentsActivity", "Error loading students from database", e);
         }
-
-        // 2. Query saved students from SharedPreferences
-        try {
-            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            String json = sharedPreferences.getString(KEY_STUDENT_LIST, null);
-
-            if (json != null) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<ArrayList<StudentItem>>() {}.getType();
-                List<StudentItem> savedList = gson.fromJson(json, type);
-
-                if (savedList != null) {
-                    for (StudentItem item : savedList) {
-                        if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
-                            if (item.getName() != null && item.getName().toLowerCase().startsWith("person ")) {
-                                continue;
-                            }
-
-                            boolean exists = false;
-                            for (StudentItem existing : masterStudentList) {
-                                if (existing.getName() != null && existing.getName().equalsIgnoreCase(item.getName())) {
-                                    exists = true;
-                                    break;
-                                }
-                            }
-                            if (!exists) {
-                                masterStudentList.add(item);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception ignored) {}
 
         applyCombinedFilters();
     }

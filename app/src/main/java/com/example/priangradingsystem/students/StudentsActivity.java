@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.activity.result.ActivityResultLauncher;
@@ -121,16 +122,7 @@ public class StudentsActivity extends AppCompatActivity {
             }
 
             if (btnFilter != null) {
-                btnFilter.setOnClickListener(v -> {
-                    try {
-                        Intent intent = new Intent(StudentsActivity.this, FilterActivity.class);
-                        intent.putExtra("CURRENT_LEVEL_FILTER", currentLevelFilter);
-                        intent.putExtra("CURRENT_PERFORMANCE_FILTER", currentPerformanceFilter);
-                        filterLauncher.launch(intent);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error launching FilterActivity", e);
-                    }
-                });
+                btnFilter.setOnClickListener(v -> showFilterModal());
             }
 
             if (etSearch != null) {
@@ -267,6 +259,53 @@ public class StudentsActivity extends AppCompatActivity {
             Log.e(TAG, "Error loading students from database", e);
         }
         applyCombinedFilters();
+    }
+
+    private void showFilterModal() {
+        com.google.android.material.bottomsheet.BottomSheetDialog dialog = new com.google.android.material.bottomsheet.BottomSheetDialog(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_filter_students, null);
+        dialog.setContentView(dialogView);
+
+        android.widget.RadioGroup rgLevelFilter = dialogView.findViewById(R.id.rgLevelFilter);
+        android.widget.RadioButton rbLevelAll = dialogView.findViewById(R.id.rbLevelAll);
+        android.widget.RadioButton rbNursery = dialogView.findViewById(R.id.rbNursery);
+        android.widget.RadioButton rbToddler = dialogView.findViewById(R.id.rbToddler);
+
+        if ("Nursery".equalsIgnoreCase(currentLevelFilter)) {
+            rbNursery.setChecked(true);
+        } else if ("Toddler".equalsIgnoreCase(currentLevelFilter) || "Pre-K".equalsIgnoreCase(currentLevelFilter)) {
+            rbToddler.setChecked(true);
+        } else {
+            rbLevelAll.setChecked(true);
+        }
+
+        android.widget.Button btnApplyFilter = dialogView.findViewById(R.id.btnApplyFilter);
+        android.widget.Button btnResetFilter = dialogView.findViewById(R.id.btnResetFilter);
+
+        if (btnApplyFilter != null) {
+            btnApplyFilter.setOnClickListener(v -> {
+                int checkedId = rgLevelFilter.getCheckedRadioButtonId();
+                if (checkedId == R.id.rbNursery) {
+                    currentLevelFilter = "Nursery";
+                } else if (checkedId == R.id.rbToddler) {
+                    currentLevelFilter = "Toddler";
+                } else {
+                    currentLevelFilter = "All";
+                }
+                applyCombinedFilters();
+                dialog.dismiss();
+            });
+        }
+
+        if (btnResetFilter != null) {
+            btnResetFilter.setOnClickListener(v -> {
+                currentLevelFilter = "All";
+                applyCombinedFilters();
+                dialog.dismiss();
+            });
+        }
+
+        dialog.show();
     }
 
     @SuppressLint("NotifyDataSetChanged")
