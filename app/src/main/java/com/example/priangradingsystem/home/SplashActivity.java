@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.R;
-import com.example.priangradingsystem.auth.LoginActivity;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
@@ -18,13 +17,13 @@ public class SplashActivity extends AppCompatActivity {
 
         Button btnGetStarted = findViewById(R.id.btnGetStarted);
         if (btnGetStarted != null) {
-            btnGetStarted.setOnClickListener(v -> proceedToLogin());
+            btnGetStarted.setOnClickListener(v -> proceedToMain());
         }
     }
 
-    private void proceedToLogin() {
+    private void proceedToMain() {
         if (!isFinishing()) {
-            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+            Intent intent = new Intent(SplashActivity.this, com.example.priangradingsystem.auth.LoginActivity.class);
             startActivity(intent);
             finish();
         }
