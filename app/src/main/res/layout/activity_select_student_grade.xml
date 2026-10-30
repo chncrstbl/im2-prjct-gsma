@@ -18,22 +18,25 @@
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/back"
-            android:src="@drawable/vectoray" />
+            android:src="@drawable/ic_chevron_left"
+            app:tint="#FFFFFF" />
 
         <ImageView
             android:id="@+id/ivHeaderTitle"
-            android:layout_width="100dp"
-            android:layout_height="20dp"
+            android:layout_width="125dp"
+            android:layout_height="25dp"
             android:layout_centerInParent="true"
             android:adjustViewBounds="true"
             android:contentDescription="@string/select_student_to_grade"
-            android:src="@drawable/students"
+            android:rotationX="-3"
+            android:rotationY="4"
+            android:src="@drawable/select_student"
             app:tint="#FFFFFF" />
     </RelativeLayout>
 
@@ -82,8 +85,10 @@
             android:layout_marginStart="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/filter_options"
-            android:padding="8dp"
-            android:src="@drawable/filter" />
+            android:padding="10dp"
+            android:src="@drawable/ic_tune"
+            app:tint="#000000"
+            tools:ignore="ImageContrastCheck" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

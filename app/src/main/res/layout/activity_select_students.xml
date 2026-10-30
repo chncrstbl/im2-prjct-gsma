@@ -27,16 +27,15 @@
             android:src="@drawable/ic_chevron_left"
             app:tint="#FFFFFF" />
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/ivHeaderTitle"
+            android:layout_width="125dp"
+            android:layout_height="25dp"
             android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="@string/grade_reports_title"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/select_student_to_grade"
+            android:src="@drawable/grade_reports"
+            app:tint="#FFFFFF" />
     </RelativeLayout>
 
     <!-- Search & Filter Bar -->

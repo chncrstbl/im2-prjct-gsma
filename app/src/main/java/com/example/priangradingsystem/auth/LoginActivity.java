@@ -24,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isPasswordVisible = false;
 
     // Set to true to temporarily bypass login validation for fast testing
-    private static final boolean BYPASS_LOGIN = false;
+    private static final boolean BYPASS_LOGIN = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

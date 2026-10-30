@@ -4,39 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFFFFF"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:ignore="HardcodedText,VisualLintBounds,VisualLintTextFieldSize,VisualLintButtonSize,InaccessibleLabel">
 
     <!-- Top Navigation Header with Status Bar Integration -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="59dp"
         android:background="#FFC107"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="24dp">
+        android:paddingHorizontal="16dp">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/back"
             android:src="@drawable/ic_chevron_left"
-            app:tint="#FFFFFF"
-            android:contentDescription="Back"
-            tools:ignore="ImageContrastCheck" />
+            app:tint="#FFFFFF" />
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/ivHeaderTitle"
+            android:layout_width="175dp"
+            android:layout_height="125dp"
             android:layout_centerInParent="true"
-            android:text="Student Information"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:ignore="TextContrastCheck" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/select_student_to_grade"
+            android:src="@drawable/student_information"
+            app:tint="#FFFFFF" />
     </RelativeLayout>
 
     <!-- Scrollable Content -->

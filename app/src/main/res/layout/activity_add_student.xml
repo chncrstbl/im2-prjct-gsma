@@ -18,25 +18,24 @@
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:contentDescription="Back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/back"
             android:src="@drawable/ic_chevron_left"
-            app:tint="#FFFFFF"
-            tools:ignore="ImageContrastCheck" />
+            app:tint="#FFFFFF" />
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/ivHeaderTitle"
+            android:layout_width="225dp"
+            android:layout_height="50dp"
             android:layout_centerInParent="true"
-            android:text="Enter Student Information"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:ignore="TextContrastCheck" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/select_student_to_grade"
+            android:src="@drawable/enter_student_information"
+            app:tint="#FFFFFF" />
     </RelativeLayout>
 
     <ScrollView
