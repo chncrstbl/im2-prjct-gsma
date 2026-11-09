@@ -21,7 +21,9 @@ import com.example.priangradingsystem.data.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Locale;
 
 /** Database-driven quarterly report. No hardcoded sample grades. */
@@ -42,7 +44,8 @@ public class ReportsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_reports);
-        dbHelper = new DatabaseHelper(this);
+        try { dbHelper = new DatabaseHelper(this); }
+        catch (Throwable t) { Log.e(TAG, "Could not open the database", t); dbHelper = null; }
 
         studentName = safe(getIntent().getStringExtra("STUDENT_NAME"));
         studentId = getIntent().getLongExtra("STUDENT_ID", -1L);
@@ -71,7 +74,7 @@ public class ReportsActivity extends AppCompatActivity {
             try {
                 Uri uri = Uri.parse(photo);
                 imgStudentAvatar.setImageURI(uri);
-            } catch (Exception e) { Log.w(TAG, "Could not load student photo", e); }
+            } catch (Throwable e) { Log.w(TAG, "Could not load student photo", e); }
         }
         ImageView btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
@@ -96,7 +99,7 @@ public class ReportsActivity extends AppCompatActivity {
     }
 
     private long findStudentIdByName(String name) {
-        if (name == null || name.trim().isEmpty()) return -1;
+        if (dbHelper == null || name == null || name.trim().isEmpty()) return -1;
         Cursor c = null;
         try {
             c = dbHelper.getAllStudents();
@@ -117,13 +120,28 @@ public class ReportsActivity extends AppCompatActivity {
         return -1;
     }
 
+    /** Never lets a data/database problem crash the screen: shows a message and logs the stack trace instead. */
     private void loadQuarterData() {
+        try {
+            loadQuarterDataUnsafe();
+        } catch (Throwable t) {
+            Log.e(TAG, "Report failed for quarter=" + selectedQuarter, t);
+            showNoData("Could not build the report (" + t.getClass().getSimpleName() + "). See Logcat tag ReportsActivity.");
+        }
+    }
+
+    private void loadQuarterDataUnsafe() {
+        if (dbHelper == null) {
+            showNoData("The database could not be opened.");
+            return;
+        }
         if (studentId <= 0) {
             showNoData("Student ID was not passed. Reopen the report from the student list.");
             return;
         }
 
-        List<QuarterGradeCalculator.GradeRow> records = new ArrayList<>();
+        List<QuarterGradeCalculator.GradeRow> records = new ArrayList<>();                       // selected student
+        Map<Long, List<QuarterGradeCalculator.GradeRow>> allStudentsRows = new HashMap<>();      // every student, this quarter
         Cursor cursor = null;
         try {
             cursor = dbHelper.getAllGradeRecords();
@@ -146,19 +164,23 @@ public class ReportsActivity extends AppCompatActivity {
             }
             String wantedQuarter = DatabaseHelper.normalizeQuarter(selectedQuarter);
             while (cursor.moveToNext()) {
-                if (cursor.getLong(idCol) != studentId) continue;
                 String quarter = quarterCol >= 0 ? cursor.getString(quarterCol) : "";
                 if (!DatabaseHelper.normalizeQuarter(quarter).equalsIgnoreCase(wantedQuarter)) continue;
-                records.add(new QuarterGradeCalculator.GradeRow(
+                long rowStudentId = cursor.getLong(idCol);
+                QuarterGradeCalculator.GradeRow row = new QuarterGradeCalculator.GradeRow(
                         cursor.getLong(recordIdCol),
                         subjectCol >= 0 ? cursor.getString(subjectCol) : "",
                         activityCol >= 0 ? cursor.getString(activityCol) : "",
                         activityNameCol >= 0 ? cursor.getString(activityNameCol) : "",
                         scoreCol >= 0 ? cursor.getString(scoreCol) : "",
                         dateCol >= 0 ? cursor.getString(dateCol) : "",
-                        timeCol >= 0 ? cursor.getString(timeCol) : ""));
+                        timeCol >= 0 ? cursor.getString(timeCol) : "");
+                List<QuarterGradeCalculator.GradeRow> list = allStudentsRows.get(rowStudentId);
+                if (list == null) { list = new ArrayList<>(); allStudentsRows.put(rowStudentId, list); }
+                list.add(row);                                   // used for the class-wide highest points
+                if (rowStudentId == studentId) records.add(row); // used for this student's own grade
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Log.e(TAG, "Failed loading report records for quarter=" + selectedQuarter, e);
             showNoData("There was a problem loading this quarter's grades. Check Logcat for details.");
             return;
@@ -169,8 +191,10 @@ public class ReportsActivity extends AppCompatActivity {
             return;
         }
 
-        QuarterGradeCalculator.Result result = QuarterGradeCalculator.calculate(records);
-        Log.d(TAG, "Grade trace (" + selectedQuarter + ", " + records.size() + " records)\n" + result.trace());
+        // Books + Homework denominator = highest Books stars + highest Homework stars among ALL students.
+        QuarterGradeCalculator.Benchmarks benchmarks = QuarterGradeCalculator.Benchmarks.fromStudents(allStudentsRows.values());
+        QuarterGradeCalculator.Result result = QuarterGradeCalculator.calculate(records, -1, benchmarks);
+        Log.d(TAG, "Grade trace (" + selectedQuarter + ", " + records.size() + " records, " + allStudentsRows.size() + " students)\n" + result.trace());
 
         for (String subject : SUBJECTS) setSubjectScore(subject, subjectDisplay(result.subjects.get(subject)));
 
@@ -212,7 +236,7 @@ public class ReportsActivity extends AppCompatActivity {
         if (progressBarPerformance != null) progressBarPerformance.setProgress(0);
         for (String subject : SUBJECTS) setSubjectScore(subject, "N/A");
         Log.w(TAG, message);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        try { Toast.makeText(this, message, Toast.LENGTH_LONG).show(); } catch (Throwable ignored) { }
     }
 
     private static String normalizeName(String s) { return safe(s).toLowerCase(Locale.ROOT).replaceAll("\\s+", " ").trim(); }

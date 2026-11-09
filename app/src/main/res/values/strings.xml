@@ -214,4 +214,7 @@
     <string name="sample_date">October 10, 2026</string>
     <string name="score_hint">90</string>
     <string name="grade_reports_title">Grade Reports</string>
+    <string name="grade_records_title">Grade Record</string>
+    <string name="enter_student_info">Enter Student Information</string>
+    <string name="student_information">Student Information</string>
 </resources>

@@ -26,16 +26,14 @@
             android:contentDescription="@string/back"
             android:src="@drawable/back_button" />
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/ivHeaderTitle"
+            android:layout_width="148dp"
+            android:layout_height="22dp"
             android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="Grade Record"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/grade_records_title"
+            android:src="@drawable/grade_record_top_nav_bar" />
     </RelativeLayout>
 
     <ScrollView

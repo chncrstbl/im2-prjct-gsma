@@ -14,7 +14,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#FFCC00"
+        android:background="@drawable/top_bar_color"
         android:paddingHorizontal="16dp">
 
         <ImageView

@@ -11,12 +11,9 @@
     <!-- Solid Yellow Header -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFC107"
-        android:paddingTop="32dp"
-        android:paddingBottom="16dp"
-        android:paddingHorizontal="16dp"
-        android:layout_marginBottom="12dp">
+        android:layout_height="56dp"
+        android:background="@drawable/top_bar_color"
+        android:paddingHorizontal="16dp">
 
         <ImageView
             android:id="@+id/btnBack"
@@ -31,8 +28,8 @@
 
         <ImageView
             android:id="@+id/btnAdd"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/add_student"
@@ -40,20 +37,14 @@
             app:tint="#FFFFFF"
             tools:ignore="ImageContrastCheck" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/btnBack"
-            android:layout_toStartOf="@id/btnAdd"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/manage_students"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:ignore="TextContrastCheck" />
+        <ImageView
+            android:id="@+id/ivHeaderTitle"
+            android:layout_width="176dp"
+            android:layout_height="22dp"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/manage_students"
+            android:src="@drawable/manage_student" />
     </RelativeLayout>
 
     <!-- Search Bar and Filter Section -->

@@ -43,7 +43,10 @@ public final class QuarterGradeCalculator {
         public final String subject;
         public final List<Integer> examRawScores = new ArrayList<>();
         public double examGrade = -1;            // mapped equivalent grade (average if several exams)
+        /** Student's earned stars (own Books in this subject + shared Homework) and the class-wide total points. */
         public int starsEarned, starsPossible, ratingCount;
+        public int booksStars, homeworkStars;      // the student's own earned stars
+        public int booksMax, homeworkMax;          // highest Books stars (this subject) / Homework stars of any student
         /** Books ratings entered for this subject itself (shared Homework is not counted). */
         public int ownBooksCount;
         public double booksHwRate = -1;
@@ -77,6 +80,8 @@ public final class QuarterGradeCalculator {
                 sb.append("\n  ").append(s.subject)
                         .append(": exams=").append(s.examRawScores).append(" examGrade=").append(fmt(s.examGrade))
                         .append(" stars=").append(s.starsEarned).append('/').append(s.starsPossible)
+                        .append(" (books ").append(s.booksStars).append('/').append(s.booksMax)
+                        .append(" + hw ").append(s.homeworkStars).append('/').append(s.homeworkMax).append(')')
                         .append(" (ratings=").append(s.ratingCount).append(") bhRate=").append(fmt(s.booksHwRate))
                         .append(" | exam30=").append(fmt(s.examContribution))
                         .append(" att30=").append(fmt(s.attendanceContribution))
@@ -94,13 +99,59 @@ public final class QuarterGradeCalculator {
         private static String fmt(double v) { return String.format(Locale.US, "%.4f", v); }
     }
 
+    /**
+     * Class-wide "highest points" used as the Books + Homework denominator:
+     *   Total Points (subject) = highest Books stars earned by any ONE student in that subject
+     *                          + highest Homework stars earned by any ONE student.
+     * Build it from the quarter's rows of ALL students.
+     */
+    public static final class Benchmarks {
+        public final Map<String, Integer> maxBooks = new LinkedHashMap<>();
+        public int maxHomework;
+        Benchmarks() { for (String s : SUBJECTS) maxBooks.put(s, 0); }
+        public int totalPoints(String subject) { return maxBooks.get(subject) + maxHomework; }
+
+        /** @param perStudentRows one list of grade rows (one quarter) per student */
+        public static Benchmarks fromStudents(java.util.Collection<? extends List<GradeRow>> perStudentRows) {
+            Benchmarks b = new Benchmarks();
+            for (List<GradeRow> rows : perStudentRows) {
+                Map<String, Integer> books = new LinkedHashMap<>();
+                for (String s : SUBJECTS) books.put(s, 0);
+                int hw = 0;
+                Set<Long> seen = new HashSet<>();
+                for (GradeRow r : rows) {
+                    if (!seen.add(r.recordId)) continue;
+                    String act = normActivity(r.activity);
+                    if (!act.equals("book") && !act.equals("homework")) continue;
+                    int stars = GradingCalculator.parseStarRating(r.score);
+                    if (stars < 0) continue;
+                    if (act.equals("homework")) hw += stars;
+                    else {
+                        String subj = GradingCalculator.canonicalSubject(r.subject);
+                        if (subj != null) books.put(subj, books.get(subj) + stars);
+                    }
+                }
+                b.maxHomework = Math.max(b.maxHomework, hw);
+                for (String s : SUBJECTS) b.maxBooks.put(s, Math.max(b.maxBooks.get(s), books.get(s)));
+            }
+            return b;
+        }
+    }
+
     private QuarterGradeCalculator() {}
 
+    /** Single-student convenience: with no other students, this student's own totals are the highest. */
     public static Result calculate(List<GradeRow> records) {
-        return calculate(records, -1);
+        return calculate(records, -1, null);
     }
 
     public static Result calculate(List<GradeRow> records, int totalSchoolDaysOverride) {
+        return calculate(records, totalSchoolDaysOverride, null);
+    }
+
+    /** @param benchmarks class-wide highest points; null = use only this student's own rows */
+    public static Result calculate(List<GradeRow> records, int totalSchoolDaysOverride, Benchmarks benchmarks) {
+        if (benchmarks == null) benchmarks = Benchmarks.fromStudents(java.util.Collections.singletonList(records));
         Result res = new Result();
         for (String s : SUBJECTS) res.subjects.put(s, new SubjectResult(s));
 
@@ -133,12 +184,12 @@ public final class QuarterGradeCalculator {
                 int stars = GradingCalculator.parseStarRating(r.score);
                 if (stars < 0) { res.warnings.add("Ignored rating record " + r.recordId + " (not 0-3 stars)"); continue; }
                 if (activity.equals("homework")) {
-                    for (SubjectResult sr : res.subjects.values()) addStars(sr, stars);
+                    for (SubjectResult sr : res.subjects.values()) { sr.homeworkStars += stars; sr.ratingCount++; }
                 } else {
                     String subj = GradingCalculator.canonicalSubject(r.subject);
                     if (subj == null) { res.warnings.add("Ignored Books record " + r.recordId + " (unknown subject)"); continue; }
-                    addStars(res.subjects.get(subj), stars);
-                    res.subjects.get(subj).ownBooksCount++;
+                    SubjectResult sr = res.subjects.get(subj);
+                    sr.booksStars += stars; sr.ratingCount++; sr.ownBooksCount++;
                 }
             } else if (activity.equals("programperformance")) {
                 if (GradingCalculator.parseProgramPoints(r.score) < 0) {
@@ -188,7 +239,21 @@ public final class QuarterGradeCalculator {
                 for (int raw : list) sum += GradingCalculator.examEquivalentGrade(raw);
                 sr.examGrade = sum / list.size();
             }
-            if (sr.ratingCount > 0) sr.booksHwRate = GradingCalculator.calculateBooksHwRate(sr.starsEarned, sr.starsPossible);
+            // Total Points = highest Books (this subject) + highest Homework of any one student.
+            // A student's own total can never exceed the highest, so the highest is at least their own.
+            sr.booksMax = Math.max(benchmarks.maxBooks.get(s), sr.booksStars);
+            sr.homeworkMax = Math.max(benchmarks.maxHomework, sr.homeworkStars);
+            sr.starsEarned = sr.booksStars + sr.homeworkStars;
+            sr.starsPossible = sr.booksMax + sr.homeworkMax;
+            if (sr.ratingCount > 0) {
+                if (sr.starsPossible > 0) {
+                    // Earned / Total x 100, then rounded off (whole number), then x 40%.
+                    sr.booksHwRate = GradingCalculator.roundOff(sr.starsEarned * 100.0 / sr.starsPossible);
+                } else {
+                    sr.booksHwRate = 0;
+                    res.warnings.add(s + ": nobody has earned any Books/Homework stars yet, so Total Points is 0.");
+                }
+            }
             sr.programPoints = bonus.get(s);
 
             boolean hasExam = sr.hasExam();
@@ -221,12 +286,6 @@ public final class QuarterGradeCalculator {
             res.overallTransmuted = GradingCalculator.transmuteGrade(res.overallInitial);
         }
         return res;
-    }
-
-    private static void addStars(SubjectResult sr, int stars) {
-        sr.starsEarned += stars;
-        sr.starsPossible += GradingCalculator.MAX_STARS_PER_RATING;
-        sr.ratingCount++;
     }
 
     private static String normActivity(String a) {

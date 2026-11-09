@@ -90,6 +90,11 @@ public final class GradingCalculator {
         return (int) n;
     }
 
+    /** "Round off": nearest whole number, halves go up. Used for the Books + Homework percentage. */
+    public static double roundOff(double v) {
+        return Math.floor(v + 0.5 + 1e-9);
+    }
+
     // ------------------------------------------------------------------ Program Performance
 
     /** Parses "2 Points" / "2" into bonus points (>= 0). Returns -1 when unreadable. */

@@ -8,18 +8,17 @@
     android:background="#FFFFFF"
     tools:ignore="HardcodedText,VisualLintBounds,VisualLintTextFieldSize,VisualLintButtonSize,InaccessibleLabel">
 
-    <!-- Top Navigation Header with Status Bar Integration -->
+    <!-- Top Navigation Header -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#FFC107"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="24dp">
+        android:layout_height="56dp"
+        android:background="@drawable/top_bar_color"
+        android:paddingHorizontal="16dp">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_chevron_left"
@@ -27,16 +26,14 @@
             android:contentDescription="Back"
             tools:ignore="ImageContrastCheck" />
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/ivHeaderTitle"
+            android:layout_width="180dp"
+            android:layout_height="22dp"
             android:layout_centerInParent="true"
-            android:text="Student Information"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:ignore="TextContrastCheck" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/student_information"
+            android:src="@drawable/student_information" />
     </RelativeLayout>
 
     <!-- Scrollable Content -->

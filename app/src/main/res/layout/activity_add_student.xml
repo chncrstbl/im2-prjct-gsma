@@ -12,8 +12,8 @@
     <!-- Top Navigation Header -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="59dp"
-        android:background="#FFC107"
+        android:layout_height="56dp"
+        android:background="@drawable/top_bar_color"
         android:paddingHorizontal="16dp">
 
         <ImageView
@@ -27,16 +27,14 @@
             app:tint="#FFFFFF"
             tools:ignore="ImageContrastCheck" />
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/ivHeaderTitle"
+            android:layout_width="230dp"
+            android:layout_height="22dp"
             android:layout_centerInParent="true"
-            android:text="Enter Student Information"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:ignore="TextContrastCheck" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/enter_student_info"
+            android:src="@drawable/enter_student_information" />
     </RelativeLayout>
 
     <ScrollView
