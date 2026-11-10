@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,7 +22,7 @@ import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.adapter.StudentAdapter;
 import com.example.priangradingsystem.data.DatabaseHelper;
 import com.example.priangradingsystem.model.StudentItem;
-import com.example.priangradingsystem.records.FilterActivity;
+import com.example.priangradingsystem.ui.SchoolYearBar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,9 +34,11 @@ import java.util.List;
 @SuppressWarnings("all")
 public class SelectStudentGradeActivity extends AppCompatActivity {
 
+    private static final String TAG = "SelectStudentGradeActivity";
     private static final String PREFS_NAME = "StudentPrefs";
     private static final String KEY_STUDENT_LIST = "master_student_list";
 
+    private DatabaseHelper dbHelper;
     private StudentAdapter adapter;
     private final List<StudentItem> masterStudentList = new ArrayList<>();
     private final List<StudentItem> displayedStudentList = new ArrayList<>();
@@ -60,6 +63,8 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_select_student_grade);
+        dbHelper = new DatabaseHelper(this);
+        SchoolYearBar.attach(this, dbHelper, true, false, this::loadSavedStudents);
 
         ImageView btnBack = findViewById(R.id.btnBack);
         ImageView btnFilter = findViewById(R.id.btnFilter);
@@ -69,6 +74,7 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
         adapter = new StudentAdapter(displayedStudentList, item -> {
             if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
                 Intent intent = new Intent(SelectStudentGradeActivity.this, GradeEntryActivity.class);
+                intent.putExtra("STUDENT_ID", (long) item.getId());
                 intent.putExtra("STUDENT_NAME", item.getName());
                 String level = item.getLevel() != null && !item.getLevel().isEmpty() ? item.getLevel() : item.getSection();
                 intent.putExtra("STUDENT_LEVEL", level);
@@ -158,86 +164,103 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void applyCombinedFilters() {
-        displayedStudentList.clear();
+        try {
+            displayedStudentList.clear();
 
-        List<String> sortedHeaders = new ArrayList<>();
-        for (StudentItem item : masterStudentList) {
-            if (item != null && item.getItemViewType() == StudentItem.TYPE_HEADER) {
-                if (item.getHeaderTitle() != null && !sortedHeaders.contains(item.getHeaderTitle())) {
-                    sortedHeaders.add(item.getHeaderTitle());
-                }
-            } else if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
-                String cat = item.getSection() != null && !item.getSection().isEmpty() ? item.getSection() : (item.getLevel() != null ? item.getLevel() : "Nursery");
-                if (!sortedHeaders.contains(cat)) {
-                    sortedHeaders.add(cat);
-                }
-            }
-        }
-        sortedHeaders.sort(String::compareToIgnoreCase);
-
-        for (String headerTitle : sortedHeaders) {
-            List<StudentItem> sectionStudents = new ArrayList<>();
-            boolean sectionHeaderMatchesSearch = doesSectionHeaderMatchSearch(headerTitle);
-
-            int headerIcon = android.R.drawable.ic_menu_agenda;
-            for (StudentItem masterItem : masterStudentList) {
-                if (masterItem != null && masterItem.getItemViewType() == StudentItem.TYPE_HEADER
-                        && masterItem.getHeaderTitle() != null
-                        && masterItem.getHeaderTitle().equalsIgnoreCase(headerTitle)) {
-                    headerIcon = masterItem.getHeaderIconResId();
-                    break;
-                }
-            }
-
+            List<String> levelTitles = new ArrayList<>();
             for (StudentItem item : masterStudentList) {
                 if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
-                    String itemCat = item.getSection() != null && !item.getSection().isEmpty() ? item.getSection() : (item.getLevel() != null ? item.getLevel() : "Nursery");
+                    String lvl = (item.getLevel() != null && !item.getLevel().trim().isEmpty()) ? item.getLevel().trim() : "Nursery";
+                    if (lvl.contains("-")) {
+                        lvl = lvl.split("-")[0].trim();
+                    }
+                    if (!levelTitles.contains(lvl)) {
+                        levelTitles.add(lvl);
+                    }
+                }
+            }
+            levelTitles.sort(String::compareToIgnoreCase);
 
-                    if (itemCat.equalsIgnoreCase(headerTitle)) {
-                        boolean matchesSearch = currentSearchQuery.isEmpty()
-                                || sectionHeaderMatchesSearch
-                                || (item.getName() != null && item.getName().toLowerCase().contains(currentSearchQuery));
+            if (levelTitles.isEmpty()) {
+                levelTitles.add("Nursery");
+            }
 
-                        boolean matchesLevel = currentLevelFilter.equalsIgnoreCase("All")
-                                || (item.getLevel() != null && item.getLevel().equalsIgnoreCase(currentLevelFilter))
-                                || (item.getSection() != null && item.getSection().toLowerCase().contains(currentLevelFilter.toLowerCase()));
+            for (String levelTitle : levelTitles) {
+                List<StudentItem> maleStudents = new ArrayList<>();
+                List<StudentItem> femaleStudents = new ArrayList<>();
+                List<StudentItem> otherStudents = new ArrayList<>();
 
-                        boolean matchesPerf = currentPerformanceFilter.equalsIgnoreCase("All")
-                                || (item.getPerformance() != null && item.getPerformance().equalsIgnoreCase(currentPerformanceFilter));
+                boolean levelMatchesSearch = currentSearchQuery.isEmpty() || levelTitle.toLowerCase().contains(currentSearchQuery);
 
-                        if (matchesSearch && matchesLevel && matchesPerf) {
-                            sectionStudents.add(item);
+                for (StudentItem item : masterStudentList) {
+                    if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
+                        String itemLvl = (item.getLevel() != null && !item.getLevel().trim().isEmpty()) ? item.getLevel().trim() : "Nursery";
+                        if (itemLvl.contains("-")) {
+                            itemLvl = itemLvl.split("-")[0].trim();
                         }
+
+                        if (itemLvl.equalsIgnoreCase(levelTitle)) {
+                            boolean matchesSearch = currentSearchQuery.isEmpty()
+                                    || (item.getName() != null && item.getName().toLowerCase().contains(currentSearchQuery))
+                                    || levelMatchesSearch;
+
+                            boolean matchesLevel = currentLevelFilter.equalsIgnoreCase("All")
+                                    || itemLvl.equalsIgnoreCase(currentLevelFilter)
+                                    || (currentLevelFilter.equalsIgnoreCase("Toddler") && itemLvl.equalsIgnoreCase("Pre-K"))
+                                    || (currentLevelFilter.equalsIgnoreCase("Pre-K") && itemLvl.equalsIgnoreCase("Toddler"));
+
+                            boolean matchesPerf = currentPerformanceFilter.equalsIgnoreCase("All")
+                                    || (item.getPerformance() != null && item.getPerformance().equalsIgnoreCase(currentPerformanceFilter));
+
+                            if (matchesSearch && matchesLevel && matchesPerf) {
+                                String g = item.getGender() != null ? item.getGender().trim().toLowerCase() : "male";
+
+                                if (g.contains("fem") || g.contains("girl") || g.equals("female")) {
+                                    femaleStudents.add(item);
+                                } else if (g.contains("oth") || g.equals("other")) {
+                                    otherStudents.add(item);
+                                } else {
+                                    maleStudents.add(item);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                maleStudents.sort(Comparator.comparing(StudentItem::getName, Comparator.nullsFirst(String::compareToIgnoreCase)));
+                femaleStudents.sort(Comparator.comparing(StudentItem::getName, Comparator.nullsFirst(String::compareToIgnoreCase)));
+                otherStudents.sort(Comparator.comparing(StudentItem::getName, Comparator.nullsFirst(String::compareToIgnoreCase)));
+
+                if (!maleStudents.isEmpty() || !femaleStudents.isEmpty() || !otherStudents.isEmpty()) {
+                    int iconResId = (levelTitle.equalsIgnoreCase("Toddler") || levelTitle.equalsIgnoreCase("Pre-K"))
+                            ? android.R.drawable.ic_menu_compass
+                            : android.R.drawable.ic_menu_agenda;
+
+                    displayedStudentList.add(new StudentItem(StudentItem.TYPE_HEADER, levelTitle, iconResId));
+
+                    if (!femaleStudents.isEmpty()) {
+                        displayedStudentList.add(new StudentItem(StudentItem.TYPE_GENDER_HEADER, "Female", 0));
+                        displayedStudentList.addAll(femaleStudents);
+                    }
+
+                    if (!maleStudents.isEmpty()) {
+                        displayedStudentList.add(new StudentItem(StudentItem.TYPE_GENDER_HEADER, "Male", 0));
+                        displayedStudentList.addAll(maleStudents);
+                    }
+
+                    if (!otherStudents.isEmpty()) {
+                        displayedStudentList.add(new StudentItem(StudentItem.TYPE_GENDER_HEADER, "Other", 0));
+                        displayedStudentList.addAll(otherStudents);
                     }
                 }
             }
 
-            sectionStudents.sort(Comparator.comparing(StudentItem::getName, Comparator.nullsFirst(String::compareToIgnoreCase)));
-
-            if (!sectionStudents.isEmpty()) {
-                displayedStudentList.add(new StudentItem(StudentItem.TYPE_HEADER, headerTitle, headerIcon));
-                displayedStudentList.addAll(sectionStudents);
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Error applying combined filters", e);
         }
-
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    private boolean doesSectionHeaderMatchSearch(String headerTitle) {
-        if (currentSearchQuery.isEmpty()) {
-            return false;
-        }
-
-        String headerLower = headerTitle.toLowerCase();
-        if (currentSearchQuery.length() == 1) {
-            return headerLower.endsWith(" " + currentSearchQuery)
-                    || headerLower.endsWith("-" + currentSearchQuery)
-                    || headerLower.startsWith(currentSearchQuery + " ");
-        }
-
-        return headerLower.contains(currentSearchQuery);
     }
 
     private void loadSavedStudents() {
@@ -245,13 +268,15 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
 
         // 1. Query real students from Database
         try {
-            DatabaseHelper dbHelper = new DatabaseHelper(this);
             Cursor cursor = dbHelper.getAllStudents();
             if (cursor != null) {
                 while (cursor.moveToNext()) {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow("student_id"));
                     String fName = cursor.getString(cursor.getColumnIndexOrThrow("first_name"));
+                    String mName = cursor.getString(cursor.getColumnIndexOrThrow("middle_name"));
                     String lName = cursor.getString(cursor.getColumnIndexOrThrow("last_name"));
                     String age = cursor.getString(cursor.getColumnIndexOrThrow("age"));
+                    String gender = cursor.getString(cursor.getColumnIndexOrThrow("sex"));
                     String photoUri = cursor.getString(cursor.getColumnIndexOrThrow("photo_uri"));
 
                     String level = "Nursery";
@@ -268,51 +293,25 @@ public class SelectStudentGradeActivity extends AppCompatActivity {
                         }
                     } catch (Exception ignored) {}
 
-                    String displayName = lName + ", " + fName;
+                    String displayName = fName + (mName != null && !mName.trim().isEmpty() ? " " + mName : "") + " " + lName;
+                    displayName = displayName.trim();
+                    if (displayName.isEmpty()) {
+                        displayName = lName + ", " + fName;
+                    }
                     String ageStr = (age != null && !age.trim().isEmpty()) ? (age.toLowerCase().startsWith("age") ? age : "Age " + age) : "";
 
                     StudentItem student = new StudentItem(StudentItem.TYPE_STUDENT, displayName, ageStr, level, "Good");
+                    student.setId(id);
                     student.setSection(level);
+                    student.setGender(gender);
                     student.setPhotoUri(photoUri);
                     masterStudentList.add(student);
                 }
                 cursor.close();
             }
-        } catch (Exception ignored) {}
-
-        // 2. Query saved students from SharedPreferences
-        try {
-            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            String json = sharedPreferences.getString(KEY_STUDENT_LIST, null);
-
-            if (json != null) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<ArrayList<StudentItem>>() {}.getType();
-                List<StudentItem> savedList = gson.fromJson(json, type);
-
-                if (savedList != null) {
-                    for (StudentItem item : savedList) {
-                        if (item != null && item.getItemViewType() == StudentItem.TYPE_STUDENT) {
-                            // Exclude mock "Person 1" to "Person 6"
-                            if (item.getName() != null && item.getName().toLowerCase().startsWith("person ")) {
-                                continue;
-                            }
-
-                            boolean exists = false;
-                            for (StudentItem existing : masterStudentList) {
-                                if (existing.getName() != null && existing.getName().equalsIgnoreCase(item.getName())) {
-                                    exists = true;
-                                    break;
-                                }
-                            }
-                            if (!exists) {
-                                masterStudentList.add(item);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading database students", e);
+        }
 
         applyCombinedFilters();
     }

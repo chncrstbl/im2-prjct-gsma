@@ -52,7 +52,8 @@ public class GradeEntryActivity extends AppCompatActivity {
     private TextView tvNoPhotoText;
     private ImageView imgStudentAvatar;
 
-    private String selectedStudentName = "Ive Brayne Cueva";
+    private String selectedStudentName = "";
+    private long selectedStudentId = -1;
     private String selectedStudentLevel = "Nursery";
     private String selectedStudentPhotoUri = null;
 
@@ -61,10 +62,14 @@ public class GradeEntryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_grade_entry);
+        com.example.priangradingsystem.ui.SchoolYearBar.attach(this, new com.example.priangradingsystem.data.DatabaseHelper(this), false, false, null);
 
         selectedStudentName = getIntent().getStringExtra("STUDENT_NAME");
-        if (selectedStudentName == null || selectedStudentName.isEmpty()) {
-            selectedStudentName = "Ive Brayne Cueva";
+        if (selectedStudentName == null) selectedStudentName = "";
+        selectedStudentId = getIntent().getLongExtra("STUDENT_ID", -1L);
+        if (selectedStudentId <= 0) {
+            int oldId = getIntent().getIntExtra("STUDENT_ID", -1);
+            if (oldId > 0) selectedStudentId = oldId;
         }
         selectedStudentLevel = getIntent().getStringExtra("STUDENT_LEVEL");
         if (selectedStudentLevel == null || selectedStudentLevel.isEmpty()) {
@@ -368,13 +373,17 @@ public class GradeEntryActivity extends AppCompatActivity {
 
         boolean isSaved;
 
-        if (activity.equalsIgnoreCase("Attendance")) {
-            long attendanceStudentId =
-                    dbHelper.getStudentIdByName(selectedStudentName);
+        // Prefer the student's id (two students can share a name); fall back to the name.
+        long studentIdToSave = selectedStudentId > 0 ? selectedStudentId
+                : dbHelper.getStudentIdByName(selectedStudentName);
+        if (studentIdToSave <= 0) {
+            Toast.makeText(this, "No student selected. Go back and choose a student first.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-            isSaved = attendanceStudentId > 0
-                    && dbHelper.saveAttendanceStatus(
-                    attendanceStudentId,
+        if (activity.equalsIgnoreCase("Attendance")) {
+            isSaved = dbHelper.saveAttendanceStatus(
+                    studentIdToSave,
                     assessmentDate,
                     score,
                     quarter,
@@ -383,9 +392,8 @@ public class GradeEntryActivity extends AppCompatActivity {
             );
 
         } else {
-            isSaved = dbHelper.insertGradeRecord(
-                    selectedStudentName,
-                    selectedStudentLevel,
+            isSaved = dbHelper.addGradeRecord(
+                    studentIdToSave,
                     quarter,
                     subject,
                     activity,

@@ -24,6 +24,7 @@ import com.example.priangradingsystem.data.DatabaseHelper;
 import com.example.priangradingsystem.model.StudentItem;
 import com.example.priangradingsystem.adapter.StudentAdapter;
 import com.example.priangradingsystem.records.FilterActivity;
+import com.example.priangradingsystem.ui.SchoolYearBar;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,6 +37,7 @@ public class StudentsActivity extends AppCompatActivity {
     private static final String TAG = "StudentsActivity";
 
     private DatabaseHelper dbHelper;
+    private SchoolYearBar schoolYearBar;
     private StudentAdapter adapter;
     private final List<StudentItem> masterStudentList = new ArrayList<>();
     private final List<StudentItem> displayedStudentList = new ArrayList<>();
@@ -90,6 +92,7 @@ public class StudentsActivity extends AppCompatActivity {
 
             setContentView(R.layout.activity_student);
             dbHelper = new DatabaseHelper(this);
+            schoolYearBar = SchoolYearBar.attach(this, dbHelper, true, true, this::loadStudentsFromDatabase);
 
             ImageView btnBack = findViewById(R.id.btnBack);
             ImageView btnAdd = findViewById(R.id.btnAdd);
@@ -114,6 +117,7 @@ public class StudentsActivity extends AppCompatActivity {
                 btnAdd.setOnClickListener(v -> {
                     try {
                         Intent intent = new Intent(StudentsActivity.this, AddStudentActivity.class);
+                        intent.putExtra("SCHOOL_YEAR_ID", dbHelper.getSelectedSchoolYearId());
                         addStudentLauncher.launch(intent);
                     } catch (Exception e) {
                         Log.e(TAG, "Error launching AddStudentActivity", e);
@@ -160,6 +164,7 @@ public class StudentsActivity extends AppCompatActivity {
             intent.putExtra("STUDENT_MIDDLE_NAME", studentItem.getMiddleName());
             intent.putExtra("STUDENT_LAST_NAME", studentItem.getLastName());
             intent.putExtra("STUDENT_EXTENSION", studentItem.getExtension());
+            intent.putExtra("SCHOOL_YEAR_ID", dbHelper.getSelectedSchoolYearId());
 
             String cleanClass = studentItem.getLevel() != null ? studentItem.getLevel() : "";
             if (cleanClass.contains("-")) {
@@ -174,27 +179,10 @@ public class StudentsActivity extends AppCompatActivity {
             String parentFullName = studentItem.getParentName() != null ? studentItem.getParentName() : "";
             intent.putExtra("STUDENT_PARENT", parentFullName);
 
-            String pFirst = "";
-            String pMiddle = "";
-            String pLast = "";
-            if (!parentFullName.isEmpty()) {
-                String[] parts = parentFullName.trim().split("\\s+");
-                if (parts.length == 1) {
-                    pFirst = parts[0];
-                } else if (parts.length == 2) {
-                    pFirst = parts[0];
-                    pLast = parts[1];
-                } else if (parts.length >= 3) {
-                    pFirst = parts[0];
-                    pMiddle = parts[1];
-                    pLast = parts[parts.length - 1];
-                }
-            }
-
-            intent.putExtra("PARENT_FIRST_NAME", pFirst);
-            intent.putExtra("PARENT_MIDDLE_NAME", pMiddle);
-            intent.putExtra("PARENT_LAST_NAME", pLast);
-            intent.putExtra("PARENT_EXTENSION", "");
+            intent.putExtra("PARENT_FIRST_NAME", nz(studentItem.getParentFirstName()));
+            intent.putExtra("PARENT_MIDDLE_NAME", nz(studentItem.getParentMiddleName()));
+            intent.putExtra("PARENT_LAST_NAME", nz(studentItem.getParentLastName()));
+            intent.putExtra("PARENT_EXTENSION", nz(studentItem.getParentExtension()));
 
             intent.putExtra("STUDENT_CONTACT", studentItem.getContact() != null ? studentItem.getContact() : "");
             intent.putExtra("STUDENT_ADDRESS", studentItem.getAddress() != null ? studentItem.getAddress() : "");
@@ -204,6 +192,20 @@ public class StudentsActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, "Error opening student details", e);
         }
+    }
+
+    private static String nz(String s) { return s == null ? "" : s; }
+
+    private static String col(Cursor c, String name) {
+        int i = c.getColumnIndex(name);
+        return i < 0 || c.isNull(i) ? "" : c.getString(i);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (schoolYearBar != null) schoolYearBar.refresh();
+        loadStudentsFromDatabase();
     }
 
     private void loadStudentsFromDatabase() {
@@ -239,6 +241,11 @@ public class StudentsActivity extends AppCompatActivity {
                     } catch (Exception ignored) {}
 
                     StudentItem student = new StudentItem(StudentItem.TYPE_STUDENT, fName + " " + lName, age, level, "Good");
+                    student.setExtension(col(cursor, "name_extension"));
+                    student.setParentFirstName(col(cursor, "guardian_first_name"));
+                    student.setParentMiddleName(col(cursor, "guardian_middle_name"));
+                    student.setParentLastName(col(cursor, "guardian_last_name"));
+                    student.setParentExtension(col(cursor, "guardian_extension"));
                     student.setId(id);
                     student.setFirstName(fName);
                     student.setMiddleName(mName);

@@ -42,7 +42,7 @@ public class RecordsActivity extends AppCompatActivity {
     private Button btn1stQtr, btn2ndQtr, btn3rdQtr;
     private int currentQuarter = 1;
     private DatabaseHelper dbHelper;
-    private String studentName = "Vea Arevalo";
+    private String studentName = "";
     /** Resolved once; every read/write below is keyed on this id, never on the display name. */
     private long studentId = -1;
 
@@ -57,6 +57,7 @@ public class RecordsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_records);
+        com.example.priangradingsystem.ui.SchoolYearBar.attach(this, new com.example.priangradingsystem.data.DatabaseHelper(this), false, false, null);
 
         dbHelper = new DatabaseHelper(this);
 
@@ -116,8 +117,7 @@ public class RecordsActivity extends AppCompatActivity {
         }
 
         if (!hasPhoto) {
-            boolean isMale = (studentGender != null && (studentGender.equalsIgnoreCase("Male") || studentGender.equalsIgnoreCase("M")))
-                    || (studentName != null && (studentName.contains("John") || studentName.contains("Mark")));
+            boolean isMale = studentGender != null && (studentGender.equalsIgnoreCase("Male") || studentGender.equalsIgnoreCase("M"));
 
             if (imgStudentAvatar != null) {
                 imgStudentAvatar.setImageResource(isMale ? R.drawable.profile_foreground_placeholder_male : R.drawable.profile_foreground_placeholder_female);

@@ -44,6 +44,7 @@ public class ReportsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_reports);
+        com.example.priangradingsystem.ui.SchoolYearBar.attach(this, new com.example.priangradingsystem.data.DatabaseHelper(this), false, false, null);
         try { dbHelper = new DatabaseHelper(this); }
         catch (Throwable t) { Log.e(TAG, "Could not open the database", t); dbHelper = null; }
 

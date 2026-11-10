@@ -1,6 +1,7 @@
 package com.example.priangradingsystem.students;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -21,7 +22,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.priangradingsystem.R;
+import com.example.priangradingsystem.data.AgeCalculator;
 import com.example.priangradingsystem.data.DatabaseHelper;
+import com.example.priangradingsystem.ui.SchoolYearBar;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -44,6 +47,8 @@ public class AddStudentActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private boolean isEditMode = false;
     private int studentId = -1;
+    private long editYearId = -1;
+    private SchoolYearBar schoolYearBar;
     private String photoUriString = "";
 
     private final ActivityResultLauncher<Intent> pickImageLauncher =
@@ -77,6 +82,11 @@ public class AddStudentActivity extends AppCompatActivity {
 
         try {
             dbHelper = new DatabaseHelper(this);
+            isEditMode = getIntent().getBooleanExtra("IS_EDIT_MODE", false);
+            editYearId = getIntent().getLongExtra("SCHOOL_YEAR_ID", -1L);
+            if (editYearId > 0 && dbHelper.getSchoolYear(editYearId) != null) dbHelper.selectSchoolYear(editYearId);
+            // Adding: the year can be switched here. Editing: shown only, the student belongs to that year.
+            schoolYearBar = SchoolYearBar.attach(this, dbHelper, !isEditMode, false, null);
 
             ImageView btnBack = findViewById(R.id.btnBack);
             tvHeaderTitle = findViewById(R.id.tvHeaderTitle);
@@ -144,10 +154,9 @@ public class AddStudentActivity extends AppCompatActivity {
                                     tvDateOfBirth.setText(formattedDob);
                                 }
 
-                                int age = currentYear - year;
-
                                 if (tvCalculatedAge != null) {
-                                    tvCalculatedAge.setText(String.valueOf(Math.max(0, age)));
+                                    int age = AgeCalculator.ageToday(formattedDob);
+                                    tvCalculatedAge.setText(age >= 0 ? String.valueOf(age) : "-");
                                 }
                             } catch (Exception e) {
                                 Log.e(TAG, "Error setting date of birth", e);
@@ -160,7 +169,6 @@ public class AddStudentActivity extends AppCompatActivity {
                 });
             }
 
-            isEditMode = getIntent().getBooleanExtra("IS_EDIT_MODE", false);
             studentId = getIntent().getIntExtra("STUDENT_ID", -1);
 
             if (isEditMode) {
@@ -188,11 +196,12 @@ public class AddStudentActivity extends AppCompatActivity {
                 if (plName != null && etParentLastName != null) etParentLastName.setText(plName);
                 if (pExt != null && etParentExtension != null) etParentExtension.setText(pExt);
 
-                String editAge = getIntent().getStringExtra("STUDENT_AGE");
-                if (editAge != null && tvCalculatedAge != null) tvCalculatedAge.setText(editAge);
-
                 String editDob = getIntent().getStringExtra("STUDENT_DOB");
                 if (editDob != null && tvDateOfBirth != null) tvDateOfBirth.setText(editDob);
+                if (tvCalculatedAge != null) {
+                    int editAge = AgeCalculator.ageToday(editDob);
+                    tvCalculatedAge.setText(editAge >= 0 ? String.valueOf(editAge) : "-");
+                }
 
                 String editAddress = getIntent().getStringExtra("STUDENT_ADDRESS");
                 if (editAddress != null && etParentAddress != null) etParentAddress.setText(editAddress);
@@ -278,10 +287,7 @@ public class AddStudentActivity extends AppCompatActivity {
                     spnStudentGender.getSelectedItem().toString() : "Male";
 
             String dob = tvDateOfBirth != null ? tvDateOfBirth.getText().toString().trim() : "";
-            String age = tvCalculatedAge != null ? tvCalculatedAge.getText().toString().trim() : "";
-            if (age.isEmpty() || age.contains("Auto")) {
-                age = "5";
-            }
+            int age = AgeCalculator.ageToday(dob);
 
             String gradeLevel = spnGradeLevel != null && spnGradeLevel.getSelectedItem() != null ?
                     spnGradeLevel.getSelectedItem().toString() : "Nursery";
@@ -312,6 +318,11 @@ public class AddStudentActivity extends AppCompatActivity {
                 return;
             }
 
+            if (age < 0) {
+                Toast.makeText(this, "Please select a valid date of birth (not in the future).", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (parentFirstName.isEmpty()) {
                 if (etParentFirstName != null) etParentFirstName.setError("Required field");
                 Toast.makeText(this, "Please enter the parent/guardian's first name.", Toast.LENGTH_SHORT).show();
@@ -337,56 +348,107 @@ public class AddStudentActivity extends AppCompatActivity {
             }
             // -----------------------------------------------------------
 
-            String guardianFullName = parentFirstName
-                    + (parentMiddleName.isEmpty() ? "" : " " + parentMiddleName)
-                    + " " + parentLastName
-                    + (parentExtension.isEmpty() ? "" : " " + parentExtension);
+            String parentContact = "+63 " + parentContactDigits;
 
-            String parentContact = parentContactDigits.isEmpty() ? "" : "+63 " + parentContactDigits;
+            Form f = new Form();
+            f.first = studentFirstName; f.middle = studentMiddleName; f.last = studentLastName; f.ext = studentExtension;
+            f.dob = dob; f.sex = studentGender; f.age = String.valueOf(age);
+            f.gFirst = parentFirstName; f.gMiddle = parentMiddleName; f.gLast = parentLastName; f.gExt = parentExtension;
+            f.contact = parentContact; f.address = parentAddress; f.level = gradeLevel;
 
-            boolean success;
             if (isEditMode && studentId != -1) {
-                success = dbHelper.updateStudent(studentId, studentFirstName, studentMiddleName, studentLastName, dob, studentGender, age, guardianFullName, parentContact, parentAddress, photoUriString, gradeLevel);
-            } else {
-                success = dbHelper.insertStudent(studentFirstName, studentMiddleName, studentLastName, dob, studentGender, age, guardianFullName, parentContact, parentAddress, photoUriString, gradeLevel);
+                long yearId = editYearId > 0 ? editYearId : dbHelper.getSelectedSchoolYearId();
+                boolean ok = dbHelper.updateStudent(studentId, f.first, f.middle, f.last, f.ext, f.dob, f.sex,
+                        f.gFirst, f.gMiddle, f.gLast, f.gExt, f.contact, f.address, photoUriString, f.level, yearId);
+                finishSave(ok, studentId, f);
+                return;
             }
 
-            if (success) {
-                Toast.makeText(this, isEditMode ? "Student updated successfully!" : "Student added successfully!", Toast.LENGTH_SHORT).show();
-
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("STUDENT_ID", studentId);
-                resultIntent.putExtra("STUDENT_FIRST_NAME", studentFirstName);
-                resultIntent.putExtra("STUDENT_MIDDLE_NAME", studentMiddleName);
-                resultIntent.putExtra("STUDENT_LAST_NAME", studentLastName);
-                resultIntent.putExtra("STUDENT_EXTENSION", studentExtension);
-                resultIntent.putExtra("STUDENT_NAME", studentFirstName + " " + studentLastName);
-                resultIntent.putExtra("STUDENT_CLASS", gradeLevel);
-                resultIntent.putExtra("STUDENT_GENDER", studentGender);
-                resultIntent.putExtra("STUDENT_AGE", age);
-                resultIntent.putExtra("STUDENT_DOB", dob);
-
-                resultIntent.putExtra("PARENT_FIRST_NAME", parentFirstName);
-                resultIntent.putExtra("PARENT_MIDDLE_NAME", parentMiddleName);
-                resultIntent.putExtra("PARENT_LAST_NAME", parentLastName);
-                resultIntent.putExtra("PARENT_EXTENSION", parentExtension);
-
-                resultIntent.putExtra("STUDENT_ADDRESS", parentAddress);
-                resultIntent.putExtra("STUDENT_CONTACT", parentContact);
-                resultIntent.putExtra("STUDENT_PHOTO_URI", photoUriString);
-
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            } else {
-                String err = dbHelper.getLastError();
-                Log.e(TAG, "Save failed: " + err);
-                Toast.makeText(this, "Database operation failed. Please try again."
-                        + (err.isEmpty() ? "" : "\n(" + err + ")"), Toast.LENGTH_LONG).show();
+            // Adding. Never create a second copy of someone who is already in the records.
+            final long yearId = dbHelper.getSelectedSchoolYearId();
+            final String yearLabel = dbHelper.getSelectedSchoolYear().label;
+            long existing = dbHelper.findStudentByIdentity(f.first, f.last, f.dob);
+            if (existing > 0 && dbHelper.isEnrolled(existing, yearId)) {
+                Toast.makeText(this, f.first + " " + f.last + " is already enrolled in " + yearLabel + ".",
+                        Toast.LENGTH_LONG).show();
+                return;
             }
+            if (existing > 0) {
+                final long existingId = existing;
+                new AlertDialog.Builder(this)
+                        .setTitle("Student already in your records")
+                        .setMessage(f.first + " " + f.last + " (same birthdate) is already saved from another school year. "
+                                + "Enroll the same student in " + yearLabel + " instead of creating a second copy?")
+                        .setPositiveButton("Enroll existing student", (d, w) -> {
+                            boolean ok = dbHelper.updateStudent(existingId, f.first, f.middle, f.last, f.ext, f.dob,
+                                    f.sex, f.gFirst, f.gMiddle, f.gLast, f.gExt, f.contact, f.address, photoUriString,
+                                    f.level, yearId);
+                            finishSave(ok, existingId, f);
+                        })
+                        .setNegativeButton("Add as new student", (d, w) -> addNew(f, yearId))
+                        .setNeutralButton("Cancel", null)
+                        .show();
+                return;
+            }
+            addNew(f, yearId);
 
         } catch (Exception e) {
             Log.e(TAG, "Error in save click listener", e);
             Toast.makeText(this, "Unable to save student. Please check inputs.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private static final class Form {
+        String first, middle, last, ext, dob, sex, age, gFirst, gMiddle, gLast, gExt, contact, address, level;
+    }
+
+    private void addNew(Form f, long yearId) {
+        long id = dbHelper.insertStudent(f.first, f.middle, f.last, f.ext, f.dob, f.sex, f.gFirst, f.gMiddle, f.gLast,
+                f.gExt, f.contact, f.address, photoUriString, f.level, yearId);
+        finishSave(id > 0, id, f);
+    }
+
+    private void finishSave(boolean success, long id, Form f) {
+        if (!success) {
+            String err = dbHelper.getLastError();
+            Log.e(TAG, "Save failed: " + err);
+            Toast.makeText(this, "Database operation failed. Please try again."
+                    + (err.isEmpty() ? "" : "\n(" + err + ")"), Toast.LENGTH_LONG).show();
+            return;
+        }
+        Toast.makeText(this, isEditMode ? "Student updated successfully!" : "Student added to school year "
+                + dbHelper.getSelectedSchoolYear().label + "!", Toast.LENGTH_SHORT).show();
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("STUDENT_ID", (int) id);
+        resultIntent.putExtra("STUDENT_FIRST_NAME", f.first);
+        resultIntent.putExtra("STUDENT_MIDDLE_NAME", f.middle);
+        resultIntent.putExtra("STUDENT_LAST_NAME", f.last);
+        resultIntent.putExtra("STUDENT_EXTENSION", f.ext);
+        resultIntent.putExtra("STUDENT_NAME", f.first + " " + f.last);
+        resultIntent.putExtra("STUDENT_CLASS", f.level);
+        resultIntent.putExtra("STUDENT_GENDER", f.sex);
+        resultIntent.putExtra("STUDENT_AGE", f.age);
+        resultIntent.putExtra("STUDENT_DOB", f.dob);
+        resultIntent.putExtra("SCHOOL_YEAR_ID", dbHelper.getSelectedSchoolYearId());
+
+        resultIntent.putExtra("PARENT_FIRST_NAME", f.gFirst);
+        resultIntent.putExtra("PARENT_MIDDLE_NAME", f.gMiddle);
+        resultIntent.putExtra("PARENT_LAST_NAME", f.gLast);
+        resultIntent.putExtra("PARENT_EXTENSION", f.gExt);
+        resultIntent.putExtra("STUDENT_PARENT", com.example.priangradingsystem.data.NameSplitter.join(f.gFirst, f.gMiddle, f.gLast, f.gExt));
+
+        resultIntent.putExtra("STUDENT_ADDRESS", f.address);
+        resultIntent.putExtra("STUDENT_CONTACT", f.contact);
+        resultIntent.putExtra("STUDENT_PHOTO_URI", photoUriString);
+
+        setResult(RESULT_OK, resultIntent);
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (schoolYearBar != null) schoolYearBar.refresh();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.priangradingsystem;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.priangradingsystem.data.DatabaseHelper;
 import com.example.priangradingsystem.students.AddStudentActivity;
+import com.example.priangradingsystem.ui.SchoolYearBar;
 
 public class StudentDetailsActivity extends AppCompatActivity {
 
@@ -22,6 +24,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
 
     private int studentId = -1;
+    private long schoolYearId = -1;
     private String studentName = "";
     private String studentClass = "";
     private String studentGender = "";
@@ -128,6 +131,14 @@ public class StudentDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student_details);
 
         dbHelper = new DatabaseHelper(this);
+        schoolYearId = getIntent() != null ? getIntent().getLongExtra("SCHOOL_YEAR_ID", -1L) : -1L;
+        if (schoolYearId > 0 && dbHelper.getSchoolYear(schoolYearId) != null) {
+            dbHelper.selectSchoolYear(schoolYearId);
+        } else {
+            schoolYearId = dbHelper.getSelectedSchoolYearId();
+        }
+        // Shows which school year this information belongs to (age, level and grades are per year).
+        SchoolYearBar.attach(this, dbHelper, false, false, null);
 
         ImageView btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) {
@@ -196,6 +207,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
                 try {
                     Intent editIntent = new Intent(StudentDetailsActivity.this, AddStudentActivity.class);
                     editIntent.putExtra("IS_EDIT_MODE", true);
+                    editIntent.putExtra("SCHOOL_YEAR_ID", schoolYearId);
                     editIntent.putExtra("STUDENT_ID", studentId);
                     editIntent.putExtra("STUDENT_NAME", studentName);
                     editIntent.putExtra("STUDENT_CLASS", studentClass);
@@ -226,27 +238,61 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
         if (deleteButton != null) {
             deleteButton.setOnClickListener(v -> {
-                try {
-                    if (studentId != -1) {
-                        boolean deleted = dbHelper.deleteStudent(studentId);
-                        if (deleted) {
-                            Toast.makeText(this, "Student deleted successfully", Toast.LENGTH_SHORT).show();
-                            Intent resultIntent = new Intent();
-                            resultIntent.putExtra("deleted_name", studentName);
-                            resultIntent.putExtra("STUDENT_ID", studentId);
-                            setResult(RESULT_OK, resultIntent);
-                            finish();
-                        } else {
-                            Toast.makeText(this, "Failed to delete student from database", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(this, "Invalid student ID", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error deleting student", e);
-                    Toast.makeText(this, "Error deleting student", Toast.LENGTH_SHORT).show();
+                if (studentId == -1) {
+                    Toast.makeText(this, "Invalid student ID", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                final String yearLabel = dbHelper.getSelectedSchoolYear().label;
+                final boolean inOtherYears = dbHelper.getEnrollmentCount(studentId) > 1;
+                AlertDialog.Builder b = new AlertDialog.Builder(this)
+                        .setTitle("Remove student?")
+                        .setNegativeButton("Cancel", null);
+                if (inOtherYears) {
+                    b.setMessage("Remove " + displayName() + " from " + yearLabel + "? Their grades for " + yearLabel
+                            + " will be deleted. Their other school years are not touched.")
+                     .setPositiveButton("Remove from " + yearLabel, (d, w) -> performDelete(false))
+                     .setNeutralButton("Delete everywhere", (d, w) -> confirmDeleteEverywhere());
+                } else {
+                    b.setMessage("Delete " + displayName() + " and all of their grades? This cannot be undone.")
+                     .setPositiveButton("Delete", (d, w) -> performDelete(true));
+                }
+                b.show();
             });
+        }
+    }
+
+    private String displayName() {
+        String n = ((firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "")).trim();
+        return !n.isEmpty() ? n : (studentName != null && !studentName.isEmpty() ? studentName : "this student");
+    }
+
+    private void confirmDeleteEverywhere() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete everywhere?")
+                .setMessage("This permanently deletes " + displayName() + " with the grades of ALL school years.")
+                .setPositiveButton("Delete everywhere", (d, w) -> performDelete(true))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void performDelete(boolean everywhere) {
+        try {
+            boolean deleted = everywhere ? dbHelper.deleteStudent(studentId)
+                    : dbHelper.unenrollStudent(studentId, dbHelper.getSelectedSchoolYearId());
+            if (deleted) {
+                Toast.makeText(this, everywhere ? "Student deleted successfully" : "Student removed from this school year",
+                        Toast.LENGTH_SHORT).show();
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("deleted_name", studentName);
+                resultIntent.putExtra("STUDENT_ID", studentId);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            } else {
+                Toast.makeText(this, "Failed to delete student from database", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error deleting student", e);
+            Toast.makeText(this, "Error deleting student", Toast.LENGTH_SHORT).show();
         }
     }
 
