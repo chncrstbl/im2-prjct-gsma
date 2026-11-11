@@ -137,13 +137,35 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/spnQuarter"
+            <RelativeLayout
+                android:id="@+id/layoutQuarterDropdown"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_input_field_spinner"
-                android:paddingHorizontal="12dp" />
+                android:background="@drawable/bg_input_field"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="16dp">
+
+                <TextView
+                    android:id="@+id/tvSelectedQuarter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="1st Quarter"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/activity_dropdown" />
+            </RelativeLayout>
 
             <!-- 2. Activity Field -->
             <TextView
@@ -156,13 +178,35 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/spnActivity"
+            <RelativeLayout
+                android:id="@+id/layoutActivityDropdown"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_input_field_spinner"
-                android:paddingHorizontal="12dp" />
+                android:background="@drawable/bg_input_field"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="16dp">
+
+                <TextView
+                    android:id="@+id/tvSelectedActivity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="Exam"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/activity_dropdown" />
+            </RelativeLayout>
 
             <!-- Program Name Section (Visible ONLY when Activity == Program Performance) -->
             <LinearLayout
@@ -214,13 +258,35 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/spnSubject"
+                <RelativeLayout
+                    android:id="@+id/layoutSubjectDropdown"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/bg_input_field_spinner"
-                    android:paddingHorizontal="12dp" />
+                    android:background="@drawable/bg_input_field"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="16dp">
+
+                    <TextView
+                        android:id="@+id/tvSelectedSubject"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="Writing"
+                        android:textColor="#000000"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="@null"
+                        android:src="@drawable/activity_dropdown" />
+                </RelativeLayout>
             </LinearLayout>
 
             <!-- Score Section (Visible for Exam, Books, Homework, Program Performance) -->
@@ -299,13 +365,35 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/spnAttendanceStatus"
+                <RelativeLayout
+                    android:id="@+id/layoutAttendanceStatusDropdown"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/bg_input_field_spinner"
-                    android:paddingHorizontal="12dp" />
+                    android:background="@drawable/bg_input_field"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="16dp">
+
+                    <TextView
+                        android:id="@+id/tvSelectedAttendanceStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="Present"
+                        android:textColor="#000000"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="@null"
+                        android:src="@drawable/activity_dropdown" />
+                </RelativeLayout>
             </LinearLayout>
 
             <!-- Star Section (Interactive RatingBar + Clear Button) -->
@@ -396,13 +484,35 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/spnPoints"
+                <RelativeLayout
+                    android:id="@+id/layoutPointDropdown"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginBottom="16dp"
-                    android:background="@drawable/bg_input_field_spinner"
-                    android:paddingHorizontal="12dp" />
+                    android:background="@drawable/bg_input_field"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="16dp">
+
+                    <TextView
+                        android:id="@+id/tvSelectedPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="0 Points"
+                        android:textColor="#000000"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="@null"
+                        android:src="@drawable/activity_dropdown" />
+                </RelativeLayout>
             </LinearLayout>
 
             <!-- 4. Assessment Date Field -->

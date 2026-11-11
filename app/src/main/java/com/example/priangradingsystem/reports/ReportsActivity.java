@@ -1,18 +1,20 @@
 package com.example.priangradingsystem.reports;
 
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.priangradingsystem.FullScreenUtils;
@@ -81,22 +83,73 @@ public class ReportsActivity extends AppCompatActivity {
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
         if (studentId <= 0) studentId = findStudentIdByName(studentName);
-        Spinner spinnerQuarter = findViewById(R.id.spinnerQuarter);
-        if (spinnerQuarter != null) {
+        RelativeLayout layoutQuarterDropdown = findViewById(R.id.layoutQuarterDropdown);
+        TextView tvSelectedQuarter = findViewById(R.id.tvSelectedQuarter);
+        if (layoutQuarterDropdown != null && tvSelectedQuarter != null) {
             String[] quarters = {"1st Quarter", "2nd Quarter", "3rd Quarter"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, quarters);
-            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-            spinnerQuarter.setAdapter(adapter);
-            spinnerQuarter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    selectedQuarter = quarters[position];
+            tvSelectedQuarter.setText(selectedQuarter);
+            layoutQuarterDropdown.setOnClickListener(v -> {
+                showCustomDropdown(v, tvSelectedQuarter, quarters, qtr -> {
+                    tvSelectedQuarter.setText(qtr);
+                    selectedQuarter = qtr;
                     loadQuarterData();
-                }
-                @Override public void onNothingSelected(AdapterView<?> parent) { }
+                });
             });
-        } else {
-            loadQuarterData();
         }
+        loadQuarterData();
+    }
+
+    interface OnItemSelectedListener {
+        void onItemSelected(String item);
+    }
+
+    private void showCustomDropdown(View anchor, TextView targetTextView, String[] items, OnItemSelectedListener listener) {
+        String currentSelected = targetTextView != null ? targetTextView.getText().toString() : "";
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                items
+        ) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                TextView view = (TextView) super.getView(position, convertView, parent);
+                view.setTextColor(Color.BLACK);
+                view.setTextSize(16);
+                view.setPadding(32, 24, 32, 24);
+
+                String itemText = getItem(position);
+                if (itemText != null && itemText.equals(currentSelected)) {
+                    view.setBackgroundResource(R.drawable.dropdown_selected);
+                } else {
+                    view.setBackgroundColor(Color.TRANSPARENT);
+                }
+                return view;
+            }
+        };
+
+        android.widget.ListPopupWindow popupWindow = new android.widget.ListPopupWindow(this);
+        popupWindow.setAdapter(adapter);
+        popupWindow.setAnchorView(anchor);
+        popupWindow.setBackgroundDrawable(androidx.core.content.res.ResourcesCompat.getDrawable(getResources(), R.drawable.dropdown_box, null));
+        popupWindow.setWidth(anchor.getWidth());
+        popupWindow.setHeight(android.widget.ListPopupWindow.WRAP_CONTENT);
+        popupWindow.setModal(true);
+
+        for (int i = 0; i < items.length; i++) {
+            if (items[i].equals(currentSelected)) {
+                popupWindow.setSelection(i);
+                break;
+            }
+        }
+
+        popupWindow.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = items[position];
+            listener.onItemSelected(selected);
+            popupWindow.dismiss();
+        });
+        popupWindow.show();
     }
 
     private long findStudentIdByName(String name) {

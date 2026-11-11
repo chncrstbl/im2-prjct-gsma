@@ -8,17 +8,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.priangradingsystem.R;
@@ -38,7 +40,8 @@ public class AddStudentActivity extends AppCompatActivity {
     private EditText etStudentFirstName, etStudentMiddleName, etStudentLastName, etStudentExtension;
     private EditText etParentFirstName, etParentMiddleName, etParentLastName, etParentExtension;
     private EditText etParentAddress, etParentContact;
-    private Spinner spnStudentGender, spnGradeLevel, spnSection;
+    private RelativeLayout layoutGenderDropdown, layoutGradeLevelDropdown;
+    private TextView tvSelectedGender, tvSelectedGradeLevel;
     private TextView tvDateOfBirth, tvCalculatedAge, tvHeaderTitle;
     private RelativeLayout btnDateOfBirth;
     private ImageView imgStudentPhoto;
@@ -97,13 +100,15 @@ public class AddStudentActivity extends AppCompatActivity {
             etStudentMiddleName = findViewById(R.id.etStudentMiddleName);
             etStudentLastName = findViewById(R.id.etStudentLastName);
             etStudentExtension = findViewById(R.id.etStudentExtension);
-            spnStudentGender = findViewById(R.id.spnStudentGender);
+            layoutGenderDropdown = findViewById(R.id.layoutGenderDropdown);
+            tvSelectedGender = findViewById(R.id.tvSelectedGender);
 
             btnDateOfBirth = findViewById(R.id.btnDateOfBirth);
             tvDateOfBirth = findViewById(R.id.tvDateOfBirth);
             tvCalculatedAge = findViewById(R.id.tvCalculatedAge);
 
-            spnGradeLevel = findViewById(R.id.spnGradeLevel);
+            layoutGradeLevelDropdown = findViewById(R.id.layoutGradeLevelDropdown);
+            tvSelectedGradeLevel = findViewById(R.id.tvSelectedGradeLevel);
 
 
             etParentFirstName = findViewById(R.id.etParentFirstName);
@@ -213,32 +218,16 @@ public class AddStudentActivity extends AppCompatActivity {
                 }
 
                 String editGender = getIntent().getStringExtra("STUDENT_GENDER");
-                if (editGender != null && spnStudentGender != null) {
-                    android.widget.SpinnerAdapter rawAdapter = spnStudentGender.getAdapter();
-                    if (rawAdapter instanceof ArrayAdapter) {
-                        @SuppressWarnings("unchecked")
-                        ArrayAdapter<String> adapter = (ArrayAdapter<String>) rawAdapter;
-                        int spinnerPosition = adapter.getPosition(editGender);
-                        if (spinnerPosition >= 0) {
-                            spnStudentGender.setSelection(spinnerPosition);
-                        }
-                    }
+                if (editGender != null && tvSelectedGender != null) {
+                    tvSelectedGender.setText(editGender);
                 }
 
                 String editClass = getIntent().getStringExtra("STUDENT_CLASS");
-                if (editClass != null && spnGradeLevel != null) {
+                if (editClass != null && tvSelectedGradeLevel != null) {
                     if (editClass.contains("-")) {
                         editClass = editClass.split("-")[0].trim();
                     }
-                    android.widget.SpinnerAdapter rawAdapter = spnGradeLevel.getAdapter();
-                    if (rawAdapter instanceof ArrayAdapter) {
-                        @SuppressWarnings("unchecked")
-                        ArrayAdapter<String> adapter = (ArrayAdapter<String>) rawAdapter;
-                        int spinnerPosition = adapter.getPosition(editClass);
-                        if (spinnerPosition >= 0) {
-                            spnGradeLevel.setSelection(spinnerPosition);
-                        }
-                    }
+                    tvSelectedGradeLevel.setText(editClass);
                 }
 
                 String editPhoto = getIntent().getStringExtra("STUDENT_PHOTO_URI");
@@ -266,15 +255,78 @@ public class AddStudentActivity extends AppCompatActivity {
             String[] grades = {"Nursery", "Toddler"};
             String[] genders = {"Male", "Female"};
 
-            ArrayAdapter<String> gradeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, grades);
-            ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genders);
+            if (layoutGenderDropdown != null && tvSelectedGender != null) {
+                layoutGenderDropdown.setOnClickListener(v -> {
+                    showCustomDropdown(v, tvSelectedGender, genders, selectedGender -> {
+                        tvSelectedGender.setText(selectedGender);
+                    });
+                });
+            }
 
-            if (spnGradeLevel != null) spnGradeLevel.setAdapter(gradeAdapter);
-            if (spnStudentGender != null) spnStudentGender.setAdapter(genderAdapter);
+            if (layoutGradeLevelDropdown != null && tvSelectedGradeLevel != null) {
+                layoutGradeLevelDropdown.setOnClickListener(v -> {
+                    showCustomDropdown(v, tvSelectedGradeLevel, grades, selectedGrade -> {
+                        tvSelectedGradeLevel.setText(selectedGrade);
+                    });
+                });
+            }
 
         } catch (Exception e) {
             Log.e(TAG, "Error setting up spinners", e);
         }
+    }
+
+    interface OnItemSelectedListener {
+        void onItemSelected(String item);
+    }
+
+    private void showCustomDropdown(View anchor, TextView targetTextView, String[] items, OnItemSelectedListener listener) {
+        String currentSelected = targetTextView != null ? targetTextView.getText().toString() : "";
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                items
+        ) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                TextView view = (TextView) super.getView(position, convertView, parent);
+                view.setTextColor(android.graphics.Color.BLACK);
+                view.setTextSize(16);
+                view.setPadding(32, 24, 32, 24);
+
+                String itemText = getItem(position);
+                if (itemText != null && itemText.equals(currentSelected)) {
+                    view.setBackgroundResource(R.drawable.dropdown_selected);
+                } else {
+                    view.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                }
+                return view;
+            }
+        };
+
+        android.widget.ListPopupWindow popupWindow = new android.widget.ListPopupWindow(this);
+        popupWindow.setAdapter(adapter);
+        popupWindow.setAnchorView(anchor);
+        popupWindow.setBackgroundDrawable(androidx.core.content.res.ResourcesCompat.getDrawable(getResources(), R.drawable.dropdown_box, null));
+        popupWindow.setWidth(anchor.getWidth());
+        popupWindow.setHeight(android.widget.ListPopupWindow.WRAP_CONTENT);
+        popupWindow.setModal(true);
+
+        for (int i = 0; i < items.length; i++) {
+            if (items[i].equals(currentSelected)) {
+                popupWindow.setSelection(i);
+                break;
+            }
+        }
+
+        popupWindow.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = items[position];
+            listener.onItemSelected(selected);
+            popupWindow.dismiss();
+        });
+        popupWindow.show();
     }
 
     private void saveStudentData() {
@@ -283,14 +335,12 @@ public class AddStudentActivity extends AppCompatActivity {
             String studentMiddleName = etStudentMiddleName != null ? etStudentMiddleName.getText().toString().trim() : "";
             String studentLastName = etStudentLastName != null ? etStudentLastName.getText().toString().trim() : "";
             String studentExtension = etStudentExtension != null ? etStudentExtension.getText().toString().trim() : "";
-            String studentGender = spnStudentGender != null && spnStudentGender.getSelectedItem() != null ?
-                    spnStudentGender.getSelectedItem().toString() : "Male";
+            String studentGender = tvSelectedGender != null ? tvSelectedGender.getText().toString().trim() : "Male";
 
             String dob = tvDateOfBirth != null ? tvDateOfBirth.getText().toString().trim() : "";
             int age = AgeCalculator.ageToday(dob);
 
-            String gradeLevel = spnGradeLevel != null && spnGradeLevel.getSelectedItem() != null ?
-                    spnGradeLevel.getSelectedItem().toString() : "Nursery";
+            String gradeLevel = tvSelectedGradeLevel != null ? tvSelectedGradeLevel.getText().toString().trim() : "Nursery";
 
             String parentFirstName = etParentFirstName != null ? etParentFirstName.getText().toString().trim() : "";
             String parentMiddleName = etParentMiddleName != null ? etParentMiddleName.getText().toString().trim() : "";

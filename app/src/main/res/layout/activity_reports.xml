@@ -107,20 +107,35 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- 2. Quarter Dropdown -->
-        <FrameLayout
+        <RelativeLayout
+            android:id="@+id/layoutQuarterDropdown"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="48dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/bg_input_field_spinner">
+            android:background="@drawable/bg_input_field"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="16dp">
 
-            <Spinner
-                android:id="@+id/spinnerQuarter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:paddingHorizontal="12dp"
-                android:spinnerMode="dropdown" />
-        </FrameLayout>
+            <TextView
+                android:id="@+id/tvSelectedQuarter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="1st Quarter"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@null"
+                android:src="@drawable/activity_dropdown" />
+        </RelativeLayout>
 
         <!-- 3. Total Score Card -->
         <com.google.android.material.card.MaterialCardView

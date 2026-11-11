@@ -1,19 +1,21 @@
 package com.example.priangradingsystem.grades;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListPopupWindow;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.priangradingsystem.FullScreenUtils;
 import com.example.priangradingsystem.R;
@@ -24,11 +26,20 @@ import java.util.Locale;
 @SuppressWarnings("all")
 public class GradeEntryActivity extends AppCompatActivity {
 
-    private Spinner spnQuarter;
-    private Spinner spnActivity;
-    private Spinner spnSubject;
-    private Spinner spnAttendanceStatus;
-    private Spinner spnPoints;
+    private RelativeLayout layoutQuarterDropdown;
+    private TextView tvSelectedQuarter;
+
+    private RelativeLayout layoutActivityDropdown;
+    private TextView tvSelectedActivity;
+
+    private RelativeLayout layoutSubjectDropdown;
+    private TextView tvSelectedSubject;
+
+    private RelativeLayout layoutAttendanceStatusDropdown;
+    private TextView tvSelectedAttendanceStatus;
+
+    private RelativeLayout layoutPointDropdown;
+    private TextView tvSelectedPoints;
 
     private LinearLayout layoutSubjectSection;
     private LinearLayout layoutProgramNameSection;
@@ -84,13 +95,25 @@ public class GradeEntryActivity extends AppCompatActivity {
 
         updateStudentCard(selectedStudentName, selectedStudentLevel, selectedStudentPhotoUri);
 
-        spnQuarter = findViewById(R.id.spnQuarter);
-        setupQuarterSpinner();
+        layoutQuarterDropdown = findViewById(R.id.layoutQuarterDropdown);
+        tvSelectedQuarter = findViewById(R.id.tvSelectedQuarter);
+        setupQuarterDropdown();
 
-        spnActivity = findViewById(R.id.spnActivity);
-        spnSubject = findViewById(R.id.spnSubject);
-        spnAttendanceStatus = findViewById(R.id.spnAttendanceStatus);
-        spnPoints = findViewById(R.id.spnPoints);
+        layoutActivityDropdown = findViewById(R.id.layoutActivityDropdown);
+        tvSelectedActivity = findViewById(R.id.tvSelectedActivity);
+        setupActivityDropdown();
+
+        layoutSubjectDropdown = findViewById(R.id.layoutSubjectDropdown);
+        tvSelectedSubject = findViewById(R.id.tvSelectedSubject);
+        setupSubjectDropdown();
+
+        layoutAttendanceStatusDropdown = findViewById(R.id.layoutAttendanceStatusDropdown);
+        tvSelectedAttendanceStatus = findViewById(R.id.tvSelectedAttendanceStatus);
+        setupAttendanceStatusDropdown();
+
+        layoutPointDropdown = findViewById(R.id.layoutPointDropdown);
+        tvSelectedPoints = findViewById(R.id.tvSelectedPoints);
+        setupPointDropdown();
 
         layoutSubjectSection = findViewById(R.id.layoutSubjectSection);
         layoutProgramNameSection = findViewById(R.id.layoutProgramNameSection);
@@ -121,10 +144,6 @@ public class GradeEntryActivity extends AppCompatActivity {
                 }
             });
         }
-
-        setupActivitySpinner();
-        setupAttendanceStatusSpinner();
-        setupPointSpinner();
 
         etProgramName = findViewById(R.id.etProgramName);
         etScore = findViewById(R.id.etScore);
@@ -193,66 +212,152 @@ public class GradeEntryActivity extends AppCompatActivity {
         }
     }
 
-    private void setupQuarterSpinner() {
-        if (spnQuarter != null) {
+    private void setupQuarterDropdown() {
+        if (layoutQuarterDropdown != null && tvSelectedQuarter != null) {
             String[] quarters = getResources().getStringArray(R.array.quarter_options);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, quarters);
-            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-            spnQuarter.setAdapter(adapter);
-        }
-    }
-
-    private void setupAttendanceStatusSpinner() {
-        if (spnAttendanceStatus != null) {
-            String[] attendanceOptions = getResources().getStringArray(R.array.attendance_options);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, attendanceOptions);
-            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-            spnAttendanceStatus.setAdapter(adapter);
-        }
-    }
-
-    private void setupPointSpinner() {
-        if (spnPoints != null) {
-            String[] pointOptions = getResources().getStringArray(R.array.point_options);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, pointOptions);
-            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-            spnPoints.setAdapter(adapter);
-        }
-    }
-
-    private void setupActivitySpinner() {
-        if (spnActivity != null) {
-            String[] activities = getResources().getStringArray(R.array.activity_options);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, activities);
-            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-            spnActivity.setAdapter(adapter);
-
-            spnActivity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    String selectedActivity = activities[position];
-                    updateSubjectSpinner(selectedActivity);
-                    updateUIRulesForActivity(selectedActivity);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {}
+            layoutQuarterDropdown.setOnClickListener(v -> {
+                showCustomDropdown(v, tvSelectedQuarter, quarters, selectedQuarter -> {
+                    tvSelectedQuarter.setText(selectedQuarter);
+                });
             });
         }
     }
 
-    private void updateSubjectSpinner(String activity) {
-        if (spnSubject != null) {
+    private void setupAttendanceStatusDropdown() {
+        if (layoutAttendanceStatusDropdown != null && tvSelectedAttendanceStatus != null) {
+            String[] attendanceOptions = getResources().getStringArray(R.array.attendance_options);
+            layoutAttendanceStatusDropdown.setOnClickListener(v -> {
+                showCustomDropdown(v, tvSelectedAttendanceStatus, attendanceOptions, selectedStatus -> {
+                    tvSelectedAttendanceStatus.setText(selectedStatus);
+                });
+            });
+        }
+    }
+
+    private void setupPointDropdown() {
+        if (layoutPointDropdown != null && tvSelectedPoints != null) {
+            String[] pointOptions = getResources().getStringArray(R.array.point_options);
+            layoutPointDropdown.setOnClickListener(v -> {
+                showCustomDropdown(v, tvSelectedPoints, pointOptions, selectedPoint -> {
+                    tvSelectedPoints.setText(selectedPoint);
+                });
+            });
+        }
+    }
+
+    private void setupActivityDropdown() {
+        if (layoutActivityDropdown != null && tvSelectedActivity != null) {
+            String[] activities = getResources().getStringArray(R.array.activity_options);
+            if (activities.length > 0) {
+                String current = tvSelectedActivity.getText().toString();
+                if (current.isEmpty()) {
+                    tvSelectedActivity.setText(activities[0]);
+                    current = activities[0];
+                }
+                updateSubjectList(current);
+                updateUIRulesForActivity(current);
+            }
+
+            layoutActivityDropdown.setOnClickListener(v -> {
+                showCustomDropdown(v, tvSelectedActivity, activities, selectedActivity -> {
+                    tvSelectedActivity.setText(selectedActivity);
+                    updateSubjectList(selectedActivity);
+                    updateUIRulesForActivity(selectedActivity);
+                });
+            });
+        }
+    }
+
+    private void setupSubjectDropdown() {
+        if (layoutSubjectDropdown != null && tvSelectedSubject != null) {
+            layoutSubjectDropdown.setOnClickListener(v -> {
+                String activity = tvSelectedActivity != null ? tvSelectedActivity.getText().toString() : "";
+                String[] subjects;
+                if (activity.equalsIgnoreCase("Program Performance")) {
+                    subjects = getResources().getStringArray(R.array.subject_options_program_performance);
+                } else {
+                    subjects = getResources().getStringArray(R.array.subject_options);
+                }
+                showCustomDropdown(v, tvSelectedSubject, subjects, selectedSubject -> {
+                    tvSelectedSubject.setText(selectedSubject);
+                });
+            });
+        }
+    }
+
+    private void updateSubjectList(String activity) {
+        if (tvSelectedSubject != null) {
             String[] subjects;
             if (activity != null && activity.equalsIgnoreCase("Program Performance")) {
                 subjects = getResources().getStringArray(R.array.subject_options_program_performance);
             } else {
                 subjects = getResources().getStringArray(R.array.subject_options);
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, subjects);
-            adapter.setDropDownViewResource(R.layout.item_spinner_dropdown);
-            spnSubject.setAdapter(adapter);
+            String current = tvSelectedSubject.getText().toString();
+            boolean found = false;
+            for (String s : subjects) {
+                if (s.equalsIgnoreCase(current)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found && subjects.length > 0) {
+                tvSelectedSubject.setText(subjects[0]);
+            }
         }
+    }
+
+    interface OnItemSelectedListener {
+        void onItemSelected(String item);
+    }
+
+    private void showCustomDropdown(View anchor, TextView targetTextView, String[] items, OnItemSelectedListener listener) {
+        String currentSelected = targetTextView != null ? targetTextView.getText().toString() : "";
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                items
+        ) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                TextView view = (TextView) super.getView(position, convertView, parent);
+                view.setTextColor(Color.BLACK);
+                view.setTextSize(16);
+                view.setPadding(32, 24, 32, 24);
+
+                String itemText = getItem(position);
+                if (itemText != null && itemText.equals(currentSelected)) {
+                    view.setBackgroundResource(R.drawable.dropdown_selected);
+                } else {
+                    view.setBackgroundColor(Color.TRANSPARENT);
+                }
+                return view;
+            }
+        };
+
+        ListPopupWindow popupWindow = new ListPopupWindow(this);
+        popupWindow.setAdapter(adapter);
+        popupWindow.setAnchorView(anchor);
+        popupWindow.setBackgroundDrawable(androidx.core.content.res.ResourcesCompat.getDrawable(getResources(), R.drawable.dropdown_box, null));
+        popupWindow.setWidth(anchor.getWidth());
+        popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
+        popupWindow.setModal(true);
+
+        for (int i = 0; i < items.length; i++) {
+            if (items[i].equals(currentSelected)) {
+                popupWindow.setSelection(i);
+                break;
+            }
+        }
+
+        popupWindow.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = items[position];
+            listener.onItemSelected(selected);
+            popupWindow.dismiss();
+        });
+        popupWindow.show();
     }
 
     private void updateUIRulesForActivity(String activity) {
@@ -315,17 +420,17 @@ public class GradeEntryActivity extends AppCompatActivity {
     }
 
     private void saveGrade() {
-        String activity = spnActivity != null && spnActivity.getSelectedItem() != null ? spnActivity.getSelectedItem().toString() : "Exam";
+        String activity = tvSelectedActivity != null ? tvSelectedActivity.getText().toString() : "Exam";
         String score = "";
 
         if (activity.equalsIgnoreCase("Attendance")) {
-            String attStatus = spnAttendanceStatus != null && spnAttendanceStatus.getSelectedItem() != null ? spnAttendanceStatus.getSelectedItem().toString() : "Present";
+            String attStatus = tvSelectedAttendanceStatus != null ? tvSelectedAttendanceStatus.getText().toString() : "Present";
             score = attStatus.toLowerCase().contains("absent") ? "absent" : "present";
         } else if (activity.equalsIgnoreCase("Books") || activity.equalsIgnoreCase("Homework")) {
             int stars = ratingBarStars != null ? (int) ratingBarStars.getRating() : 0;
             score = stars + " ⭐ (" + stars + " Stars)";
         } else if (activity.equalsIgnoreCase("Program Performance")) {
-            score = spnPoints != null && spnPoints.getSelectedItem() != null ? spnPoints.getSelectedItem().toString() : "0 Points";
+            score = tvSelectedPoints != null ? tvSelectedPoints.getText().toString() : "0 Points";
         } else {
             String rawScore = etScore != null ? etScore.getText().toString().trim() : "";
             if (rawScore.isEmpty()) {
@@ -349,11 +454,11 @@ public class GradeEntryActivity extends AppCompatActivity {
             score = rawScore + (tvScoreSuffix != null ? tvScoreSuffix.getText().toString() : "/100");
         }
 
-        String quarter = spnQuarter != null && spnQuarter.getSelectedItem() != null ? spnQuarter.getSelectedItem().toString() : "1st Quarter";
+        String quarter = tvSelectedQuarter != null ? tvSelectedQuarter.getText().toString() : "1st Quarter";
         String subject = "N/A";
         if (!activity.equalsIgnoreCase("Attendance") && !activity.equalsIgnoreCase("Homework")) {
-            if (spnSubject != null && spnSubject.getSelectedItem() != null) {
-                subject = spnSubject.getSelectedItem().toString();
+            if (tvSelectedSubject != null) {
+                subject = tvSelectedSubject.getText().toString();
             }
         }
         String assessmentDate = getTodayDate();
