@@ -176,6 +176,94 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Teachers
     // ------------------------------------------------------------------------------------------
 
+    public boolean isEmailExists(String email) {
+        if (email == null) return false;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            try (Cursor c = db.rawQuery("SELECT COUNT(*) FROM teachers WHERE LOWER(email) = LOWER(?)", new String[]{email.trim()})) {
+                if (c.moveToFirst()) {
+                    return c.getInt(0) > 0;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking email existence", e);
+        }
+        return false;
+    }
+
+    public boolean isUsernameExists(String username) {
+        if (username == null) return false;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            try (Cursor c = db.rawQuery("SELECT COUNT(*) FROM teachers WHERE LOWER(username) = LOWER(?)", new String[]{username.trim()})) {
+                if (c.moveToFirst()) {
+                    return c.getInt(0) > 0;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking username existence", e);
+        }
+        return false;
+    }
+
+    public boolean verifyPresetCode(String username, String presetCode) {
+        if (username == null || presetCode == null) return false;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            try (Cursor c = db.rawQuery("SELECT preset_code FROM teachers WHERE LOWER(username) = LOWER(?)", new String[]{username.trim()})) {
+                if (c.moveToFirst()) {
+                    String storedCode = c.getString(0);
+                    return storedCode != null && storedCode.trim().equalsIgnoreCase(presetCode.trim());
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error verifying preset code", e);
+        }
+        return false;
+    }
+
+    public boolean insertTeacher(String fullName, String username, String password, String email, String presetCode) {
+        if (username == null || password == null || fullName == null) return false;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            String passwordHash = PasswordHasher.hash(password);
+            ContentValues values = new ContentValues();
+            values.put("full_name", fullName.trim());
+            values.put("username", username.trim());
+            values.put("password_hash", passwordHash);
+            values.put("email", email != null ? email.trim() : null);
+            values.put("preset_code", presetCode != null ? presetCode.trim() : null);
+            long id = db.insert("teachers", null, values);
+            return id != -1;
+        } catch (Exception e) {
+            Log.e(TAG, "Error inserting teacher", e);
+            return false;
+        }
+    }
+
+    public boolean insertTeacher(String fullName, String username, String password) {
+        return insertTeacher(fullName, username, password, null, null);
+    }
+
+    public boolean insertTeacher(String fullName, String username, String password, String email) {
+        return insertTeacher(fullName, username, password, email, null);
+    }
+
+    public boolean updateTeacherPassword(String username, String newPassword) {
+        if (username == null || newPassword == null) return false;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            String hashed = PasswordHasher.hash(newPassword);
+            ContentValues values = new ContentValues();
+            values.put("password_hash", hashed);
+            int rows = db.update("teachers", values, "LOWER(username) = LOWER(?)", new String[]{username.trim()});
+            return rows > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating teacher password", e);
+            return false;
+        }
+    }
+
     public Teacher getTeacherByCredentials(String username, String password) {
         if (username == null || password == null) return null;
         try {

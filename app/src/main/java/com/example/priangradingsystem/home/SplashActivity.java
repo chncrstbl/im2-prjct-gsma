@@ -23,7 +23,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private void proceedToMain() {
         if (!isFinishing()) {
-            Intent intent = new Intent(SplashActivity.this, com.example.priangradingsystem.auth.LoginActivity.class);
+            android.content.SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+            boolean hasAccount = prefs.getBoolean("HAS_ACCOUNT", false);
+            Intent intent;
+            if (!hasAccount) {
+                intent = new Intent(SplashActivity.this, com.example.priangradingsystem.auth.SignUpActivity.class);
+            } else {
+                intent = new Intent(SplashActivity.this, com.example.priangradingsystem.auth.LoginActivity.class);
+            }
             startActivity(intent);
             finish();
         }

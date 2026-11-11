@@ -20,7 +20,7 @@ import java.util.Set;
  * </pre>
  */
 public final class DbSchema {
-    public static final int VERSION = 5;
+    public static final int VERSION = 7;
 
     /** Minimal database access so the migration can run on Android and in plain-Java tests. */
     public interface SqlExec {
@@ -35,7 +35,9 @@ public final class DbSchema {
             "teacher_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "full_name TEXT NOT NULL, " +
             "username TEXT NOT NULL UNIQUE, " +
-            "password_hash TEXT NOT NULL)";
+            "password_hash TEXT NOT NULL, " +
+            "email TEXT, " +
+            "preset_code TEXT)";
 
     static final String CREATE_SCHOOL_YEARS =
             "CREATE TABLE school_years (" +
@@ -117,7 +119,28 @@ public final class DbSchema {
     public static void upgrade(SqlExec x, Calendar now) {
         Set<String> tables = tableNames(x);
 
-        if (!tables.contains("teachers")) x.exec(CREATE_TEACHERS);
+        boolean hadTeachers = tables.contains("teachers");
+        Set<String> teacherCols = hadTeachers ? columnNames(x, "teachers") : new HashSet<String>();
+        if (!hadTeachers) {
+            x.exec(CREATE_TEACHERS);
+        } else {
+            if (!teacherCols.contains("email")) {
+                x.exec("CREATE TABLE teachers_v6 (" +
+                        "teacher_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "full_name TEXT NOT NULL, " +
+                        "username TEXT NOT NULL UNIQUE, " +
+                        "password_hash TEXT NOT NULL, " +
+                        "email TEXT)");
+                x.exec("INSERT INTO teachers_v6 (teacher_id, full_name, username, password_hash) " +
+                        "SELECT teacher_id, full_name, username, password_hash FROM teachers");
+                x.exec("DROP TABLE teachers");
+                x.exec("ALTER TABLE teachers_v6 RENAME TO teachers");
+                teacherCols = columnNames(x, "teachers");
+            }
+            if (!teacherCols.contains("preset_code")) {
+                x.exec("ALTER TABLE teachers ADD COLUMN preset_code TEXT");
+            }
+        }
         if (!tables.contains("school_years")) x.exec(CREATE_SCHOOL_YEARS);
         long yearId = ensureCurrentYear(x, now);
 

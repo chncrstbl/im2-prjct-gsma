@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFDC8"
+    android:fitsSystemWindows="true"
+    tools:context=".auth.SignUpActivity">
+
+    <!-- Top-left cloud -->
+    <ImageView
+        android:id="@+id/cloudTopLeft"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginStart="-25dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@null"
+        android:src="@drawable/cloud_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Top-right cloud -->
+    <ImageView
+        android:id="@+id/cloudTopRight"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginEnd="-25dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@null"
+        android:src="@drawable/cloud_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Centered Sun -->
+    <ImageView
+        android:id="@+id/sun"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@null"
+        android:src="@drawable/sun"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Bottom Left Cloud -->
+    <ImageView
+        android:id="@+id/cloudBottomLeft"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginStart="-30dp"
+        android:layout_marginBottom="-10dp"
+        android:contentDescription="@null"
+        android:src="@drawable/fullcloud_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Bottom Right Cloud -->
+    <ImageView
+        android:id="@+id/cloudBottomRight"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginEnd="-30dp"
+        android:layout_marginBottom="-10dp"
+        android:contentDescription="@null"
+        android:src="@drawable/fullcloud_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Scrollable Form Container -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="28dp">
+
+            <!-- Logo: Little Learners -->
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="115dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/littlelearners" />
+
+            <!-- Subtitle: Grading System -->
+            <ImageView
+                android:id="@+id/gradingSystem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_marginTop="2dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@null"
+                android:src="@drawable/grading_system" />
+
+            <!-- Section Title: Sign Up -->
+            <TextView
+                android:id="@+id/tvSignUpTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Sign Up"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Username Input Box -->
+            <RelativeLayout
+                android:id="@+id/layoutUsername"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_login_input"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:id="@+id/ivUserIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_person_login" />
+
+                <EditText
+                    android:id="@+id/etUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="12dp"
+                    android:layout_toEndOf="@+id/ivUserIcon"
+                    android:autofillHints="username"
+                    android:background="@null"
+                    android:hint="User Name:"
+                    android:inputType="textPersonName"
+                    android:textColor="#000000"
+                    android:textColorHint="#8E8E8E"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <!-- Password Input Box -->
+            <RelativeLayout
+                android:id="@+id/layoutPassword"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_login_input"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:id="@+id/ivLockIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_lock_login" />
+
+                <ImageView
+                    android:id="@+id/ivEyeToggle"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_eye_login" />
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_toEndOf="@+id/ivLockIcon"
+                    android:layout_toStartOf="@+id/ivEyeToggle"
+                    android:autofillHints="password"
+                    android:background="@null"
+                    android:hint="Password:"
+                    android:inputType="textPassword"
+                    android:textColor="#000000"
+                    android:textColorHint="#8E8E8E"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <!-- Confirm Password Input Box -->
+            <RelativeLayout
+                android:id="@+id/layoutConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_login_input"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:id="@+id/ivLockIconConfirm"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_lock_login" />
+
+                <ImageView
+                    android:id="@+id/ivEyeToggleConfirm"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_eye_login" />
+
+                <EditText
+                    android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_toEndOf="@+id/ivLockIconConfirm"
+                    android:layout_toStartOf="@+id/ivEyeToggleConfirm"
+                    android:autofillHints="password"
+                    android:background="@null"
+                    android:hint="Confirm Password:"
+                    android:inputType="textPassword"
+                    android:textColor="#000000"
+                    android:textColorHint="#8E8E8E"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <!-- Preset Code Display Card -->
+            <LinearLayout
+                android:id="@+id/layoutPresetCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_login_input"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚠️ IMPORTANT: Save this Preset Code!"
+                    android:textColor="#D32F2F"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvPresetCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="LL-8492"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Privacy Policy Checkbox -->
+            <CheckBox
+                android:id="@+id/cbPrivacy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="I agree with privacy policy"
+                android:textColor="#333333"
+                android:textSize="13sp" />
+
+            <!-- Create Account Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCreateAccount"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#FFC800"
+                android:text="Create Account"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="25dp"
+                app:elevation="2dp" />
+
+            <!-- Already have an account? Login -->
+            <TextView
+                android:id="@+id/tvLoginPrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="32dp"
+                android:text="You already have an account? Login"
+                android:textColor="#666666"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
