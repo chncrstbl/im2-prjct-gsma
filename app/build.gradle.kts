@@ -36,7 +36,8 @@ android {
                 "src/main/res-reports",
                 "src/main/res-records",
                 "src/main/res-common",
-                "src/main/res-login"
+                "src/main/res-login",
+                "src/main/res-setting"
             )
         }
     }

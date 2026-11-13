@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/page_background"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".home.MainActivity">
@@ -25,15 +25,17 @@
             android:contentDescription="@string/app_name"
             android:src="@drawable/little_learners" />
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivProfile"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:adjustViewBounds="true"
             android:contentDescription="@string/student_avatar"
-            android:src="@drawable/profile_teacher" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile_teacher"
+            app:shapeAppearanceOverlay="@style/CircleImageViewStyle" />
     </RelativeLayout>
 
     <!-- Scrollable Main Content -->

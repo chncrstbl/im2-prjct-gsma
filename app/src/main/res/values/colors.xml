@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="page_background">#FFFFFF</color>
+    <color name="login_background">#FFFDC8</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="primary_text">#2D2013</color>
+    <color name="secondary_text">#7A6855</color>
+    <color name="divider_color">#FFE082</color>
 </resources>

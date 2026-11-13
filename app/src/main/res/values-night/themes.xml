@@ -1,10 +1,10 @@
 <resources>
-    <!-- Base application theme. -->
+    <!-- Base application theme for Night Mode -->
     <style name="Base.Theme.PrianGradingSystem" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Standard App Window View (Facebook style) -->
         <item name="android:windowFullscreen">false</item>
-        <item name="android:statusBarColor">#FFCC00</item>
-        <item name="android:navigationBarColor">#FFFFFF</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">#1A1400</item>
+        <item name="android:navigationBarColor">#121212</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">@color/page_background</item>
     </style>
 </resources>

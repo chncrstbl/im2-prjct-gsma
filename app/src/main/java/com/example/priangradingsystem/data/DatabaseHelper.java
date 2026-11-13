@@ -268,7 +268,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (username == null || password == null) return null;
         try {
             SQLiteDatabase db = getWritableDatabase();
-            try (Cursor c = db.rawQuery("SELECT teacher_id, full_name, username, password_hash FROM teachers " +
+            try (Cursor c = db.rawQuery("SELECT teacher_id, full_name, username, password_hash, email, preset_code FROM teachers " +
                     "WHERE LOWER(username) = LOWER(?)", new String[]{username.trim()})) {
                 while (c.moveToNext()) {
                     String stored = c.getString(3);
@@ -280,13 +280,59 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         db.execSQL("UPDATE teachers SET password_hash = ? WHERE teacher_id = ?",
                                 new Object[]{stored, (long) id});
                     }
-                    return new Teacher(id, c.getString(1), c.getString(2), stored);
+                    return new Teacher(id, c.getString(1), c.getString(2), stored, c.getString(4), c.getString(5));
                 }
             }
         } catch (Exception e) {
             Log.e(TAG, "Error fetching teacher by credentials", e);
         }
         return null;
+    }
+
+    public Teacher getTeacherById(int teacherId) {
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            try (Cursor c = db.rawQuery("SELECT teacher_id, full_name, username, password_hash, email, preset_code FROM teachers " +
+                    "WHERE teacher_id = ?", new String[]{String.valueOf(teacherId)})) {
+                if (c.moveToFirst()) {
+                    return new Teacher(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching teacher by id", e);
+        }
+        return null;
+    }
+
+    public Teacher getTeacherByUsername(String username) {
+        if (username == null) return null;
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            try (Cursor c = db.rawQuery("SELECT teacher_id, full_name, username, password_hash, email, preset_code FROM teachers " +
+                    "WHERE LOWER(username) = LOWER(?)", new String[]{username.trim()})) {
+                if (c.moveToFirst()) {
+                    return new Teacher(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching teacher by username", e);
+        }
+        return null;
+    }
+
+    public boolean updateTeacherProfile(int teacherId, String fullName, String email) {
+        if (fullName == null) return false;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("full_name", fullName.trim());
+            values.put("email", email != null ? email.trim() : "");
+            int rows = db.update("teachers", values, "teacher_id = ?", new String[]{String.valueOf(teacherId)});
+            return rows > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating teacher profile", e);
+            return false;
+        }
     }
 
     // ------------------------------------------------------------------------------------------

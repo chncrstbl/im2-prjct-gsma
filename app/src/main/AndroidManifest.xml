@@ -3,6 +3,7 @@
     package="com.example.priangradingsystem">
 
     <application
+        android:name=".PrianApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -88,6 +89,11 @@
 
         <activity
             android:name=".grades.SelectStudentGradeActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".account.AccountSettingsActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
