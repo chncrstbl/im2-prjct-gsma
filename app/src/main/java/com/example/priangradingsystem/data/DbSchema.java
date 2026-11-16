@@ -20,7 +20,7 @@ import java.util.Set;
  * </pre>
  */
 public final class DbSchema {
-    public static final int VERSION = 7;
+    public static final int VERSION = 8;
 
     /** Minimal database access so the migration can run on Android and in plain-Java tests. */
     public interface SqlExec {

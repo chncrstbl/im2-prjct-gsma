@@ -99,6 +99,8 @@ public class LoginActivity extends AppCompatActivity {
         Teacher teacher = dbHelper.getTeacherByCredentials(username, password);
         if (teacher != null) {
             SharedPreferences prefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            boolean isNewUser = prefs.getBoolean("IS_NEW_USER_" + teacher.getTeacherId(), true);
+
             prefs.edit()
                     .putInt("TEACHER_ID", teacher.getTeacherId())
                     .putString("TEACHER_NAME", teacher.getFullName())
@@ -107,6 +109,17 @@ public class LoginActivity extends AppCompatActivity {
                     .apply();
 
             Toast.makeText(this, "Welcome back, " + teacher.getFullName() + "!", Toast.LENGTH_SHORT).show();
+
+            if (isNewUser) {
+                prefs.edit().putBoolean("IS_NEW_USER_" + teacher.getTeacherId(), false).apply();
+
+                Intent intent = new Intent(LoginActivity.this, com.example.priangradingsystem.account.AccountSettingsActivity.class);
+                intent.putExtra("OPEN_EDIT_PROFILE", true);
+                intent.putExtra("IS_FROM_NEW_USER_LOGIN", true);
+                startActivity(intent);
+                finish();
+                return;
+            }
         } else {
             if (!BYPASS_LOGIN) {
                 Toast.makeText(this, "Invalid username or password.", Toast.LENGTH_LONG).show();

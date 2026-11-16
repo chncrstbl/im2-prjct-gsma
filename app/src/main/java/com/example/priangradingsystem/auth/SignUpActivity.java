@@ -137,6 +137,10 @@ public class SignUpActivity extends AppCompatActivity {
         if (success) {
             SharedPreferences prefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
             prefs.edit().putBoolean("HAS_ACCOUNT", true).apply();
+            com.example.priangradingsystem.model.Teacher createdTeacher = dbHelper.getTeacherByUsername(username);
+            if (createdTeacher != null) {
+                prefs.edit().putBoolean("IS_NEW_USER_" + createdTeacher.getTeacherId(), true).apply();
+            }
 
             Toast.makeText(this, "Account created successfully! Please log in.", Toast.LENGTH_LONG).show();
             navigateToLogin();

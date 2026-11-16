@@ -37,11 +37,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Database.db";
     private static final int DATABASE_VERSION = DbSchema.VERSION;
 
-    // Only used to seed a brand-new database that has no teacher at all (the bundled Database.db has one).
-    private static final String SEED_TEACHER_NAME = "Marian F. Ceron";
-    private static final String SEED_TEACHER_USER = "Prian";
-    private static final String SEED_TEACHER_PASS = "Ham20456";
-
     private final Context context;
     private final File dbPath;
     private String lastError = "";
@@ -129,7 +124,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private void migrate(SQLiteDatabase db) {
         DbSchema.upgrade(new DbExec(db), Calendar.getInstance());
         upgradeLegacyPasswords(db);
-        seedTeacherIfNone(db);
     }
 
     private void upgradeLegacyPasswords(SQLiteDatabase db) {
@@ -139,14 +133,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.execSQL("UPDATE teachers SET password_hash = ? WHERE teacher_id = ?",
                         new Object[]{PasswordHasher.hash(r[1] == null ? "" : r[1]), Long.parseLong(r[0])});
             }
-        }
-    }
-
-    private void seedTeacherIfNone(SQLiteDatabase db) {
-        List<String[]> n = new DbExec(db).query("SELECT COUNT(*) FROM teachers");
-        if (!n.isEmpty() && "0".equals(n.get(0)[0])) {
-            db.execSQL("INSERT INTO teachers (full_name, username, password_hash) VALUES (?, ?, ?)",
-                    new Object[]{SEED_TEACHER_NAME, SEED_TEACHER_USER, PasswordHasher.hash(SEED_TEACHER_PASS)});
         }
     }
 
@@ -175,6 +161,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // ------------------------------------------------------------------------------------------
     // Teachers
     // ------------------------------------------------------------------------------------------
+
+    public boolean hasAnyTeacher() {
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            try (Cursor c = db.rawQuery("SELECT COUNT(*) FROM teachers", null)) {
+                if (c.moveToFirst()) {
+                    return c.getInt(0) > 0;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking teacher count", e);
+        }
+        return false;
+    }
 
     public boolean isEmailExists(String email) {
         if (email == null) return false;

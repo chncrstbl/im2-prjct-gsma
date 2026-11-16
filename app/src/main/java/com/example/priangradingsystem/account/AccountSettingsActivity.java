@@ -61,6 +61,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
     private String selectedPhotoUriString = "";
     private ImageView activeDialogAvatarView;
+    private boolean isFromNewUserLogin = false;
 
     private final ActivityResultLauncher<Intent> pickImageLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -97,6 +98,9 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
+        isFromNewUserLogin = getIntent().getBooleanExtra("IS_FROM_NEW_USER_LOGIN", false);
+        boolean openEditProfile = getIntent().getBooleanExtra("OPEN_EDIT_PROFILE", false);
+
         currentTeacherId = prefs.getInt("TEACHER_ID", -1);
         currentUsername = prefs.getString("TEACHER_USERNAME", "");
 
@@ -104,6 +108,10 @@ public class AccountSettingsActivity extends AppCompatActivity {
         loadTeacherData();
         setupListeners();
         loadSettingsState();
+
+        if (openEditProfile) {
+            getWindow().getDecorView().post(this::showEditProfileDialog);
+        }
     }
 
     @Override
@@ -115,7 +123,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
     private void initViews() {
         View btnBack = findViewById(R.id.btnBack);
         if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish());
+            btnBack.setOnClickListener(v -> handleBackNavigation());
         }
 
         tvTeacherName = findViewById(R.id.tvTeacherName);
@@ -125,6 +133,24 @@ public class AccountSettingsActivity extends AppCompatActivity {
         btnThemeToggle = findViewById(R.id.btnThemeToggle);
         ivThemeSun = findViewById(R.id.ivThemeSun);
         ivThemeMoon = findViewById(R.id.ivThemeMoon);
+    }
+
+    private void handleBackNavigation() {
+        if (isFromNewUserLogin) {
+            Intent intent = new Intent(AccountSettingsActivity.this, com.example.priangradingsystem.home.MainActivity.class);
+            startActivity(intent);
+        }
+        finish();
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onBackPressed() {
+        if (isFromNewUserLogin) {
+            handleBackNavigation();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void loadTeacherData() {
