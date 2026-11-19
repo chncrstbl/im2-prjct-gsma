@@ -138,7 +138,7 @@
         android:paddingHorizontal="14dp"
         android:paddingVertical="10dp"
         android:text="Preset Code"
-        android:textColor="#D84315"
+        android:textColor="@color/status_fail"
         android:textSize="15sp"
         android:textStyle="bold" />
 

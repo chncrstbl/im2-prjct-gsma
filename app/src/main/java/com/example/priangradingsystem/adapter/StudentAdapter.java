@@ -24,6 +24,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private final List<StudentItem> studentItemList;
     private Consumer<StudentItem> onStudentClick;
+    private int lastAnimatedPosition = -1;
 
     public StudentAdapter(List<StudentItem> studentItemList) {
         this(studentItemList, null);
@@ -83,6 +84,26 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (holder instanceof StudentViewHolder) {
             ((StudentViewHolder) holder).bind(item, onStudentClick);
         }
+        animateEntrance(holder.itemView, position);
+    }
+
+    /** Fades + slides rows in the first time they appear (staggered), for a livelier list. */
+    private void animateEntrance(View view, int position) {
+        if (position <= lastAnimatedPosition) return;
+        lastAnimatedPosition = position;
+        view.setAlpha(0f);
+        view.setTranslationY(view.getResources().getDisplayMetrics().density * 16);
+        view.animate().alpha(1f).translationY(0f)
+                .setStartDelay(Math.min(position, 8) * 30L)
+                .setDuration(280)
+                .start();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
+        holder.itemView.animate().cancel();
+        holder.itemView.setAlpha(1f);
+        holder.itemView.setTranslationY(0f);
     }
 
     @Override

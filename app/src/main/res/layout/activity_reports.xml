@@ -56,10 +56,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/card_background"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#B0B0B0"
+                app:strokeColor="@color/input_outline"
                 app:strokeWidth="1.2dp">
 
                 <LinearLayout
@@ -95,7 +95,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Vea Arevalo"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_strong"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -105,7 +105,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Nursery"
-                            android:textColor="#888888"
+                            android:textColor="@color/text_muted"
                             android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -129,7 +129,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:text="1st Quarter"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -139,7 +139,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@null"
-                    android:src="@drawable/activity_dropdown" />
+                    android:src="@drawable/activity_dropdown"
+        app:tint="@color/text_strong" />
             </RelativeLayout>
 
             <!-- 3. Total Score Card -->
@@ -147,10 +148,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/card_background"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#B0B0B0"
+                app:strokeColor="@color/input_outline"
                 app:strokeWidth="1.2dp">
 
                 <LinearLayout
@@ -163,7 +164,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Score"
-                        android:textColor="#555555"
+                        android:textColor="@color/text_muted"
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
@@ -179,7 +180,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true"
                             android:text="91%"
-                            android:textColor="#00A859"
+                            android:textColor="@color/status_pass"
                             android:textSize="32sp"
                             android:textStyle="bold" />
 
@@ -193,7 +194,7 @@
                             android:paddingHorizontal="14dp"
                             android:paddingVertical="5dp"
                             android:text="Passed"
-                            android:textColor="#00A859"
+                            android:textColor="@color/status_pass"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
@@ -205,10 +206,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/card_background"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#B0B0B0"
+                app:strokeColor="@color/input_outline"
                 app:strokeWidth="1.2dp">
 
                 <LinearLayout
@@ -228,7 +229,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true"
                             android:text="Overall Performance"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_strong"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -238,11 +239,11 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:background="#FEE4E2"
+                            android:background="@color/badge_fail_bg"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="3dp"
                             android:text="5 Subject"
-                            android:textColor="#D92D20"
+                            android:textColor="@color/status_fail"
                             android:textSize="12sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
@@ -275,7 +276,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="91%"
-                                android:textColor="#00A859"
+                                android:textColor="@color/status_pass"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
                         </FrameLayout>
@@ -307,7 +308,7 @@
                                     android:layout_marginStart="6dp"
                                     android:layout_weight="1"
                                     android:text="Excellent (90-100%)"
-                                    android:textColor="#666666"
+                                    android:textColor="@color/text_muted"
                                     android:textSize="12sp"
                                     android:textStyle="bold" />
 
@@ -316,7 +317,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="3"
-                                    android:textColor="#000000"
+                                    android:textColor="@color/text_strong"
                                     android:textSize="13sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -340,7 +341,7 @@
                                     android:layout_marginStart="6dp"
                                     android:layout_weight="1"
                                     android:text="Good (75-89%)"
-                                    android:textColor="#666666"
+                                    android:textColor="@color/text_muted"
                                     android:textSize="12sp"
                                     android:textStyle="bold" />
 
@@ -349,7 +350,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="2"
-                                    android:textColor="#000000"
+                                    android:textColor="@color/text_strong"
                                     android:textSize="13sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -372,7 +373,7 @@
                                     android:layout_marginStart="6dp"
                                     android:layout_weight="1"
                                     android:text="Needs Improvement"
-                                    android:textColor="#666666"
+                                    android:textColor="@color/text_muted"
                                     android:textSize="12sp"
                                     android:textStyle="bold" />
 
@@ -381,7 +382,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
-                                    android:textColor="#000000"
+                                    android:textColor="@color/text_strong"
                                     android:textSize="13sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -396,7 +397,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Subject Breakdown"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -405,7 +406,7 @@
                 android:layout_height="1.5dp"
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="6dp"
-                android:background="#333333" />
+                android:background="@color/text_body" />
 
             <!-- Row 1: Writing -->
             <LinearLayout
@@ -419,7 +420,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Writing"
-                    android:textColor="#666666"
+                    android:textColor="@color/text_muted"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -428,7 +429,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="92%"
-                    android:textColor="#00A859"
+                    android:textColor="@color/status_pass"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -436,7 +437,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0" />
+                android:background="@color/line_neutral" />
 
             <!-- Row 2: Math -->
             <LinearLayout
@@ -450,7 +451,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Math"
-                    android:textColor="#666666"
+                    android:textColor="@color/text_muted"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -467,7 +468,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0" />
+                android:background="@color/line_neutral" />
 
             <!-- Row 3: Reading -->
             <LinearLayout
@@ -481,7 +482,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Reading"
-                    android:textColor="#666666"
+                    android:textColor="@color/text_muted"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -498,7 +499,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0" />
+                android:background="@color/line_neutral" />
 
             <!-- Row 4: Life Skills -->
             <LinearLayout
@@ -512,7 +513,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Life Skills"
-                    android:textColor="#666666"
+                    android:textColor="@color/text_muted"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -521,7 +522,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="97%"
-                    android:textColor="#00A859"
+                    android:textColor="@color/status_pass"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -529,7 +530,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0" />
+                android:background="@color/line_neutral" />
 
             <!-- Row 5: PE & Arts -->
             <LinearLayout
@@ -543,7 +544,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="PE &amp; Arts"
-                    android:textColor="#666666"
+                    android:textColor="@color/text_muted"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -552,7 +553,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="95%"
-                    android:textColor="#00A859"
+                    android:textColor="@color/status_pass"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -560,7 +561,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0" />
+                android:background="@color/line_neutral" />
 
             <!-- Export PDF Button (Yellow Pill Button) -->
             <com.google.android.material.button.MaterialButton

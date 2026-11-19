@@ -1,14 +1,29 @@
 <resources>
-    <!-- Base application theme. -->
     <style name="Base.Theme.PrianGradingSystem" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Standard App Window View (Facebook style) -->
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:statusBarColor">#FFCC00</item>
-        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="colorPrimary">@color/brand_accent</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSurface">@color/card_background</item>
+        <item name="colorOnSurface">@color/text_strong</item>
+        <item name="android:windowBackground">@color/page_background</item>
+        <item name="android:statusBarColor">@color/top_bar</item>
+        <item name="android:navigationBarColor">@color/page_background</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:textColorPrimary">@color/text_strong</item>
+        <item name="android:textColorSecondary">@color/text_muted</item>
+        <item name="android:windowAnimationStyle">@style/PrianWindowAnimation</item>
+        <item name="alertDialogTheme">@style/PrianAlertDialog</item>
     </style>
 
     <style name="Theme.PrianGradingSystem" parent="Base.Theme.PrianGradingSystem" />
+
+    <style name="PrianAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog" />
+
+    <style name="PrianWindowAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/screen_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/screen_exit_back</item>
+        <item name="android:activityCloseEnterAnimation">@anim/screen_enter_back</item>
+        <item name="android:activityCloseExitAnimation">@anim/screen_exit</item>
+    </style>
 
     <style name="CircleImageViewStyle">
         <item name="cornerSize">50%</item>

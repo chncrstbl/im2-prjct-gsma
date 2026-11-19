@@ -71,7 +71,7 @@
                         android:layout_gravity="center"
                         android:contentDescription="Add Photo"
                         android:src="@android:drawable/ic_menu_camera"
-                        app:tint="#333333" />
+                        app:tint="@color/text_body" />
                 </FrameLayout>
 
                 <TextView
@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="Add Photo"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="15sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="First Name"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -103,7 +103,7 @@
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:hint=""
                 tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="Middle Name"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -125,7 +125,7 @@
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:hint=""
                 tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="Last Name"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -147,7 +147,7 @@
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:hint=""
                 tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="Extension (Optional)"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -169,7 +169,7 @@
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:hint=""
                 tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
@@ -193,7 +193,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:text="Birthdate"
-                        android:textColor="#333333"
+                        android:textColor="@color/text_body"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -211,7 +211,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true"
                             android:src="@android:drawable/ic_menu_my_calendar"
-                            app:tint="#000000"
+                            app:tint="@color/text_strong"
                             android:contentDescription="Calendar" />
 
                         <TextView
@@ -222,7 +222,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_toEndOf="@id/imgCalendarIcon"
                             android:text="Date of Birth"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_strong"
                             android:textSize="14sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -239,7 +239,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:text="Gender"
-                        android:textColor="#333333"
+                        android:textColor="@color/text_body"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -259,7 +259,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true"
                             android:text="Male"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_strong"
                             android:textSize="14sp" />
 
                         <ImageView
@@ -268,7 +268,8 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:contentDescription="@null"
-                            android:src="@drawable/activity_dropdown" />
+                            android:src="@drawable/activity_dropdown"
+        app:tint="@color/text_strong" />
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -293,7 +294,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:text="Age"
-                        android:textColor="#333333"
+                        android:textColor="@color/text_body"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -311,7 +312,7 @@
                             android:layout_centerVertical="true"
                             android:layout_toStartOf="@id/tvCalculatedAge"
                             android:text="Age (Auto)"
-                            android:textColor="#555555"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp" />
 
                         <TextView
@@ -320,7 +321,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_strong"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             tools:text="5" />
@@ -339,7 +340,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:text="Grade Level"
-                        android:textColor="#333333"
+                        android:textColor="@color/text_body"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -359,7 +360,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true"
                             android:text="Nursery"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_strong"
                             android:textSize="14sp" />
 
                         <ImageView
@@ -368,7 +369,8 @@
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:contentDescription="@null"
-                            android:src="@drawable/activity_dropdown" />
+                            android:src="@drawable/activity_dropdown"
+        app:tint="@color/text_strong" />
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -379,7 +381,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:text="Parents Name"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -388,7 +390,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="First Name"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -401,7 +403,7 @@
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:hint=""
                 tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
@@ -410,7 +412,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="Middle Name"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -423,7 +425,7 @@
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:hint=""
                 tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
@@ -432,7 +434,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="Last Name"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -445,7 +447,7 @@
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:hint=""
                 tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
@@ -454,7 +456,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="Extension (Optional)"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -467,7 +469,7 @@
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="16dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:hint=""
                 tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
@@ -477,7 +479,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="Parent/Guardian Address"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -490,7 +492,7 @@
                 android:background="@drawable/bg_input_field"
                 android:inputType="textPostalAddress"
                 android:paddingHorizontal="16dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:hint=""
                 tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,LabelFor,VisualLintTextFieldSize" />
 
@@ -500,7 +502,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="Contact No."
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -517,7 +519,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@android:drawable/stat_sys_phone_call"
-                    app:tint="#000000"
+                    app:tint="@color/text_strong"
                     android:contentDescription="Phone" />
 
                 <TextView
@@ -525,7 +527,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:text="+63"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -534,7 +536,7 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:background="#CCCCCC" />
+                    android:background="@color/input_outline" />
 
                 <EditText
                     android:id="@+id/etParentContact"
@@ -545,7 +547,7 @@
                     android:hint="912 345 6789"
                     android:textColorHint="@android:color/transparent"
                     android:inputType="phone"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="15sp"
                     tools:ignore="DuplicateSpeakableText,SpeakableTextPresentCheck,VisualLintTextFieldSize" />
             </LinearLayout>

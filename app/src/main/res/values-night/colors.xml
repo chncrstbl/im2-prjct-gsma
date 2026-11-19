@@ -3,10 +3,47 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="page_background">#121212</color>
-    <color name="login_background">#1A1A1A</color>
-    <color name="card_background">#1E1E1E</color>
-    <color name="primary_text">#FFFFFF</color>
-    <color name="secondary_text">#B0BEC5</color>
-    <color name="divider_color">#424242</color>
+    <!-- Soft, warm dark palette (deliberately not pure black) -->
+    <color name="page_background">#2E2B27</color>
+    <color name="login_background">#35312B</color>
+    <color name="card_background">#3B3731</color>
+    <color name="input_background">#47423A</color>
+    <color name="input_disabled">#3A3630</color>
+    <color name="input_outline">#6F685C</color>
+    <color name="search_background">#47423A</color>
+    <color name="section_header_bg">#3F3B34</color>
+    <color name="chip_idle">#47423A</color>
+    <color name="info_card">#3A4656</color>
+    <color name="dialog_input_bg">#47423A</color>
+    <color name="dialog_input_stroke">#6F5F2A</color>
+    <color name="button_secondary_bg">#47423A</color>
+
+    <color name="dropdown_selected_bg">#4DFFCC00</color>
+
+    <color name="top_bar">#E0B000</color>
+    <color name="brand_accent">#FBC02D</color>
+    <color name="avatar_ring">#6C9BE6</color>
+
+    <color name="primary_text">#F5EFE3</color>
+    <color name="secondary_text">#CFC6B5</color>
+    <color name="text_strong">#F5EFE3</color>
+    <color name="text_body">#E6DECF</color>
+    <color name="text_muted">#BDB4A3</color>
+    <color name="text_hint">#9C9486</color>
+    <color name="link_text">#9FA8FF</color>
+    <color name="greeting_tint">#F0B8A8</color>
+
+    <color name="divider_color">#5E5748</color>
+    <color name="line_neutral">#5A554C</color>
+    <color name="line_strong">#8A8372</color>
+
+    <color name="status_pass">#4CD08A</color>
+    <color name="status_fail">#FF8A80</color>
+    <color name="badge_pass_bg">#2F4A3A</color>
+    <color name="badge_fail_bg">#5A3532</color>
+
+    <color name="toggle_track">#3F4670</color>
+    <color name="toggle_track_stroke">#7C86D6</color>
+    <color name="toggle_thumb">#F5EFE3</color>
+    <color name="icon_chip">#52472A</color>
 </resources>

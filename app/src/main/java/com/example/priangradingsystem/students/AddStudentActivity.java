@@ -292,7 +292,7 @@ public class AddStudentActivity extends AppCompatActivity {
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 TextView view = (TextView) super.getView(position, convertView, parent);
-                view.setTextColor(android.graphics.Color.BLACK);
+                view.setTextColor(view.getContext().getColor(R.color.text_strong));
                 view.setTextSize(16);
                 view.setPadding(32, 24, 32, 24);
 

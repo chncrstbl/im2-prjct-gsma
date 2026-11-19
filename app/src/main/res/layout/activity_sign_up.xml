@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Sign Up"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -156,8 +156,8 @@
                     android:background="@null"
                     android:hint="User Name:"
                     android:inputType="textPersonName"
-                    android:textColor="#000000"
-                    android:textColorHint="#8E8E8E"
+                    android:textColor="@color/text_strong"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="15sp" />
             </RelativeLayout>
 
@@ -199,8 +199,8 @@
                     android:background="@null"
                     android:hint="Password:"
                     android:inputType="textPassword"
-                    android:textColor="#000000"
-                    android:textColorHint="#8E8E8E"
+                    android:textColor="@color/text_strong"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="15sp" />
             </RelativeLayout>
 
@@ -242,8 +242,8 @@
                     android:background="@null"
                     android:hint="Confirm Password:"
                     android:inputType="textPassword"
-                    android:textColor="#000000"
-                    android:textColorHint="#8E8E8E"
+                    android:textColor="@color/text_strong"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="15sp" />
             </RelativeLayout>
 
@@ -261,7 +261,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="⚠️ IMPORTANT: Save this Preset Code!"
-                    android:textColor="#D32F2F"
+                    android:textColor="@color/status_fail"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -272,7 +272,7 @@
                     android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:text="LL-8492"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -284,7 +284,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:text="I agree with privacy policy"
-                android:textColor="#333333"
+                android:textColor="@color/text_body"
                 android:textSize="13sp" />
 
             <!-- Create Account Button -->
@@ -311,7 +311,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="32dp"
                 android:text="You already have an account? Login"
-                android:textColor="#666666"
+                android:textColor="@color/text_muted"
                 android:textSize="13sp" />
 
         </LinearLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sleepy smiling moon that replaces the sun in dark mode -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp" android:height="80dp"
+    android:viewportWidth="80" android:viewportHeight="80">
+    <!-- glow -->
+    <path android:fillColor="#33FFE9A8" android:pathData="M40,42m-34,0a34,34 0,1 1,68 0a34,34 0,1 1,-68 0" />
+    <!-- moon disc -->
+    <path android:fillColor="#FFF0B3" android:strokeColor="#F6D878" android:strokeWidth="1.5"
+        android:pathData="M40,42m-26,0a26,26 0,1 1,52 0a26,26 0,1 1,-52 0" />
+    <!-- craters -->
+    <path android:fillColor="#F4DE92" android:pathData="M57,27m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    <path android:fillColor="#F4DE92" android:pathData="M24,55m-3.2,0a3.2,3.2 0,1 1,6.4 0a3.2,3.2 0,1 1,-6.4 0" />
+    <path android:fillColor="#F4DE92" android:pathData="M54,58m-2.4,0a2.4,2.4 0,1 1,4.8 0a2.4,2.4 0,1 1,-4.8 0" />
+    <!-- sleepy eyes -->
+    <path android:strokeColor="#8A6A2F" android:strokeWidth="2.2" android:strokeLineCap="round"
+        android:pathData="M29,40Q33,44 37,40M45,40Q49,44 53,40" />
+    <!-- smile -->
+    <path android:strokeColor="#8A6A2F" android:strokeWidth="2.2" android:strokeLineCap="round"
+        android:pathData="M35,50Q41,55 47,50" />
+    <!-- cheeks -->
+    <path android:fillColor="#FFB8A0" android:fillAlpha="0.7" android:pathData="M27,48m-3.6,0a3.6,3.6 0,1 1,7.2 0a3.6,3.6 0,1 1,-7.2 0" />
+    <path android:fillColor="#FFB8A0" android:fillAlpha="0.7" android:pathData="M55,48m-3.6,0a3.6,3.6 0,1 1,7.2 0a3.6,3.6 0,1 1,-7.2 0" />
+    <!-- stars -->
+    <path android:fillColor="#FFF0B3" android:pathData="M10,12L11.4,15.6L15,17L11.4,18.4L10,22L8.6,18.4L5,17L8.6,15.6Z" />
+    <path android:fillColor="#FFF0B3" android:pathData="M68,8L69,10.6L71.6,11.6L69,12.6L68,15.2L67,12.6L64.4,11.6L67,10.6Z" />
+    <path android:fillColor="#FFF0B3" android:pathData="M72,66L72.8,68.2L75,69L72.8,69.8L72,72L71.2,69.8L69,69L71.2,68.2Z" />
+</vector>

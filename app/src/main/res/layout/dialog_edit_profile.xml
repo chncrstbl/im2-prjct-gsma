@@ -117,7 +117,7 @@
         android:paddingHorizontal="14dp"
         android:paddingVertical="10dp"
         android:textColor="@color/primary_text"
-        android:textColorHint="#9E9E9E"
+        android:textColorHint="@color/text_hint"
         android:textSize="14sp" />
 
     <!-- Input 2: Email Address -->
@@ -141,7 +141,7 @@
         android:paddingHorizontal="14dp"
         android:paddingVertical="10dp"
         android:textColor="@color/primary_text"
-        android:textColorHint="#9E9E9E"
+        android:textColorHint="@color/text_hint"
         android:textSize="14sp" />
 
     <!-- Action Buttons -->
@@ -160,7 +160,7 @@
             android:background="@drawable/bg_dialog_button_secondary"
             android:text="Cancel"
             android:textAllCaps="false"
-            android:textColor="#616161"
+            android:textColor="@color/text_muted"
             android:textSize="14sp"
             android:textStyle="bold" />
 

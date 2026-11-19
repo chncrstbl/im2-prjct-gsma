@@ -82,7 +82,8 @@
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/good_morning"
-                        android:src="@drawable/good_morning" />
+                        android:src="@drawable/good_morning"
+        app:tint="@color/greeting_tint" />
 
                     <ImageView
                         android:layout_width="88dp"
@@ -90,7 +91,8 @@
                         android:layout_marginTop="2dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/teacher_exclamation"
-                        android:src="@drawable/teacher" />
+                        android:src="@drawable/teacher"
+        app:tint="@color/greeting_tint" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -132,7 +134,8 @@
                         android:layout_marginTop="10dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/card_students_title"
-                        android:src="@drawable/students" />
+                        android:src="@drawable/students"
+        app:tint="@color/text_strong" />
                 </RelativeLayout>
 
                 <!-- Card 2: Enter Grades (Top-Right) -->
@@ -164,7 +167,8 @@
                         android:layout_marginTop="10dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/btn_grades"
-                        android:src="@drawable/enter_grades" />
+                        android:src="@drawable/enter_grades"
+        app:tint="@color/text_strong" />
                 </RelativeLayout>
 
                 <!-- Card 3: Reports (Bottom-Left) -->
@@ -196,7 +200,8 @@
                         android:layout_marginTop="10dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/card_reports_title"
-                        android:src="@drawable/grade_records" />
+                        android:src="@drawable/grade_records"
+        app:tint="@color/text_strong" />
                 </RelativeLayout>
 
                 <!-- Card 4: Analytics (Bottom-Right) -->
@@ -229,7 +234,7 @@
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/analytics"
                         android:src="@drawable/grade_reports"
-                        app:tint="#000000" />
+                        app:tint="@color/text_strong" />
                 </RelativeLayout>
 
             </GridLayout>
@@ -280,7 +285,8 @@
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/quote_small_steps"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/tagline" />
+                    android:src="@drawable/tagline"
+        app:tint="@color/text_strong" />
 
             </RelativeLayout>
 

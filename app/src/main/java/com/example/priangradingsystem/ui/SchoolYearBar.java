@@ -102,12 +102,14 @@ public final class SchoolYearBar {
         LinearLayout row = new LinearLayout(activity);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setBackgroundColor(Color.WHITE);
+        row.setBackgroundColor(activity.getColor(R.color.page_background));
         row.setPadding(dp(16), dp(8), dp(16), dp(8));
 
         // School year icon (sy_icon.png)
         ImageView ivIcon = new ImageView(activity);
         ivIcon.setImageResource(R.drawable.sy_icon);
+        ivIcon.setBackgroundResource(R.drawable.bg_icon_tile);
+        ivIcon.setPadding(dp(2), dp(2), dp(2), dp(2));
         ivIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
         LinearLayout.LayoutParams iconLp = new LinearLayout.LayoutParams(dp(40), dp(40));
         iconLp.setMargins(0, 0, dp(10), 0);
@@ -119,7 +121,7 @@ public final class SchoolYearBar {
 
         TextView label = new TextView(activity);
         label.setText("School Year");
-        label.setTextColor(Color.parseColor("#333333"));
+        label.setTextColor(activity.getColor(R.color.text_body));
         label.setTypeface(Typeface.DEFAULT_BOLD);
         label.setTextSize(12);
         LinearLayout.LayoutParams labelLp = new LinearLayout.LayoutParams(
@@ -128,7 +130,7 @@ public final class SchoolYearBar {
         yearContainer.addView(label, labelLp);
 
         tvYear = new TextView(activity);
-        tvYear.setTextColor(Color.parseColor("#000000"));
+        tvYear.setTextColor(activity.getColor(R.color.text_strong));
         tvYear.setTypeface(Typeface.DEFAULT_BOLD);
         tvYear.setTextSize(13);
         tvYear.setGravity(Gravity.CENTER_VERTICAL);
@@ -153,7 +155,7 @@ public final class SchoolYearBar {
         if (manage) {
             TextView btn = new TextView(activity);
             btn.setText("Manage");
-            btn.setTextColor(Color.parseColor("#000000"));
+            btn.setTextColor(activity.getColor(R.color.text_strong));
             btn.setTypeface(Typeface.DEFAULT_BOLD);
             btn.setTextSize(13);
             btn.setGravity(Gravity.CENTER);
@@ -214,7 +216,7 @@ public final class SchoolYearBar {
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 TextView view = (TextView) super.getView(position, convertView, parent);
-                view.setTextColor(Color.BLACK);
+                view.setTextColor(view.getContext().getColor(R.color.text_strong));
                 view.setTextSize(14);
                 view.setPadding(dp(16), dp(12), dp(16), dp(12));
 
@@ -222,7 +224,7 @@ public final class SchoolYearBar {
                     try {
                         view.setBackgroundResource(R.drawable.dropdown_selected);
                     } catch (Exception ignored) {
-                        view.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                        view.setBackgroundResource(R.drawable.dropdown_selected);
                     }
                 } else {
                     view.setBackgroundColor(Color.TRANSPARENT);

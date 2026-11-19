@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Little Learners</string>
-    <string name="header_title">Little Learners</string>
-    <string name="header_subtitle">Learning made fun and easy!</string>
-    <string name="welcome_title">Welcome!</string>
-    <string name="welcome_subtitle">What would you like to do today?</string>
     <string name="get_started">Get Started</string>
 
     <string name="good_morning">Good Morning,</string>
@@ -12,33 +8,18 @@
     <string name="analytics">Analytics</string>
     <string name="quote_small_steps">From small steps,\na great success is\nbuilt!</string>
 
-    <string name="login_subtitle">Teacher Portal Sign In</string>
     <string name="welcome_back">Welcome Back!</string>
-    <string name="please_sign_in">Please sign in to access grades and students</string>
-    <string name="username_or_email">Username or Email</string>
     <string name="username">Username</string>
-    <string name="enter_username_hint">Enter your username or email</string>
     <string name="password">Password</string>
-    <string name="enter_password_hint">Enter your password</string>
     <string name="log_in">Login</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="signup_prompt">Don\'t have an account? [Sign UP]</string>
 
     <string name="card_students_title">Students</string>
-    <string name="card_students_desc">View and manage student information</string>
-    <string name="btn_students">View Students</string>
 
-    <string name="card_grades_title">Grades</string>
-    <string name="card_grades_desc">Enter and view student grades</string>
     <string name="btn_grades">Enter Grades</string>
 
     <string name="card_reports_title">Reports</string>
-    <string name="card_reports_desc">View student performance reports</string>
-    <string name="btn_reports">View Reports</string>
-
-    <string name="nav_home">\nHome</string>
-    <string name="nav_students">\nStudents</string>
-    <string name="nav_grades">\nGrades</string>
 
     <string name="manage_students">Manage Students</string>
     <string name="search_student_hint">Search student name</string>
@@ -49,24 +30,7 @@
     <string name="student_avatar">Student profile picture</string>
     <string name="arrow">View student details</string>
 
-    <string name="student_name">Add Student</string>
-    <string name="add_photo">Add Photo</string>
-    <string name="first_name">First Name</string>
-    <string name="middle_name">Middle Name</string>
-    <string name="last_name">Last Name</string>
-    <string name="extension_hint">Extension (Optional e.g. Jr., III)</string>
     <string name="date_of_birth">Date of Birth</string>
-    <string name="age">Age</string>
-    <string name="age_auto_calculated">Age (Auto-calculated)</string>
-    <string name="grade_level">Grade Level</string>
-    <string name="section">Section</string>
-    <string name="parents_name">Parents Name</string>
-    <string name="parent_address_hint">Parent/Guardian Address</string>
-    <string name="parent_guardian_contact_number">Parent/Guardian Contact Number</string>
-    <string name="country_code_ph">🇵🇭 +63</string>
-    <string name="phone_hint">912 345 6789</string>
-    <string name="save">Save</string>
-    <string name="save_student">Save Student</string>
 
     <string name="search_and_filter">Search &amp; Filter</string>
     <string name="filter_by_level">Filter by Level</string>
@@ -79,8 +43,6 @@
     <string name="needs_improvement">Needs Improvement</string>
     <string name="apply">Apply</string>
     <string name="reset">Reset</string>
-
-    <string name="error_enter_full_name">Please enter student\'s full name</string>
 
     <string-array name="grade_level_options">
         <item>Nursery</item>
@@ -103,19 +65,7 @@
     <string name="score_100">100%</string>
     <string name="status_passed">Passed</string>
     <string name="subject_breakdown">Subject Breakdown</string>
-    <string name="subject_color_recognition">Color Recognition</string>
-    <string name="subject_numbers">Numbers</string>
-    <string name="subject_shapes">Shapes</string>
-    <string name="subject_behavior">Behavior</string>
     <string name="view_full_records">View Full Records</string>
-
-    <string name="records_title">Records</string>
-    <string name="overall_performance">Overall Performance</string>
-    <string name="excellent_count">3</string>
-    <string name="good_count">1</string>
-    <string name="needs_improvement_count">0</string>
-    <string name="download_pdf">Download PDF</string>
-    <string name="share">Share</string>
 
     <string-array name="quarter_options">
         <item>1st Quarter</item>
@@ -146,7 +96,6 @@
     <string name="select_student_to_grade">Select Student to Grade</string>
     <string name="quarter_grading">Quarter Grading</string>
     <string name="subject_activity_label">Subject</string>
-    <string name="select_subject_activity">Select Subject</string>
     <string name="subject_writing">Writing</string>
     <string name="subject_math">Math</string>
     <string name="subject_reading">Reading</string>
@@ -208,7 +157,6 @@
     <string name="teachers_remarks">Teacher\'s Remarks</string>
     <string name="remarks_hint">Add comments abount the student\'s performance....</string>
     <string name="submit">Submit</string>
-    <string name="nav_analytics">\nGrade Summary</string>
     <string name="sample_student_name2">Ive Brayne Cueva</string>
     <string name="sample_student_grade2">Nursery</string>
     <string name="sample_date">October 10, 2026</string>

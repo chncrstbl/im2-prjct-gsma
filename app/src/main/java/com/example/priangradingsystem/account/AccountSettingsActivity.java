@@ -1,31 +1,19 @@
 package com.example.priangradingsystem.account;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SwitchCompat;
-
-import android.net.Uri;
-import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +21,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.priangradingsystem.FullScreenUtils;
@@ -41,6 +28,7 @@ import com.example.priangradingsystem.R;
 import com.example.priangradingsystem.auth.LoginActivity;
 import com.example.priangradingsystem.data.DatabaseHelper;
 import com.example.priangradingsystem.model.Teacher;
+import com.example.priangradingsystem.ui.ThemeManager;
 
 public class AccountSettingsActivity extends AppCompatActivity {
 
@@ -51,9 +39,15 @@ public class AccountSettingsActivity extends AppCompatActivity {
     private TextView tvTeacherEmail;
     private ImageView ivTeacherAvatar;
     private SwitchCompat swNotification;
-    private LinearLayout btnThemeToggle;
+    private View btnThemeToggle;
+    private View themeThumb;
     private ImageView ivThemeSun;
     private ImageView ivThemeMoon;
+    private ImageView ivDecorSun;
+    private ImageView ivDecorMoon;
+    private View decorThemeContainer;
+    private ObjectAnimator decorFloat;
+    private boolean themeAnimating = false;
 
     private int currentTeacherId = -1;
     private String currentUsername = "";
@@ -88,11 +82,8 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        prefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        boolean isDarkMode = prefs.getBoolean("DARK_MODE_ENABLED", false);
-        AppCompatDelegate.setDefaultNightMode(isDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-
         super.onCreate(savedInstanceState);
+        prefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_account_settings);
 
@@ -131,8 +122,12 @@ public class AccountSettingsActivity extends AppCompatActivity {
         ivTeacherAvatar = findViewById(R.id.ivTeacherAvatar);
         swNotification = findViewById(R.id.swNotification);
         btnThemeToggle = findViewById(R.id.btnThemeToggle);
+        themeThumb = findViewById(R.id.themeThumb);
         ivThemeSun = findViewById(R.id.ivThemeSun);
         ivThemeMoon = findViewById(R.id.ivThemeMoon);
+        decorThemeContainer = findViewById(R.id.decorThemeContainer);
+        ivDecorSun = findViewById(R.id.ivSunAccountSetting);
+        ivDecorMoon = findViewById(R.id.ivMoonAccountSetting);
     }
 
     private void handleBackNavigation() {
@@ -227,40 +222,94 @@ public class AccountSettingsActivity extends AppCompatActivity {
         if (swNotification != null) {
             swNotification.setChecked(notifEnabled);
         }
-
-        boolean isDarkMode = prefs.getBoolean("DARK_MODE_ENABLED", false);
-        updateThemeUI(isDarkMode);
+        applyThemeVisuals(ThemeManager.isDark(this), false);
+        startDecorFloat();
     }
 
+    /** Animated sun <-> moon switch. The whole app is restyled once the animation has played. */
     private void toggleAppTheme() {
-        boolean isDarkMode = prefs.getBoolean("DARK_MODE_ENABLED", false);
-        boolean newDarkModeState = !isDarkMode;
+        if (themeAnimating) return;
+        themeAnimating = true;
+        final boolean newDark = !ThemeManager.isDark(this);
 
-        prefs.edit().putBoolean("DARK_MODE_ENABLED", newDarkModeState).apply();
+        btnThemeToggle.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+        applyThemeVisuals(newDark, true);
 
-        if (newDarkModeState) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            Toast.makeText(this, "Dark Mode enabled", Toast.LENGTH_SHORT).show();
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            Toast.makeText(this, "Light Mode enabled", Toast.LENGTH_SHORT).show();
-        }
-        recreate();
+        // Let the sun/moon animation play, then switch (and cross-fade) the entire app.
+        btnThemeToggle.postDelayed(() -> {
+            ThemeManager.setDark(this, newDark);
+            themeAnimating = false;
+        }, 520);
     }
 
-    private void updateThemeUI(boolean isDarkMode) {
-        if (btnThemeToggle != null) {
-            btnThemeToggle.setBackgroundResource(isDarkMode ? R.drawable.dark_mode_container : R.drawable.light_mode_container);
+    /**
+     * Puts the toggle thumb and the big sun/moon decoration into the state for {@code dark},
+     * optionally animating the change.
+     */
+    private void applyThemeVisuals(boolean dark, boolean animate) {
+        if (themeThumb == null || ivThemeSun == null || ivThemeMoon == null) return;
+        final float density = getResources().getDisplayMetrics().density;
+        final float thumbX = dark ? 30 * density : 0f;
+
+        if (!animate) {
+            themeThumb.setTranslationX(thumbX);
+            setIconState(ivThemeSun, !dark, 90f);
+            setIconState(ivThemeMoon, dark, -90f);
+            if (ivDecorSun != null) setIconState(ivDecorSun, !dark, 120f);
+            if (ivDecorMoon != null) setIconState(ivDecorMoon, dark, -120f);
+            return;
         }
-        if (ivThemeSun != null && ivThemeMoon != null) {
-            if (isDarkMode) {
-                ivThemeSun.setAlpha(0.4f);
-                ivThemeMoon.setAlpha(1.0f);
-            } else {
-                ivThemeSun.setAlpha(1.0f);
-                ivThemeMoon.setAlpha(0.4f);
-            }
+
+        themeThumb.animate().translationX(thumbX).setDuration(420)
+                .setInterpolator(new OvershootInterpolator(1.4f)).start();
+        morph(ivThemeSun, ivThemeMoon, dark, 90f, 420);
+        if (ivDecorSun != null && ivDecorMoon != null) {
+            morph(ivDecorSun, ivDecorMoon, dark, 120f, 520);
         }
+    }
+
+    /** Rotates/scales/fades one icon out while the other rotates/scales/fades in. */
+    private void morph(ImageView sun, ImageView moon, boolean toDark, float spin, long duration) {
+        ImageView outV = toDark ? sun : moon;
+        ImageView inV = toDark ? moon : sun;
+        float outEnd = toDark ? spin : -spin;
+        float inStart = toDark ? -spin : spin;
+
+        outV.animate().rotation(outEnd).scaleX(0.3f).scaleY(0.3f).alpha(0f)
+                .setDuration(duration).start();
+        inV.setRotation(inStart);
+        inV.setScaleX(0.3f);
+        inV.setScaleY(0.3f);
+        inV.animate().rotation(0f).scaleX(1f).scaleY(1f).alpha(1f)
+                .setDuration(duration).setInterpolator(new OvershootInterpolator(1.2f)).start();
+    }
+
+    private void setIconState(ImageView v, boolean visible, float hiddenRotation) {
+        v.setAlpha(visible ? 1f : 0f);
+        v.setScaleX(visible ? 1f : 0.3f);
+        v.setScaleY(visible ? 1f : 0.3f);
+        v.setRotation(visible ? 0f : hiddenRotation);
+    }
+
+    /** Gentle idle bobbing so the sun / moon feels alive. */
+    private void startDecorFloat() {
+        if (decorThemeContainer == null || decorFloat != null) return;
+        float amp = 4 * getResources().getDisplayMetrics().density;
+        decorFloat = ObjectAnimator.ofFloat(decorThemeContainer, View.TRANSLATION_Y, -amp, amp);
+        decorFloat.setDuration(2200);
+        decorFloat.setRepeatCount(ObjectAnimator.INFINITE);
+        decorFloat.setRepeatMode(ObjectAnimator.REVERSE);
+        decorFloat.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        decorFloat.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (decorFloat != null) {
+            decorFloat.cancel();
+            decorFloat = null;
+        }
+        super.onDestroy();
     }
 
     private void showEditProfileDialog() {

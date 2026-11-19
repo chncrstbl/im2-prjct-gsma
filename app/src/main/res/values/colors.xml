@@ -3,10 +3,52 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!-- Surfaces -->
     <color name="page_background">#FFFFFF</color>
     <color name="login_background">#FFFDC8</color>
     <color name="card_background">#FFFFFF</color>
+    <color name="input_background">#FFFFFF</color>
+    <color name="input_disabled">#DCDCDC</color>
+    <color name="input_outline">#BDBDBD</color>
+    <color name="search_background">#F2F2F2</color>
+    <color name="section_header_bg">#E9ECEF</color>
+    <color name="chip_idle">#F9F9F9</color>
+    <color name="info_card">#E3F2FD</color>
+    <color name="dialog_input_bg">#FFFDE7</color>
+    <color name="dialog_input_stroke">#FFE082</color>
+    <color name="button_secondary_bg">#F5F5F5</color>
+
+    <color name="dropdown_selected_bg">#33FFCC00</color>
+
+    <!-- Brand -->
+    <color name="top_bar">#FFCC00</color>
+    <color name="brand_accent">#FBC02D</color>
+    <color name="avatar_ring">#80B3FF</color>
+
+    <!-- Text -->
     <color name="primary_text">#2D2013</color>
     <color name="secondary_text">#7A6855</color>
+    <color name="text_strong">#000000</color>
+    <color name="text_body">#333333</color>
+    <color name="text_muted">#666666</color>
+    <color name="text_hint">#8E8E8E</color>
+    <color name="link_text">#3F51B5</color>
+    <color name="greeting_tint">#764040</color>
+
+    <!-- Lines -->
     <color name="divider_color">#FFE082</color>
+    <color name="line_neutral">#E0E0E0</color>
+    <color name="line_strong">#000000</color>
+
+    <!-- Status -->
+    <color name="status_pass">#00A859</color>
+    <color name="status_fail">#D92D20</color>
+    <color name="badge_pass_bg">#E8F5E9</color>
+    <color name="badge_fail_bg">#FEE4E2</color>
+
+    <!-- Theme toggle -->
+    <color name="toggle_track">#FFF3C6</color>
+    <color name="toggle_track_stroke">#FFD54F</color>
+    <color name="toggle_thumb">#FFFFFF</color>
+    <color name="icon_chip">#FFF4C8</color>
 </resources>

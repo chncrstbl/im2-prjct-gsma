@@ -517,9 +517,9 @@ public class RecordsActivity extends AppCompatActivity {
         );
         cardParams.setMargins(0, 0, 0, (int) (16 * getResources().getDisplayMetrics().density));
         card.setLayoutParams(cardParams);
-        card.setCardBackgroundColor(Color.WHITE);
+        card.setCardBackgroundColor(getColor(R.color.card_background));
         card.setRadius(16 * getResources().getDisplayMetrics().density);
-        card.setStrokeColor(Color.parseColor("#DDDDDD"));
+        card.setStrokeColor(getColor(R.color.line_neutral));
         card.setStrokeWidth((int) (1.5f * getResources().getDisplayMetrics().density));
 
         RelativeLayout relativeLayout = new RelativeLayout(this);
@@ -560,7 +560,7 @@ public class RecordsActivity extends AppCompatActivity {
             titleText = isProgramPerformance ? "Program Performance" : "Grade Record";
         }
         tvTitle.setText(titleText);
-        tvTitle.setTextColor(Color.BLACK);
+        tvTitle.setTextColor(getColor(R.color.text_strong));
         tvTitle.setTextSize(16);
         tvTitle.setTypeface(null, android.graphics.Typeface.BOLD);
         tvTitle.setVisibility(isAttendance ? View.GONE : View.VISIBLE);
@@ -569,7 +569,7 @@ public class RecordsActivity extends AppCompatActivity {
         if (isExam) {
             TextView tvSubtitle = new TextView(this);
             tvSubtitle.setText(r.quarter);
-            tvSubtitle.setTextColor(Color.parseColor("#888888"));
+            tvSubtitle.setTextColor(getColor(R.color.text_muted));
             tvSubtitle.setTextSize(12);
             titleContainer.addView(tvSubtitle);
         }
@@ -641,7 +641,7 @@ public class RecordsActivity extends AppCompatActivity {
                 scoreText = cleanDigits.isEmpty() ? "0 Days" : cleanDigits + " Days";
             }
             tvScore.setText(scoreText);
-            tvScore.setTextColor(Color.BLACK);
+            tvScore.setTextColor(getColor(R.color.text_strong));
             tvScore.setTextSize(22);
             tvScore.setTypeface(null, android.graphics.Typeface.BOLD);
 
@@ -673,7 +673,7 @@ public class RecordsActivity extends AppCompatActivity {
             TextView labelName = new TextView(this);
             labelName.setText("Program Name:");
             labelName.setTextSize(14);
-            labelName.setTextColor(Color.BLACK);
+            labelName.setTextColor(getColor(R.color.text_strong));
             container.addView(labelName);
 
             EditText inputName = new EditText(this);
@@ -684,7 +684,7 @@ public class RecordsActivity extends AppCompatActivity {
             TextView labelScore = new TextView(this);
             labelScore.setText("\nScore:");
             labelScore.setTextSize(14);
-            labelScore.setTextColor(Color.BLACK);
+            labelScore.setTextColor(getColor(R.color.text_strong));
             container.addView(labelScore);
 
             Spinner spnScore = new Spinner(this);
@@ -864,7 +864,7 @@ public class RecordsActivity extends AppCompatActivity {
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 TextView view = (TextView) super.getView(position, convertView, parent);
-                view.setTextColor(Color.BLACK);
+                view.setTextColor(view.getContext().getColor(R.color.text_strong));
                 view.setTextSize(16);
                 view.setPadding(32, 24, 32, 24);
 
@@ -908,13 +908,13 @@ public class RecordsActivity extends AppCompatActivity {
         currentQuarter = quarter;
 
         btn1stQtr.setBackgroundResource(quarter == 1 ? R.drawable.highlighted_quarter : R.drawable.regular_quarter);
-        btn1stQtr.setTextColor(quarter == 1 ? Color.BLACK : Color.DKGRAY);
+        btn1stQtr.setTextColor(quarter == 1 ? Color.BLACK : getColor(R.color.text_muted));
 
         btn2ndQtr.setBackgroundResource(quarter == 2 ? R.drawable.highlighted_quarter : R.drawable.regular_quarter);
-        btn2ndQtr.setTextColor(quarter == 2 ? Color.BLACK : Color.DKGRAY);
+        btn2ndQtr.setTextColor(quarter == 2 ? Color.BLACK : getColor(R.color.text_muted));
 
         btn3rdQtr.setBackgroundResource(quarter == 3 ? R.drawable.highlighted_quarter : R.drawable.regular_quarter);
-        btn3rdQtr.setTextColor(quarter == 3 ? Color.BLACK : Color.DKGRAY);
+        btn3rdQtr.setTextColor(quarter == 3 ? Color.BLACK : getColor(R.color.text_muted));
 
         updateUiForActivity();
 

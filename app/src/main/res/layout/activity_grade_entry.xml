@@ -56,10 +56,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/card_background"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#B0B0B0"
+                app:strokeColor="@color/input_outline"
                 app:strokeWidth="1.5dp">
 
                 <LinearLayout
@@ -90,7 +90,7 @@
                             android:layout_height="match_parent"
                             android:gravity="center"
                             android:text="N/A"
-                            android:textColor="#888888"
+                            android:textColor="@color/text_muted"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:visibility="gone"
@@ -109,7 +109,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/sample_student_name2"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_strong"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -119,7 +119,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="@string/sample_student_grade2"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_strong"
                             android:textSize="14sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -133,7 +133,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginBottom="6dp"
                 android:text="@string/quarter_grading"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -154,7 +154,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:text="1st Quarter"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -164,7 +164,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@null"
-                    android:src="@drawable/activity_dropdown" />
+                    android:src="@drawable/activity_dropdown"
+        app:tint="@color/text_strong" />
             </RelativeLayout>
 
             <!-- 2. Activity Field -->
@@ -174,7 +175,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginBottom="6dp"
                 android:text="@string/activity_label"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -195,7 +196,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:text="Exam"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -205,7 +206,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@null"
-                    android:src="@drawable/activity_dropdown" />
+                    android:src="@drawable/activity_dropdown"
+        app:tint="@color/text_strong" />
             </RelativeLayout>
 
             <!-- Program Name Section (Visible ONLY when Activity == Program Performance) -->
@@ -222,7 +224,7 @@
                     android:layout_marginStart="2dp"
                     android:layout_marginBottom="6dp"
                     android:text="@string/program_name_label"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -236,8 +238,8 @@
                     android:hint="@string/program_name_hint"
                     android:inputType="text"
                     android:paddingHorizontal="16dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#666666"
+                    android:textColor="@color/text_strong"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -254,7 +256,7 @@
                     android:layout_marginStart="2dp"
                     android:layout_marginBottom="6dp"
                     android:text="@string/subject_activity_label"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -275,7 +277,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="Writing"
-                        android:textColor="#000000"
+                        android:textColor="@color/text_strong"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -285,7 +287,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:contentDescription="@null"
-                        android:src="@drawable/activity_dropdown" />
+                        android:src="@drawable/activity_dropdown"
+        app:tint="@color/text_strong" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -302,7 +305,7 @@
                     android:layout_marginStart="2dp"
                     android:layout_marginBottom="6dp"
                     android:text="@string/score"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -325,7 +328,7 @@
                         android:inputType="number"
                         android:paddingStart="16dp"
                         android:paddingEnd="8dp"
-                        android:textColor="#000000"
+                        android:textColor="@color/text_strong"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -333,7 +336,7 @@
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:layout_marginVertical="8dp"
-                        android:background="#B0B0B0" />
+                        android:background="@color/input_outline" />
 
                     <TextView
                         android:id="@+id/tvScoreSuffix"
@@ -341,7 +344,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="16dp"
                         android:text="@string/score_suffix"
-                        android:textColor="#000000"
+                        android:textColor="@color/text_strong"
                         android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -361,7 +364,7 @@
                     android:layout_marginStart="2dp"
                     android:layout_marginBottom="6dp"
                     android:text="@string/attendance_status_label"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -382,7 +385,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="Present"
-                        android:textColor="#000000"
+                        android:textColor="@color/text_strong"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -392,7 +395,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:contentDescription="@null"
-                        android:src="@drawable/activity_dropdown" />
+                        android:src="@drawable/activity_dropdown"
+        app:tint="@color/text_strong" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -416,7 +420,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/tvClearStars"
                         android:text="@string/stars_grading_label"
-                        android:textColor="#000000"
+                        android:textColor="@color/text_strong"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -429,7 +433,7 @@
                         android:background="?attr/selectableItemBackground"
                         android:padding="4dp"
                         android:text="@string/clear_stars"
-                        android:textColor="#D32F2F"
+                        android:textColor="@color/status_fail"
                         android:textSize="13sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
@@ -459,7 +463,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:text="0 ⭐"
-                        android:textColor="#000000"
+                        android:textColor="@color/text_strong"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         tools:ignore="HardcodedText" />
@@ -480,7 +484,7 @@
                     android:layout_marginStart="2dp"
                     android:layout_marginBottom="6dp"
                     android:text="@string/points_grading_label"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -501,7 +505,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="0 Points"
-                        android:textColor="#000000"
+                        android:textColor="@color/text_strong"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -511,7 +515,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:contentDescription="@null"
-                        android:src="@drawable/activity_dropdown" />
+                        android:src="@drawable/activity_dropdown"
+        app:tint="@color/text_strong" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -522,7 +527,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginBottom="6dp"
                 android:text="@string/assessment_date"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -541,7 +546,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@id/imgCalendarIcon"
                     android:text="@string/sample_date"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_strong"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -553,7 +558,7 @@
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/date_of_birth"
                     android:src="@android:drawable/ic_menu_my_calendar"
-                    app:tint="#000000" />
+                    app:tint="@color/text_strong" />
             </RelativeLayout>
 
             <!-- 5. Teacher's Remarks Field -->
@@ -563,7 +568,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginBottom="6dp"
                 android:text="@string/teachers_remarks"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -579,8 +584,8 @@
                 android:inputType="textMultiLine"
                 android:minHeight="100dp"
                 android:padding="14dp"
-                android:textColor="#000000"
-                android:textColorHint="#666666"
+                android:textColor="@color/text_strong"
+                android:textColorHint="@color/text_hint"
                 android:textSize="14sp" />
 
             <!-- Submit Button (Pill Yellow Button) -->

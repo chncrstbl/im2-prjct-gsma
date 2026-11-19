@@ -136,7 +136,7 @@ public class ReportsActivity extends AppCompatActivity {
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 TextView view = (TextView) super.getView(position, convertView, parent);
-                view.setTextColor(Color.BLACK);
+                view.setTextColor(view.getContext().getColor(R.color.text_strong));
                 view.setTextSize(16);
                 view.setPadding(32, 24, 32, 24);
 
@@ -300,12 +300,12 @@ public class ReportsActivity extends AppCompatActivity {
             if (tvPassedBadge != null) {
                 if (result.overallTransmuted >= 75) {
                     tvPassedBadge.setText("Passed");
-                    tvPassedBadge.setTextColor(Color.parseColor("#00A859"));
+                    tvPassedBadge.setTextColor(getColor(R.color.status_pass));
                     tvPassedBadge.setBackgroundResource(R.drawable.bg_badge_passed);
                 } else {
                     tvPassedBadge.setText("Needs Improvement");
-                    tvPassedBadge.setTextColor(Color.parseColor("#D92D20"));
-                    tvPassedBadge.setBackgroundColor(Color.parseColor("#FEE4E2"));
+                    tvPassedBadge.setTextColor(getColor(R.color.status_fail));
+                    tvPassedBadge.setBackgroundColor(getColor(R.color.badge_fail_bg));
                 }
             }
         } else {
@@ -315,8 +315,8 @@ public class ReportsActivity extends AppCompatActivity {
             if (progressBarPerformance != null) progressBarPerformance.setProgress(0);
             if (tvPassedBadge != null) {
                 tvPassedBadge.setText("Incomplete");
-                tvPassedBadge.setTextColor(Color.parseColor("#D92D20"));
-                tvPassedBadge.setBackgroundColor(Color.parseColor("#FEE4E2"));
+                tvPassedBadge.setTextColor(getColor(R.color.status_fail));
+                tvPassedBadge.setBackgroundColor(getColor(R.color.badge_fail_bg));
             }
         }
     }

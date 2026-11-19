@@ -15,11 +15,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        android.content.SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        boolean isDarkMode = prefs.getBoolean("DARK_MODE_ENABLED", false);
-        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
-                isDarkMode ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
-
         super.onCreate(savedInstanceState);
         FullScreenUtils.enableFullScreen(this);
         setContentView(R.layout.activity_main);
@@ -49,21 +44,36 @@ public class MainActivity extends AppCompatActivity {
             ivProfile.setOnClickListener(v -> openAccountSettingsActivity());
         }
         updateProfileAvatar();
+        playEntranceAnimation(savedInstanceState == null);
+    }
+
+    /** Cards pop in one after another; the banner follows. */
+    private void playEntranceAnimation(boolean firstLaunch) {
+        if (!firstLaunch) return;
+        int[] ids = {R.id.btnStudentsCard, R.id.btnGradesCard, R.id.btnReportsCard, R.id.btnAnalyticsCard};
+        float rise = 24 * getResources().getDisplayMetrics().density;
+        for (int i = 0; i < ids.length; i++) {
+            View card = findViewById(ids[i]);
+            if (card == null) continue;
+            card.setAlpha(0f);
+            card.setScaleX(0.9f);
+            card.setScaleY(0.9f);
+            card.setTranslationY(rise);
+            card.animate().alpha(1f).scaleX(1f).scaleY(1f).translationY(0f)
+                    .setStartDelay(80L + i * 70L).setDuration(380)
+                    .setInterpolator(new android.view.animation.OvershootInterpolator(0.8f)).start();
+        }
+        View sun = findViewById(R.id.ivDecorSun);
+        if (sun != null) {
+            sun.animate().rotationBy(360f).setDuration(1400)
+                    .setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         FullScreenUtils.enableFullScreen(this);
-
-        android.content.SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        boolean isDarkMode = prefs.getBoolean("DARK_MODE_ENABLED", false);
-        int targetMode = isDarkMode ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO;
-        if (androidx.appcompat.app.AppCompatDelegate.getDefaultNightMode() != targetMode) {
-            androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(targetMode);
-            recreate();
-            return;
-        }
         updateProfileAvatar();
     }
 

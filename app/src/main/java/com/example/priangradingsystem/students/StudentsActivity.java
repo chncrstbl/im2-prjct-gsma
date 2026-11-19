@@ -3,8 +3,6 @@ package com.example.priangradingsystem.students;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -86,10 +84,6 @@ public class StudentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor(Color.parseColor("#FFC107"));
-            }
-
             setContentView(R.layout.activity_student);
             dbHelper = new DatabaseHelper(this);
             schoolYearBar = SchoolYearBar.attach(this, dbHelper, true, true, this::loadStudentsFromDatabase);

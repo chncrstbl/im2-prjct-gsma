@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Student Name"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="8dp"
                 android:text="Section"
-                android:textColor="#666666"
+                android:textColor="@color/text_muted"
                 android:textSize="14sp" />
 
             <!-- Main Info Card (Light Blue Container) -->
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#E3F2FD"
+                app:cardBackgroundColor="@color/info_card"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp">
 
@@ -121,14 +121,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="First Name:  "
-                                android:textColor="#333333"
+                                android:textColor="@color/text_body"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:id="@+id/tvFirstNameVal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#555555"
+                                android:textColor="@color/text_muted"
                                 android:textSize="13sp"
                                 android:layout_marginBottom="6dp" />
 
@@ -136,14 +136,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Middle Name:  "
-                                android:textColor="#333333"
+                                android:textColor="@color/text_body"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:id="@+id/tvMiddleNameVal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#555555"
+                                android:textColor="@color/text_muted"
                                 android:textSize="13sp"
                                 android:layout_marginBottom="6dp" />
 
@@ -151,14 +151,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Last Name:  "
-                                android:textColor="#333333"
+                                android:textColor="@color/text_body"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:id="@+id/tvLastNameVal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#555555"
+                                android:textColor="@color/text_muted"
                                 android:textSize="13sp"
                                 android:layout_marginBottom="6dp" />
 
@@ -166,14 +166,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Extensions (e.g., Jr., III):"
-                                android:textColor="#333333"
+                                android:textColor="@color/text_body"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:id="@+id/tvExtensionVal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#555555"
+                                android:textColor="@color/text_muted"
                                 android:textSize="13sp" />
                         </LinearLayout>
 
@@ -188,14 +188,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Date of Birth:"
-                                android:textColor="#333333"
+                                android:textColor="@color/text_body"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:id="@+id/dobTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#555555"
+                                android:textColor="@color/text_muted"
                                 android:textSize="13sp"
                                 android:layout_marginBottom="6dp" />
 
@@ -203,14 +203,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Age:"
-                                android:textColor="#333333"
+                                android:textColor="@color/text_body"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:id="@+id/ageTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#555555"
+                                android:textColor="@color/text_muted"
                                 android:textSize="13sp"
                                 android:layout_marginBottom="6dp" />
 
@@ -218,14 +218,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Gender:"
-                                android:textColor="#333333"
+                                android:textColor="@color/text_body"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:id="@+id/genderTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#555555"
+                                android:textColor="@color/text_muted"
                                 android:textSize="13sp" />
                         </LinearLayout>
                     </LinearLayout>
@@ -234,7 +234,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#CBD5E1"
+                        android:background="@color/line_neutral"
                         android:layout_marginVertical="14dp" />
 
                     <!-- Parents Name Section -->
@@ -242,7 +242,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Parents Name"
-                        android:textColor="#000000"
+                        android:textColor="@color/text_strong"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp" />
@@ -256,14 +256,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="First Name:"
-                            android:textColor="#333333"
+                            android:textColor="@color/text_body"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                         <TextView
                             android:id="@+id/tvParentFirstNameVal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#555555"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp"
                             android:layout_marginBottom="6dp" />
 
@@ -271,14 +271,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Middle Name:"
-                            android:textColor="#333333"
+                            android:textColor="@color/text_body"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                         <TextView
                             android:id="@+id/tvParentMiddleNameVal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#555555"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp"
                             android:layout_marginBottom="6dp" />
 
@@ -286,14 +286,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Last Name:"
-                            android:textColor="#333333"
+                            android:textColor="@color/text_body"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                         <TextView
                             android:id="@+id/tvParentLastNameVal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#555555"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp"
                             android:layout_marginBottom="6dp" />
 
@@ -301,14 +301,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Extensions (e.g., Sr.):"
-                            android:textColor="#333333"
+                            android:textColor="@color/text_body"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                         <TextView
                             android:id="@+id/tvParentExtensionVal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#555555"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp"
                             android:layout_marginBottom="6dp" />
 
@@ -316,14 +316,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Parent/Guardian Contact Number:"
-                            android:textColor="#333333"
+                            android:textColor="@color/text_body"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                         <TextView
                             android:id="@+id/contactTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#555555"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp"
                             android:layout_marginBottom="6dp" />
 
@@ -331,14 +331,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Parent/Guardian Address:"
-                            android:textColor="#333333"
+                            android:textColor="@color/text_body"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                         <TextView
                             android:id="@+id/addressTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#555555"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp" />
                     </LinearLayout>
 
