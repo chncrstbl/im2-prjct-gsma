@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/login_background"
+    android:background="@drawable/bg_splash_sky"
     android:fitsSystemWindows="true"
     tools:context=".home.SplashActivity">
 
@@ -36,6 +36,109 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Night-only decorations (shown in dark mode) -->
+    <ImageView
+        android:id="@+id/star1"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="34dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_twinkle_star"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/star2"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="60dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_twinkle_star"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/star3"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginTop="96dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_twinkle_star"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/star4"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_twinkle_star"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.72"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/star5"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="150dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_twinkle_star"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.55"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/star6"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="190dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_twinkle_star"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/star7"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginTop="170dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_twinkle_star"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/shootingStar"
+        android:layout_width="90dp"
+        android:layout_height="14dp"
+        android:layout_marginTop="60dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_shooting_star"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!-- Left middle cloud -->
     <ImageView
         android:id="@+id/cloudMiddleLeft"
@@ -62,18 +165,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Centered Smiling Sun -->
-    <ImageView
+    <!-- Smiling sun: rays spin independently of the face -->
+    <FrameLayout
         android:id="@+id/sun"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginTop="24dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="@null"
-        android:src="@drawable/sun"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/sunRays"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:src="@drawable/sun_rays" />
+
+        <ImageView
+            android:id="@+id/sunFace"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:src="@drawable/sun_face" />
+    </FrameLayout>
 
     <!-- Title: Little Learners -->
     <ImageView
@@ -101,6 +216,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:src="@drawable/grading_system"
+        app:tint="@color/greeting_tint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo" />
@@ -116,6 +232,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:src="@drawable/track_grade_grow"
+        app:tint="@color/text_strong"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gradingSystem" />
@@ -126,7 +243,7 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#E2FD00"
+        android:backgroundTint="@color/brand_accent"
         android:paddingHorizontal="28dp"
         android:text="@string/get_started"
         android:textAllCaps="false"

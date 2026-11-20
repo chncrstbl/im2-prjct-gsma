@@ -3,6 +3,18 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!-- OS launch screen. Sun / moon variants are fixed; "splash_*" follows the system theme (fallback) -->
+    <color name="splash_sun_top">#FFEFA6</color>
+    <color name="splash_sun_bottom">#FFFBE2</color>
+    <color name="splash_moon_top">#25264A</color>
+    <color name="splash_moon_bottom">#3E3A5E</color>
+    <color name="splash_top">@color/splash_sun_top</color>
+    <color name="splash_bottom">@color/splash_sun_bottom</color>
+
+    <!-- Intro / splash sky -->
+    <color name="sky_top">#FFEFA6</color>
+    <color name="sky_bottom">#FFFBE2</color>
+
     <!-- Surfaces -->
     <color name="page_background">#FFFFFF</color>
     <color name="login_background">#FFFDC8</color>

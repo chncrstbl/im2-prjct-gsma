@@ -16,6 +16,29 @@
 
     <style name="Theme.PrianGradingSystem" parent="Base.Theme.PrianGradingSystem" />
 
+    <!-- Launch theme: sky-colored window so the OS splash flows into the animated intro -->
+    <!-- Launch theme (follows the system theme; ThemeManager points Android 13+ at Sun/Moon below) -->
+    <style name="Theme.PrianGradingSystem.Splash" parent="Theme.PrianGradingSystem">
+        <item name="android:windowBackground">@drawable/bg_splash_window</item>
+        <item name="android:statusBarColor">@color/splash_top</item>
+        <item name="android:navigationBarColor">@color/splash_bottom</item>
+        <item name="android:windowLightStatusBar">@bool/light_system_bars</item>
+    </style>
+
+    <style name="Theme.PrianGradingSystem.Splash.Sun">
+        <item name="android:windowBackground">@drawable/bg_splash_window_sun</item>
+        <item name="android:statusBarColor">@color/splash_sun_top</item>
+        <item name="android:navigationBarColor">@color/splash_sun_bottom</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.PrianGradingSystem.Splash.Moon">
+        <item name="android:windowBackground">@drawable/bg_splash_window_moon</item>
+        <item name="android:statusBarColor">@color/splash_moon_top</item>
+        <item name="android:navigationBarColor">@color/splash_moon_bottom</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
     <style name="PrianAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog" />
 
     <style name="PrianWindowAnimation" parent="@android:style/Animation.Activity">

@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatDelegate;
+
+import com.example.priangradingsystem.R;
 
 /**
  * Single source of truth for the app theme.
@@ -61,10 +64,22 @@ public final class ThemeManager {
     public static void setDark(Activity activity, boolean dark) {
         snapshot(activity);
         prefs(activity).edit().putBoolean(KEY_DARK, dark).apply();
+        syncSplashTheme(activity, dark);
         AppCompatDelegate.setDefaultNightMode(
                 dark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
         // Safety net: if nothing was recreated, drop the snapshot.
         activity.getWindow().getDecorView().postDelayed(() -> pendingSnapshot = null, 1500);
+    }
+
+    /** Makes the next cold start's system splash show the sun (light) or the moon (dark). Android 13+. */
+    public static void syncSplashTheme(Activity a, boolean dark) {
+        if (Build.VERSION.SDK_INT >= 33) {
+            try {
+                a.getSplashScreen().setSplashScreenTheme(dark
+                        ? R.style.Theme_PrianGradingSystem_Splash_Moon
+                        : R.style.Theme_PrianGradingSystem_Splash_Sun);
+            } catch (Throwable ignored) { }
+        }
     }
 
     private static void snapshot(Activity a) {

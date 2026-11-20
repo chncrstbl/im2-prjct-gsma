@@ -1,0 +1,31 @@
+<resources>
+    <!-- Android 12+ system splash. Default follows the system theme and shows no icon (so a wrong sun/moon is never shown); Sun / Moon are chosen by the app's own saved
+         theme on Android 13+ (see ThemeManager.syncSplashTheme). -->
+    <style name="Theme.PrianGradingSystem.Splash" parent="Theme.PrianGradingSystem">
+        <item name="android:windowBackground">@drawable/bg_splash_window</item>
+        <item name="android:statusBarColor">@color/splash_top</item>
+        <item name="android:navigationBarColor">@color/splash_bottom</item>
+        <item name="android:windowLightStatusBar">@bool/light_system_bars</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_top</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launch_blank</item>
+        <item name="android:windowSplashScreenAnimationDuration">500</item>
+    </style>
+
+    <style name="Theme.PrianGradingSystem.Splash.Sun">
+        <item name="android:windowBackground">@drawable/bg_splash_window_sun</item>
+        <item name="android:statusBarColor">@color/splash_sun_top</item>
+        <item name="android:navigationBarColor">@color/splash_sun_bottom</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_sun_top</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launch_sun</item>
+    </style>
+
+    <style name="Theme.PrianGradingSystem.Splash.Moon">
+        <item name="android:windowBackground">@drawable/bg_splash_window_moon</item>
+        <item name="android:statusBarColor">@color/splash_moon_top</item>
+        <item name="android:navigationBarColor">@color/splash_moon_bottom</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_moon_top</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launch_moon</item>
+    </style>
+</resources>

@@ -105,7 +105,7 @@ public final class SchoolYearBar {
         row.setBackgroundColor(activity.getColor(R.color.page_background));
         row.setPadding(dp(16), dp(8), dp(16), dp(8));
 
-        // School year icon (sy_icon.png)
+        // School year icon (sy_icon vector)
         ImageView ivIcon = new ImageView(activity);
         ivIcon.setImageResource(R.drawable.sy_icon);
         ivIcon.setBackgroundResource(R.drawable.bg_icon_tile);

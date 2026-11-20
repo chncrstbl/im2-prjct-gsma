@@ -3,6 +3,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="splash_top">@color/splash_moon_top</color>
+    <color name="splash_bottom">@color/splash_moon_bottom</color>
+
+    <!-- Intro / splash night sky -->
+    <color name="sky_top">#25264A</color>
+    <color name="sky_bottom">#3E3A5E</color>
+
     <!-- Soft, warm dark palette (deliberately not pure black) -->
     <color name="page_background">#2E2B27</color>
     <color name="login_background">#35312B</color>

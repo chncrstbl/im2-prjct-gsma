@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fully transparent splash icon: used when the system doesn't know the app's own light/dark choice,
+     so a wrong sun/moon is never shown. The intro screen then draws the correct one right away. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="288"
+    android:viewportHeight="288">
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,0h288v288h-288z" />
+</vector>
